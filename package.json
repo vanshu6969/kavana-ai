@@ -1,0 +1,12 @@
+{
+  "name": "kavana-ai",
+  "version": "1.0.0",
+  "description": "Kavana AI - Interactive Story & Roleplay Platform",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve ."
+  },
+  "keywords": ["ai", "roleplay", "kavana", "stories", "interactive-fiction"],
+  "author": "vanshu6969",
+  "license": "MIT"
+}
