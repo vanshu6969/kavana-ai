@@ -4,11 +4,10 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useApp } from '@/lib/context/AppContext';
-import { Sparkles, Volume2, VolumeX, Search, MessageSquare, BookOpen } from 'lucide-react';
+import { Sparkles, Search, MessageSquare, BookOpen } from 'lucide-react';
 
 export default function Header() {
   const pathname = usePathname();
-  const { audioPlaying, toggleAudio } = useApp();
 
   // If in a chat route, hide global header completely so chat has full screen space and its own unified header
   const isChatRoute = pathname.startsWith('/chat/');
@@ -74,15 +73,6 @@ export default function Header() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2.5 sm:gap-3">
-          {/* Audio Ambience Toggle */}
-          <button
-            onClick={toggleAudio}
-            title={audioPlaying ? 'Mute Ambience' : 'Play Cinematic Ambience'}
-            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#0D0E15] border border-white/10 flex items-center justify-center text-slate-400 hover:text-[#FF2E55] hover:border-rose-500/40 transition-colors"
-          >
-            {audioPlaying ? <Volume2 size={15} className="text-[#FF2E55] animate-pulse" /> : <VolumeX size={15} />}
-          </button>
-
           {/* Unlimited Free Badge */}
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/30 text-[#FF2E55] text-xs font-bold shadow-sm">
             <Sparkles size={12} className="text-[#FF2E55]" />

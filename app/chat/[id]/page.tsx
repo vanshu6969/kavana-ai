@@ -14,8 +14,6 @@ import {
   MoreVertical,
   RotateCcw,
   Sparkles,
-  Volume2,
-  VolumeX,
   MessageSquare,
   Film,
   Info,
@@ -38,9 +36,6 @@ export default function ChatScreen() {
     sessions,
     getSessionByStoryId,
     appendMessageToSession,
-    userName,
-    audioPlaying,
-    toggleAudio,
   } = useApp();
 
   const story = stories.find((s) => s.id === storyId) || stories[1];
@@ -326,15 +321,6 @@ export default function ChatScreen() {
 
           {/* Right Header Actions */}
           <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-            {/* Audio Ambience Toggle */}
-            <button
-              onClick={toggleAudio}
-              className="w-8 h-8 rounded-full bg-[#0D0E15] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-[#FF2E55] transition-colors"
-              title={audioPlaying ? 'Mute Ambience' : 'Play Cinematic Ambience'}
-            >
-              {audioPlaying ? <Volume2 size={15} className="text-[#FF2E55] animate-pulse" /> : <VolumeX size={15} />}
-            </button>
-
             {/* Character Lore & Live Status Drawer Toggle */}
             <button
               onClick={() => setShowInfoDrawer((prev) => !prev)}
