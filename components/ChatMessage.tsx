@@ -69,10 +69,6 @@ export default function ChatMessage({
           <p className="text-[14px] sm:text-[15px] font-sans leading-relaxed font-medium">
             {message.text}
           </p>
-          <div className="flex justify-end items-center gap-1 mt-1 text-[10px] text-rose-200/90 font-semibold">
-            <span>{message.timestamp}</span>
-            <span>✓✓</span>
-          </div>
         </div>
       </div>
     );
@@ -98,10 +94,6 @@ export default function ChatMessage({
         {/* Message Bubble */}
         <div className="rounded-2xl rounded-tl-xs bg-[#0D0E15]/95 border border-white/[0.08] px-4 py-3 shadow-md backdrop-blur-md">
           {renderFormattedAiText(message.text)}
-
-          <div className="flex justify-end items-center mt-1.5 text-[10px] text-slate-500">
-            <span>{message.timestamp}</span>
-          </div>
         </div>
       </div>
     </div>
