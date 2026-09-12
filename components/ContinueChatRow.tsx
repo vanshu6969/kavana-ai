@@ -12,9 +12,22 @@ interface ContinueChatRowProps {
 }
 
 export default function ContinueChatRow({ stories, sessions }: ContinueChatRowProps) {
-  const continueStories = stories.filter((s) => s.isContinueChat);
+  // Only display active chats if user has actually had at least one conversation
+  if (!sessions || sessions.length === 0) return null;
 
-  if (continueStories.length === 0) return null;
+  // Map active sessions to matching stories
+  const activeStories = sessions
+    .map((sess) => {
+      const story = stories.find((s) => s.id === sess.storyId);
+      if (!story) return null;
+      return {
+        ...story,
+        lastPreview: sess.lastMessagePreview,
+      };
+    })
+    .filter(Boolean);
+
+  if (activeStories.length === 0) return null;
 
   return (
     <div className="w-full bg-[#0D0E15]/90 p-4 sm:p-5 rounded-2xl md:rounded-3xl border border-white/[0.08] backdrop-blur-md">
@@ -34,7 +47,7 @@ export default function ContinueChatRow({ stories, sessions }: ContinueChatRowPr
 
       {/* Horizontal Scroller */}
       <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto pb-2 scrollbar-none snap-x">
-        {continueStories.map((story) => {
+        {activeStories.map((story: any) => {
           return (
             <Link
               key={story.id}

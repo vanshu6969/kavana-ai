@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useApp } from '@/lib/context/AppContext';
-import { Sparkles, Search, MessageSquare, User, Film } from 'lucide-react';
+import { Sparkles, Search, MessageSquare, Film } from 'lucide-react';
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -18,7 +18,7 @@ export default function BottomNav() {
   const navItems = [
     {
       id: 'home',
-      label: 'Home',
+      label: 'Stories',
       href: '/',
       icon: Film,
       isActive: pathname === '/',
@@ -38,18 +38,11 @@ export default function BottomNav() {
       isActive: pathname === '/chats',
       badge: sessions.length > 0 ? sessions.length : undefined,
     },
-    {
-      id: 'profile',
-      label: 'Profile',
-      href: '/profile',
-      icon: User,
-      isActive: pathname === '/profile',
-    },
   ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#050608]/95 backdrop-blur-xl border-t border-white/[0.08] pb-safe md:hidden">
-      <div className="max-w-md mx-auto grid grid-cols-4 h-16 items-center px-2">
+      <div className="max-w-md mx-auto grid grid-cols-3 h-16 items-center px-4">
         {navItems.map((item) => {
           const Icon = item.icon;
 

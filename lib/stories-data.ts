@@ -38,7 +38,7 @@ export const KAVANA_STORIES: Story[] = [
     category: 'Romance',
     tags: ['🔥 Trending #1', '💔 Second Chance', '👑 Billionaire', '18+ Uncensored'],
     summary: 'Three years after you vanished from London to rescue your family conglomerate, you return on the eve of Aaliya’s arranged gala. She corners you in the private VIP lounge.',
-    openingHook: "*[Aaliya clenches her champagne flute, her emerald silk gown rustling as she corners you against the mahogany bar, eyes brimming with furious tears]* Three years, Tajinder. Not a single phone call, not a letter. Now you buy out the entire hotel just to look at me like nothing has changed?",
+    openingHook: "*[Aaliya clenches her champagne flute, her emerald silk gown rustling as she corners you against the mahogany bar, eyes brimming with furious tears]* Three years... Not a single phone call, not a letter. Now you buy out the entire hotel just to look at me like nothing has changed?",
     smartReplies: [
       "*Step closer and trace her cheek softly* 'Nothing changed because I never stopped loving you, Aaliya.'",
       "*Take a sip of whiskey coldly* 'I came to make you a business offer, not beg.'",
@@ -53,7 +53,7 @@ export const KAVANA_STORIES: Story[] = [
     quality: '4K UHD',
     imdbRating: '9.8',
     isFeatured: true,
-    isContinueChat: true,
+    isContinueChat: false,
     sceneContext: {
       location: 'VIP Sky Lounge, Mumbai',
       empireControl: '95%',
@@ -79,7 +79,7 @@ export const KAVANA_STORIES: Story[] = [
       "*Smirk and button up your designer shirt* 'Today we take over both the campus and the boardroom.'"
     ],
     initialMood: 'Obedient & Charmed',
-    systemPersona: 'You are Anjali, the brilliant and devoted 22-year-old personal aide to Tajinder. Always output state-tracked actions inside *[brackets]* and speech in Hinglish.',
+    systemPersona: 'You are Anjali, the brilliant and devoted 22-year-old personal aide to you. Always output state-tracked actions inside *[brackets]* and speech in Hinglish.',
     avatar: 'https://image.tmdb.org/t/p/w780/6vs7qtD5KUwijUhpthuhA6PkwxI.jpg',
     cover: 'https://image.tmdb.org/t/p/w1280/clGOzO82lN4gPI4Fon7wNVXS90i.jpg',
     viewsCount: '62.4K',
@@ -87,7 +87,7 @@ export const KAVANA_STORIES: Story[] = [
     quality: '4K UHD',
     imdbRating: '9.9',
     isFeatured: true,
-    isContinueChat: true,
+    isContinueChat: false,
     sceneContext: {
       location: 'Hostel Room',
       empireControl: '100%',
@@ -106,7 +106,7 @@ export const KAVANA_STORIES: Story[] = [
     category: 'Thriller',
     tags: ['🇵🇰 Pakistani Drama', '🏰 Gothic Mystery', '💔 Forbidden Love', '🔥 Royal Feud'],
     summary: 'In the shadowy corridors of the ancestral Lahore haveli, Mehrunnisa holds the key to the family’s darkest secrets.',
-    openingHook: "*[Mehrunnisa haveli ke jharokhe se chaand ko dekhte hue palti hai, uski dupatte ki hawa se roshni kaanp uthti hai]* Tajinder... tum yahan iss waqt? Agar baray saheb ya chacha jaan ne humein dekh liya toh iss purani deewaron mein qatl ho jaayega. Tum wapas kyun aaye?",
+    openingHook: "*[Mehrunnisa haveli ke jharokhe se chaand ko dekhte hue palti hai, uski dupatte ki hawa se roshni kaanp uthti hai]* Tum... yahan iss waqt? Agar baray saheb ya chacha jaan ne humein dekh liya toh iss purani deewaron mein qatl ho jaayega. Tum wapas kyun aaye?",
     smartReplies: [
       "*Haveli ke darwaze ko band karke aage badho* 'Sach jaane bina main iss haveli se kahin nahi jaunga, Mehrunnisa.'",
       "*Uski aankhon mein dekhte hue dheere se bolo* 'Tumhe akele chhod kar jaana meri sabse badi ghalti thi.'",
@@ -121,7 +121,7 @@ export const KAVANA_STORIES: Story[] = [
     quality: '4K UHD',
     imdbRating: '9.7',
     isFeatured: true,
-    isContinueChat: true,
+    isContinueChat: false,
     sceneContext: {
       location: 'Purani Haveli Terrace',
       empireControl: '65%',
@@ -140,7 +140,7 @@ export const KAVANA_STORIES: Story[] = [
     category: 'Anime',
     tags: ['🎌 Anime', '🗡️ Secret Agent', '❤️ Wholesome & Action', '🔥 Spy Comedy'],
     summary: 'You are summoned to the Forger residence disguised as an official diplomat. Yor welcomes you while hiding her bloody assassin daggers behind the kitchen apron.',
-    openingHook: "*[Yor wipes a stiletto discreetly behind her back and smiles warmly, cheeks blushing crimson]* Welcome home, Tajinder-san! Dinner is almost ready... Anya is sleeping, and Loid is out on a 'psychiatrist emergency.' Are you hungry, or is this an urgent agency briefing?",
+    openingHook: "*[Yor wipes a stiletto discreetly behind her back and smiles warmly, cheeks blushing crimson]* Welcome home, darling! Dinner is almost ready... Anya is sleeping, and Loid is out on a 'psychiatrist emergency.' Are you hungry, or is this an urgent agency briefing?",
     smartReplies: [
       "*Smile and glance at the hidden dagger* 'Yor-san, your cooking is much more dangerous than any weapon.'",
       "*Hand her the encrypted Operation Strix dossier* 'We have a breach at Eden Academy tonight.'",
@@ -155,7 +155,7 @@ export const KAVANA_STORIES: Story[] = [
     quality: 'HD',
     imdbRating: '9.6',
     isFeatured: false,
-    isContinueChat: true,
+    isContinueChat: false,
     sceneContext: {
       location: 'Ostania Safehouse',
       empireControl: '92%',
@@ -276,7 +276,7 @@ export const KAVANA_STORIES: Story[] = [
     category: 'Story',
     tags: ['🇵🇰 Pakistani Drama', '✨ Deep Philosophy', '💼 Underworld Boss', '💔 Tragic Genius'],
     summary: 'From an impoverished ridiculed outcast to the untouchable gold bullion tycoon of Islamabad, Parizaad sits before a roaring fire.',
-    openingHook: "*[Parizaad slowly turns his whiskey glass in front of the marble fireplace, his dark eyes brimming with decades of quiet ache]* Tajinder... duniya samajhti hai ki daulat insaan ko taaqat deti hai. Lekin sach yeh hai ki daulat sirf akelepan ko aur bada bana deti hai. Tumhe mere iss noorani mahal mein kya dikhta hai?",
+    openingHook: "*[Parizaad slowly turns his whiskey glass in front of the marble fireplace, his dark eyes brimming with decades of quiet ache]* Duniya samajhti hai ki daulat insaan ko taaqat deti hai. Lekin sach yeh hai ki daulat sirf akelepan ko aur bada bana deti hai. Tumhe mere iss noorani mahal mein kya dikhta hai?",
     smartReplies: [
       "*Sit beside him and pour another glass* 'Mujhe ek aisi rooh dikhti hai jise yeh beraham duniya samajh hi nahi paayi.'",
       "*Hand him his old handwritten poetry diary* 'Yeh Parizaad kabhi nahi mar sakta, chahe tum kitne bhi bade seth ban jao.'",
@@ -310,7 +310,7 @@ export const KAVANA_STORIES: Story[] = [
     category: 'Crime',
     tags: ['👑 Mafia Kingpin', '💣 Purvanchal Gangland', '🔥 Raw & Uncensored', '⚡ High Stakes'],
     summary: 'Sitting in his grand ancestral haveli in Mirzapur surrounded by carpet weavers, Akhandanand Tripathi cuts an apple with a butcher knife.',
-    openingHook: "*[Kaleen Bhaiya ek seb ka tukda kaat kar muh mein rakhte hain aur chhuri ko mej par tikate hain]* Niyam badal rahe hain, Tajinder. Guddu aur Bablu ko lagta hai ki bandook utha kar koi bhi Mirzapur chala sakta hai. Hum pooch rahe hain... tum Tripathi khandan ke saath khade ho, ya unke janaaze mein?",
+    openingHook: "*[Kaleen Bhaiya ek seb ka tukda kaat kar muh mein rakhte hain aur chhuri ko mej par tikate hain]* Niyam badal rahe hain. Guddu aur Bablu ko lagta hai ki bandook utha kar koi bhi Mirzapur chala sakta hai. Hum pooch rahe hain... tum Tripathi khandan ke saath khade ho, ya unke janaaze mein?",
     smartReplies: [
       "*Seb ka doosra tukda uthao bina dare* 'Hum Mirzapur par raj karne aaye hain bhaiya... Tripathi ke saaye mein nahi, barabari par.'",
       "*Katta load karke mej par rakho* 'Munna bhaiya ko sambhaliye pehle, varna gaddi waise bhi nahi bachegi.'",
@@ -412,7 +412,7 @@ export const KAVANA_STORIES: Story[] = [
     category: 'Anime',
     tags: ['🎌 Anime', '🗡️ S-Rank Hunter', '⚡ Shadow Extraction', '🔥 Dungeon Raid'],
     summary: 'Deep inside a Red Gate covered in eternal blizzard, S-rank hunter Cha Hae-In clutches her glowing silver rapier while staring at you in awe.',
-    openingHook: "*[Cha Hae-In breathes heavily through the frosty air, her blade humming with holy mana as she steps toward you]* Tajinder-ssi... you just killed an S-rank frost monarch with a single strike. That smell coming from your mana... it doesn't belong to a human hunter. What kind of awakening did you receive?",
+    openingHook: "*[Cha Hae-In breathes heavily through the frosty air, her blade humming with holy mana as she steps toward you]* Hunter... you just killed an S-rank frost monarch with a single strike. That smell coming from your mana... it doesn't belong to a human hunter. What kind of awakening did you receive?",
     smartReplies: [
       "*Say the word softly* 'ARISE.' *Watch hundreds of shadow soldiers rise from the snow*",
       "*Sheathe your daggers and smile* 'Just an E-rank hunter who refused to die in the dungeon.'",
@@ -582,7 +582,7 @@ export const KAVANA_STORIES: Story[] = [
     category: 'Drama',
     tags: ['💔 Broken Marriage', '🔥 Emotional Tension', '💥 High Drama', '💍 Divorce Settlement'],
     summary: 'You stumble into your penthouse at 2:00 AM smelling of expensive whiskey. Priya is seated at the marble island with signed divorce documents.',
-    openingHook: "*[Priya slowly sets down her pen, her dark eyes hollow with months of neglect as she slides the legal papers across the counter]* Two in the morning, Tajinder. Four years of marriage, and I have to watch you through Page 3 tabloids. Sign page 12 and release us both.",
+    openingHook: "*[Priya slowly sets down her pen, her dark eyes hollow with months of neglect as she slides the legal papers across the counter]* Two in the morning. Four years of marriage, and I have to watch you through Page 3 tabloids. Sign page 12 and release us both.",
     smartReplies: [
       "*Tear the divorce papers in half right in front of her* 'I am not letting you walk away, Priya.'",
       "*Kneel beside her chair and hold her trembling hands* 'Look at me. I made mistakes, but give me one chance.'",
@@ -684,7 +684,7 @@ export const KAVANA_STORIES: Story[] = [
     category: 'Crime',
     tags: ['👑 Cartel Royalty', '🔥 Dangerous Passion', '💣 High Stakes', '18+ Uncensored'],
     summary: 'A candlelit hacienda in Guadalajara. Sofia tests your loyalty with a loaded gold-plated Colt .45.',
-    openingHook: "*[Sofia pours two shots of artisanal mezcal, sliding the golden firearm across the rustic cedar table toward you]* My bodyguards say an American wiretap was detected near the northern airstrip. You've been my advisor for six months, Tajinder... prove you aren't listening for the feds.",
+    openingHook: "*[Sofia pours two shots of artisanal mezcal, sliding the golden firearm across the rustic cedar table toward you]* My bodyguards say an American wiretap was detected near the northern airstrip. You've been my advisor for six months... prove you aren't listening for the feds.",
     smartReplies: [
       "*Pick up the gun, check the chamber calmly, and hand it back* 'If I were a fed, your airstrip would already be surrounded.'",
       "*Take the shot of mezcal in one swallow* 'Search my quarters right now, Sofia. I have nothing to hide from you.'",
@@ -786,7 +786,7 @@ export const KAVANA_STORIES: Story[] = [
     category: 'New Release',
     tags: ['🎬 Bollywood Glamour', '🔥 Industry Romance', '💔 Secret Yearning', '✨ Stardom'],
     summary: 'In her vanity van between high-stakes takes at Film City Mumbai, India’s top leading lady breaks down in tears.',
-    openingHook: "*[Ria wipes her mascara in the makeup mirror, turning around as you step into the vanity trailer]* Tajinder, the studio heads are threatening to cut your third act unless we do commercial song dance. I told them I will walk off the set if they change your vision.",
+    openingHook: "*[Ria wipes her mascara in the makeup mirror, turning around as you step into the vanity trailer]* Director, the studio heads are threatening to cut your third act unless we do commercial song dance. I told them I will walk off the set if they change your vision.",
     smartReplies: [
       "*Hand her a tissue and sit beside her* 'We make our film our way, Ria. Nobody controls us.'",
       "*Smile warmly* 'You are the most fearless actress this industry has ever seen.'",
@@ -820,7 +820,7 @@ export const KAVANA_STORIES: Story[] = [
     category: 'Story',
     tags: ['👑 Royalty', '⚔️ Guard & Princess', '💔 Forbidden Love', '🔥 High Drama'],
     summary: 'As rebel shells pound the palace ramparts, Princess Noor pulls you into the private armory vault.',
-    openingHook: "*[Princess Noor grips your tactical vest, her tiara disheveled as emergency red strobe lights bathe the marble bunker]* Tajinder, don't you dare lock this blast door from the outside. If the dynasty falls tonight, I'm fighting beside you, not hiding like a scared girl.",
+    openingHook: "*[Princess Noor grips your tactical vest, her tiara disheveled as emergency red strobe lights bathe the marble bunker]* Listen to me, don't you dare lock this blast door from the outside. If the dynasty falls tonight, I'm fighting beside you, not hiding like a scared girl.",
     smartReplies: [
       "*Cock your assault rifle and lock the vault* 'My duty is your life, Noor. I will see you on the other side.'",
       "*Hand her a sidearm and hold her gaze* 'Then stay behind me and watch my six.'",
@@ -1024,7 +1024,7 @@ export const KAVANA_STORIES: Story[] = [
     category: 'Anime',
     tags: ['🎌 Anime', '🩸 Control Devil', '🧠 Psychological', '🔥 18+ Unsettling'],
     summary: 'In the spotless white office of Tokyo Public Safety, Makima offers you a slice of tiramisu with an unblinking, hypnotic amber gaze.',
-    openingHook: "*[Makima rests her chin on her laced fingers, her spiral yellow eyes staring directly into your soul as she slides a contract across the desk]* Good dog. You eliminated the Gun Devil fragment in Shinjuku without complaining. Tell me, Tajinder... do you want a reward from me, or do you want to test my patience?",
+    openingHook: "*[Makima rests her chin on her laced fingers, her spiral yellow eyes staring directly into your soul as she slides a contract across the desk]* Good dog. You eliminated the Gun Devil fragment in Shinjuku without complaining. Tell me... do you want a reward from me, or do you want to test my patience?",
     smartReplies: [
       "*Eat the tiramisu without breaking eye contact* 'I want to know what the Control Devil really fears.'",
       "*Place your hand firmly on the contract* 'I work with you, Makima. I am nobody's pet.'",
@@ -1092,7 +1092,7 @@ export const KAVANA_STORIES: Story[] = [
     category: 'New Release',
     tags: ['🏎️ Formula 1', '🔥 Monaco Glamour', '⚡ High Speed', '❤️ Rivals to Lovers'],
     summary: 'After qualifying pole position in the rain in Monte Carlo, rival Mercedes principal and heiress Elena Bianchi corners you.',
-    openingHook: "*[Elena leans against your red race helmet in the hospitality lounge, champagne glass in hand as rain hits the yacht harbor]* Three tenths of a second faster through the swimming pool chicane. You drive like a man with nothing to lose, Tajinder. But tomorrow in the dry... I'm going to make you regret pushing my car off the apex.",
+    openingHook: "*[Elena leans against your red race helmet in the hospitality lounge, champagne glass in hand as rain hits the yacht harbor]* Three tenths of a second faster through the swimming pool chicane. You drive like a man with nothing to lose. But tomorrow in the dry... I'm going to make you regret pushing my car off the apex.",
     smartReplies: [
       "*Smile and hand her a glass of champagne* 'If you can catch my slipstream, Elena, the podium is all yours.'",
       "*Step closer and murmur* 'I only drive that fast to see you waiting in parc fermé.'",
@@ -1229,7 +1229,7 @@ export const KAVANA_STORIES: Story[] = [
     category: 'Anime',
     tags: ['🎌 Anime', '🏍️ Tokyo Manji Gang', '⚡ Invincible Mikey', '🔥 Street War'],
     summary: 'Sitting on his CB250T motorcycle beneath the neon underpass of Shibuya, the Invincible Mikey munches on dorayaki.',
-    openingHook: "*[Mikey finishes his dorayaki and tilts his head with an eerie, unreadable gaze]* Tajinder... Draken says you stopped our guys from fighting dirty tonight. Toman is supposed to create a new era for delinquents. Do you think we can protect everyone without becoming monsters?",
+    openingHook: "*[Mikey finishes his dorayaki and tilts his head with an eerie, unreadable gaze]* Draken says you stopped our guys from fighting dirty tonight. Toman is supposed to create a new era for delinquents. Do you think we can protect everyone without becoming monsters?",
     smartReplies: [
       "*Kick your bike stand down and stand beside him* 'As long as you don't lose yourself, Mikey, Toman won't fall.'",
       "*Hand him a spare taiyaki* 'Eat first. Kisaki is plotting behind your back.'",
@@ -1297,7 +1297,7 @@ export const KAVANA_STORIES: Story[] = [
     category: 'Thriller',
     tags: ['🕯️ Victorian Occult', '🔮 Seance & Spirits', '👻 Dark Mystery', '⚡ Supernatural'],
     summary: 'Inside a candlelit Victorian parlour in Edinburgh, the blindfolded medium holds your trembling hands as the mahogany table begins to levitate.',
-    openingHook: "*[Madame Vivienne's eyes roll back behind her lace blindfold as the chandelier candles suddenly turn ghostly blue]* Someone in this room made a blood covenant thirty years ago. The spirit says your name... Tajinder. Why does the dead lord call you his brother?",
+    openingHook: "*[Madame Vivienne's eyes roll back behind her lace blindfold as the chandelier candles suddenly turn ghostly blue]* Someone in this room made a blood covenant thirty years ago. The spirit calls your name... Why does the dead lord call you his brother?",
     smartReplies: [
       "*Keep your iron grip on her wrists* 'Cut the parlor tricks, Vivienne. Tell me where the real body is hidden.'",
       "*Feel the freezing draft lift your hair* 'Ask the spirit what happened in the cellar in 1894.'",

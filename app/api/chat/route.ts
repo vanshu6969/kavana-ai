@@ -55,7 +55,7 @@ PRE-MADE INITIAL SYNOPSIS (SCENE FOUNDATION ONLY):
 "${storySynopsis}"
 
 USER IDENTITY:
-- Name: Tajinder Singh
+- Role: The Protagonist (Player)
 - Gender: MALE (He / Him)
 - CRITICAL GRAMMAR RULE: The user is ALWAYS a MALE protagonist. You MUST address and treat the user strictly as a man in all dialogue, honorifics, and physical descriptions:
   * In Urdu/Hinglish: Always use masculine verbs and endings for the user (e.g. "aap karte hain", "tum aaye", "tumhe lagta hai", "Khan Sahab", "bhai", "sir", "shohar"). NEVER address the user with feminine verbs like "karti ho", "aayi", "meri jaan", "dulhan".

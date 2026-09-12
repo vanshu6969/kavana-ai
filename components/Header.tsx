@@ -4,11 +4,11 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useApp } from '@/lib/context/AppContext';
-import { Sparkles, Volume2, VolumeX, Search, MessageSquare, BookOpen, ShieldCheck } from 'lucide-react';
+import { Sparkles, Volume2, VolumeX, Search, MessageSquare, BookOpen } from 'lucide-react';
 
 export default function Header() {
   const pathname = usePathname();
-  const { audioPlaying, toggleAudio, userName } = useApp();
+  const { audioPlaying, toggleAudio } = useApp();
 
   // If in a chat route, hide global header completely so chat has full screen space and its own unified header
   const isChatRoute = pathname.startsWith('/chat/');
@@ -88,33 +88,9 @@ export default function Header() {
             <Sparkles size={12} className="text-[#FF2E55]" />
             <span className="hidden sm:inline font-bold">100% FREE</span>
             <span className="text-[10px] text-white bg-[#FF2E55] px-1.5 py-0.2 rounded font-black">
-              AI CHAT
+              UNLIMITED
             </span>
           </div>
-
-          {/* Profile Avatar */}
-          <Link
-            href="/profile"
-            className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-full hover:bg-white/5 border border-transparent hover:border-white/10 transition-all group"
-            title="User Profile"
-          >
-            <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden border-2 border-rose-500/50 group-hover:border-[#FF2E55] transition-colors flex-shrink-0">
-              <img
-                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80"
-                alt={userName}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform"
-              />
-              <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-[#FF2E55] border-2 border-[#050608]"></span>
-            </div>
-            <div className="hidden lg:flex flex-col text-left">
-              <span className="text-xs font-bold text-slate-100 group-hover:text-[#FF2E55] leading-tight transition-colors">
-                {userName}
-              </span>
-              <span className="text-[10px] text-rose-400 font-medium leading-tight flex items-center gap-1">
-                <ShieldCheck size={10} /> Free VIP
-              </span>
-            </div>
-          </Link>
         </div>
       </div>
     </header>

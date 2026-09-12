@@ -31,13 +31,13 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [sessions, setSessions] = useState<UserSession[]>(DEFAULT_INITIAL_SESSIONS);
+  const [sessions, setSessions] = useState<UserSession[]>([]);
   const [stories] = useState<Story[]>(KAVANA_STORIES);
   const [activeTab, setActiveTab] = useState<string>('home');
   const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
 
-  const userName = 'TAJINDER SINGH';
-  const userEmail = 'tajinder.singh@example.com';
+  const userName = 'Protagonist';
+  const userEmail = '';
 
   useEffect(() => {
     const savedSessions = getUserSessionsLocal();
@@ -81,7 +81,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         // Create new session
         const newSession: UserSession = {
           id: `session-${storyId}-${Date.now()}`,
-          userId: 'tajinder-singh-001',
+          userId: 'user-protagonist',
           storyId,
           storyTitle: story?.title || 'Interactive Scenario',
           characterName: story?.characterName || 'Character',
