@@ -225,6 +225,8 @@ Return ONLY a valid JSON object with this exact structure and NO markdown around
       openingHook: generatedData.openingHook || `*[Steps closer]* "The story begins with you."`,
       smartReplies: Array.isArray(generatedData.smartReplies) && generatedData.smartReplies.length > 0
         ? generatedData.smartReplies
+            .filter((r: any) => typeof r === 'string' && r.trim().length > 4 && !r.includes('initialMood') && !r.includes('systemPersona'))
+            .slice(0, 3)
         : [
             "*Step forward boldly*",
             "*Challenge the character calmly*",
