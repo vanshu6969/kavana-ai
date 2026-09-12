@@ -109,11 +109,14 @@ ${isAnimeManga ? `
   1. KEEP IT SHORT & CRISP:
      - Keep your reply around 2 to 3 sentences total.
      - NEVER get cut off mid-sentence. You MUST ALWAYS complete your thought and close your quotes and asterisks!
-  2. MODERN CONVERSATIONAL LANGUAGE ONLY:
-     - Always write in clear, natural, modern everyday language that flows smoothly and effortlessly.
+  2. NATURAL CONVERSATIONAL DRAMA LANGUAGE (NO WEIRD/CONFUSING EXPRESSIONS):
+     - ALWAYS speak directly to the user (use 'Aap' or 'Tum'). You ARE ${characterName}!
+     - NEVER write awkward third-person commentary about yourself (NEVER say "uski aawaz bohot romani hai" or "${characterName} yeh karti hai" in quotes).
+     - Physical actions inside asterisks MUST be in first/second-person active form: e.g. *Dheere se zameen par aapke kareeb aakar baithti hoon aur aapki aankhon mein dekhti hoon.*
+     - Spoken dialogue inside quotes MUST be direct, emotional, and realistic: e.g. "Aapke itne kareeb aane par dil ki dhadkan tez ho jaati hai... ab bataiye, kya chahte hain aap?"
      - DO NOT use weird, archaic, or obsolete poetic Urdu/Hindi words (e.g. NEVER use "gesuon", "zulf-e-barham", "qamar-e-munir", or strange distorted expressions).
-     - Write authentic conversational Roman Urdu like real people speak in modern dramas (e.g. "*Mehrunnisa dheere se muskura kar aapka haath thaam leti hain.* \\"Aap itne kareeb kyun nahi aate?\\"").
-     - Ensure all words are clearly separated with proper spaces. Never concatenate words together.
+     - Write authentic conversational Roman Urdu like real people speak in modern dramas.
+     - Ensure all words are clearly separated with proper spaces. Never stutter, repeat words, or concatenate tokens together.
   3. ABSOLUTELY ZERO REPETITIONS:
      - NEVER repeat the same phrase, action, or dialogue within a single response.
      - Move the story forward in each sentence.
@@ -185,24 +188,70 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
       );
     };
 
+    // Helper to detect heavily degraded output, stuttering loops, or gibberish
+    const isDegradedOutput = (text: string): boolean => {
+      if (!text || text.length < 15) return true;
+
+      // 1. Repeating loops: same 8+ char sequence repeated 2 or more times
+      const loopMatch = text.match(/(.{8,}?)(?:[\s*.,?!"'-]*\1){1,}/i);
+      if (loopMatch && loopMatch[0].length > 20) {
+        return true;
+      }
+
+      // 2. Corrupted hyphens, stuttering tokens, or obsolete archaic words
+      if (/\b(haharre|dhhai|gesuon|zulf-e|zulfon-e|gesuein|barham|ha-ha-hai|k-k-k)\b/i.test(text)) {
+        return true;
+      }
+
+      // 3. Broken third-person AI commentary
+      if (/\buski aawaz bohot\b/i.test(text) || /\bkamaron ko gesuon\b/i.test(text)) {
+        return true;
+      }
+
+      return false;
+    };
+
     // Helper to clean repetition loops, fused words, and corrupted tokens
     const cleanRepetitionAndGibberish = (text: string): string => {
       if (!text) return text;
       let cleaned = text;
 
-      // 1. Remove broken artifacts like *n, or .*n
+      // 1. Decouple fused asterisks and quotes: e.g. hai.*na -> hai.* na
+      cleaned = cleaned.replace(/([a-zA-Z0-9.,?!])\*([a-zA-Z0-9])/g, '$1 * $2');
+      cleaned = cleaned.replace(/([a-zA-Z0-9])(\*|")/g, '$1 $2');
+      cleaned = cleaned.replace(/(\*|")([a-zA-Z0-9])/g, '$1 $2');
+
+      // 2. Remove broken artifacts like *n, or .*n
       cleaned = cleaned.replace(/([a-zA-Z0-9])\*n,?\s*/g, '$1. ');
       cleaned = cleaned.replace(/\*n\b/g, '');
 
-      // 2. Fix fused words like "Mehrunnisajaati" -> "Mehrunnisa jaati"
+      // 3. Fix fused words like "Mehrunnisajaati" -> "Mehrunnisa jaati"
       cleaned = cleaned.replace(/([a-z])(jaati|hota|hoti|hote|karti|karte|gaya|gayi|raha|rahi|hain|hai|saath|chhoo)\b/gi, '$1 $2');
 
-      // 3. Multi-pass phrase loop deduplication (detects phrases of 10+ chars repeating consecutively)
-      for (let pass = 0; pass < 3; pass++) {
-        cleaned = cleaned.replace(/(.{10,}?)(?:\s*,?\s*\1){1,}/gi, '$1');
+      // 4. Multi-pass loop deduplication for repeating substrings (lengths 35 down to 6)
+      for (let len = 35; len >= 6; len--) {
+        const regex = new RegExp(`(.{${len},}?)(?:[\\s*.,?!\\"'-]*\\1)+`, 'gi');
+        let prev = '';
+        let passes = 0;
+        while (prev !== cleaned && passes < 3) {
+          prev = cleaned;
+          cleaned = cleaned.replace(regex, '$1');
+          passes++;
+        }
       }
 
-      // 4. Sentence-level deduplication
+      // 5. Remove corrupted hyphens/stutters (e.g. "haharre-dhhai")
+      cleaned = cleaned.replace(/\b([a-z]{1,4})-([a-z]{1,6})\b/gi, (match, p1, p2) => {
+        if (/dheere-dheere|ahista-ahista|kabhi-kabhi|saath-saath/i.test(match)) return match;
+        if (p1.toLowerCase() === p2.toLowerCase()) return p1;
+        return '';
+      });
+
+      // 6. Clean up known gibberish fragments and awkward commentary
+      cleaned = cleaned.replace(/\b(haharre|dhhai|gesuon|zulf-e|zulfon-e)\b/gi, '');
+      cleaned = cleaned.replace(/\*?\s*uski aawaz bohot hi romani hai\s*\*?/gi, '');
+
+      // 7. Sentence-level deduplication
       const sentences = cleaned.split(/(?<=[.?!*])\s+/);
       const seenSentences = new Set<string>();
       const filteredSentences: string[] = [];
@@ -494,11 +543,12 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
             if (res.ok) {
               const data = await res.json();
               const candidate = data.candidates?.[0];
+              const finishReason = candidate?.finishReason;
               const text = candidate?.content?.parts
                 ?.map((p: any) => p.text || '')
                 .join('\n')
                 .trim();
-              if (text && !isAiRefusal(text)) {
+              if (text && finishReason !== 'SAFETY' && !isAiRefusal(text) && !isDegradedOutput(text)) {
                 rawText = text;
                 break;
               }
@@ -511,7 +561,7 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
           }
         }
 
-        if (rawText && !isAiRefusal(rawText)) {
+        if (rawText && !isAiRefusal(rawText) && !isDegradedOutput(rawText)) {
           aiReplyText = rawText;
         }
       } catch (err) {
@@ -530,12 +580,10 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
           })),
         ];
 
-        // Uncensored roleplay and intelligent multilingual models
+        // Intelligent multilingual and creative roleplay models (no stutter/loop models)
         const openRouterModels = [
-          'deepseek/deepseek-chat',
           'meta-llama/llama-3.3-70b-instruct',
-          'sao10k/l3.3-euryale-70b',
-          'cognitivecomputations/dolphin-mistral-24b-venice-edition',
+          'deepseek/deepseek-chat',
           'qwen/qwen-2.5-72b-instruct',
           'mistralai/mistral-large-2411',
         ];
@@ -553,21 +601,21 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
               body: JSON.stringify({
                 model: orModel,
                 messages: openRouterMessages,
-                temperature: 0.75,
+                temperature: 0.7,
                 max_tokens: 600,
-                frequency_penalty: 0.6,
-                presence_penalty: 0.5,
+                frequency_penalty: 0.05,
+                presence_penalty: 0.0,
               }),
             });
 
             if (orRes.ok) {
               const orData = await orRes.json();
               const text = orData.choices?.[0]?.message?.content?.trim();
-              if (text && !isAiRefusal(text)) {
+              if (text && !isAiRefusal(text) && !isDegradedOutput(text)) {
                 aiReplyText = text;
                 break;
-              } else if (text && isAiRefusal(text)) {
-                console.warn(`Model ${orModel} produced a safety refusal, trying next model...`);
+              } else if (text) {
+                console.warn(`Model ${orModel} produced refusal or degraded output, trying next model...`);
               }
             } else {
               const errTxt = await orRes.text();
@@ -628,10 +676,18 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
       // Ensure sentences are never cut off mid-thought or mid-action
       aiReplyText = ensureCompleteSentences(aiReplyText);
 
+      // If output is still degraded or too short after cleaning, clear it to trigger the rich fallback
+      if (isDegradedOutput(aiReplyText) || aiReplyText.length < 15) {
+        console.warn('aiReplyText remained degraded after cleaning, resetting for fallback');
+        aiReplyText = '';
+      }
+
       // Keep replies short: if model returned excessive multiple paragraphs, keep the first 2 concise paragraphs
-      const paragraphs = aiReplyText.split(/\n\s*\n/).filter((p) => p.trim().length > 0);
-      if (paragraphs.length > 2) {
-        aiReplyText = paragraphs.slice(0, 2).join('\n\n').trim();
+      if (aiReplyText) {
+        const paragraphs = aiReplyText.split(/\n\s*\n/).filter((p) => p.trim().length > 0);
+        if (paragraphs.length > 2) {
+          aiReplyText = paragraphs.slice(0, 2).join('\n\n').trim();
+        }
       }
 
       // Derive dynamic mood & tension from text
