@@ -19,13 +19,11 @@ export default function SmartReplyChips({
   onClose,
 }: SmartReplyChipsProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isDismissed, setIsDismissed] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
-  if (!replies || replies.length === 0 || isDismissed) return null;
+  if (!replies || replies.length === 0) return null;
 
   const handleClose = () => {
-    setIsDismissed(true);
     if (onClose) {
       onClose();
     }

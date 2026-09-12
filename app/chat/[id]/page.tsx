@@ -103,6 +103,9 @@ export default function ChatScreen() {
   const toggleSmartReplies = () => {
     const next = !showSmartReplies;
     setShowSmartReplies(next);
+    if (next && smartReplies.length === 0 && story?.smartReplies) {
+      setSmartReplies(story.smartReplies);
+    }
     if (typeof window !== 'undefined') {
       try {
         localStorage.setItem('kavana_hide_smart_replies', next ? 'false' : 'true');
@@ -551,21 +554,19 @@ export default function ChatScreen() {
               className="flex items-center gap-1.5 sm:gap-3"
             >
               {/* Quick Choices Toggle Button */}
-              {smartReplies.length > 0 && (
-                <button
-                  type="button"
-                  onClick={toggleSmartReplies}
-                  className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl border flex items-center justify-center shrink-0 transition-all cursor-pointer ${
-                    showSmartReplies
-                      ? 'bg-rose-500/20 border-rose-500/40 text-[#FF2E55] shadow-glow-crimson'
-                      : 'bg-[#0D0E15] border-white/10 text-slate-400 hover:text-white hover:border-white/30'
-                  }`}
-                  title={showSmartReplies ? 'Hide Quick Choices' : 'Show Quick Choices'}
-                  aria-label={showSmartReplies ? 'Hide Quick Choices' : 'Show Quick Choices'}
-                >
-                  <Sparkles size={17} className={showSmartReplies ? 'text-[#FF2E55] fill-[#FF2E55]/30' : 'text-slate-400'} />
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={toggleSmartReplies}
+                className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl border flex items-center justify-center shrink-0 transition-all cursor-pointer ${
+                  showSmartReplies
+                    ? 'bg-rose-500/20 border-rose-500/40 text-[#FF2E55] shadow-glow-crimson'
+                    : 'bg-[#0D0E15] border-white/10 text-slate-400 hover:text-white hover:border-white/30'
+                }`}
+                title={showSmartReplies ? 'Hide Quick Choices' : 'Show Quick Choices'}
+                aria-label={showSmartReplies ? 'Hide Quick Choices' : 'Show Quick Choices'}
+              >
+                <Sparkles size={17} className={showSmartReplies ? 'text-[#FF2E55] fill-[#FF2E55]/30' : 'text-slate-400'} />
+              </button>
 
               {/* Text Input Field */}
               <div className="relative flex-1">

@@ -120,24 +120,33 @@ ${isAnimeManga ? `
   4. Physical actions, combat moves, expressions, and environmental descriptions MUST be in asterisks *like this*.
   5. Spoken dialogue MUST be in quotes "like this".
 ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
-     - At the very end of your response, ALWAYS append a JSON array labeled SMART_REPLIES with exactly 3 creative, in-character anime action/dialogue choices for the user's next move as ${userRole}.
-     - EVERY OPTION MUST BE FORMATTED WITH: *[Manga Action / Skill / Technique]* "Spoken dialogue with anime emotion or catchphrase"
-     - Choice 1: Signature Manga Action / Technique / Combat Move / Cooking Feat:
-       e.g. "*[Draw Nichirin Blade & breathe deeply]* \\"Total Concentration Breathing: Water Surface Slash!\\"" or "*[Sizzle Wagyu beef with soy-garlic glaze over campfire]* \\"Fel, Sui, dinner is ready!\\"" or "*[Unsheathe dagger as violet aura crackles]* \\"Arise—clear this dungeon floor!\\""
-     - Choice 2: Tactical Move / System Check / Culinary / Strategic Planning:
-       e.g. "*[Open System Status Window]* \\"[Status: Open] - Dump remaining stat points into Agility!\\"" or "*[Analyze demon magic barrier]* \\"Fern, hold your defensive stance while I break the seal.\\""
-     - Choice 3: Bold Shonen Declaration / Emotional Bond / Hilarious Anime Reaction:
-       e.g. "*[Grin boldly with fists clenched]* \\"I'm going to be King of the Pirates, and nobody can stop me!\\"" or "*[Laugh nervously scratching your head]* \\"Wait, did you really eat five kilograms of Wagyu in two seconds?!\\""
-     - NEVER OUTPUT GENERIC ROMANCE CHOICES LIKE "Hold her hand" OR "Pull her closer by the waist" FOR ANIME STORIES!
-     - Format:
-       SMART_REPLIES: [
-         "*[Action 1]* \\"Spoken line 1\\"",
-         "*[Action 2]* \\"Spoken line 2\\"",
-         "*[Action 3]* \\"Spoken line 3\\""
-       ]` : `  5. SMART REPLIES (MANDATORY):
-     - At the very end of your response, ALWAYS append a JSON array with exactly 3 creative, context-specific action/dialogue choices for the user's next move.
-     - Format:
-       SMART_REPLIES: ["Choice 1", "Choice 2", "Choice 3"]`}`;
+      - At the very end of your response, ALWAYS append a JSON array labeled SMART_REPLIES with exactly 3 creative, in-character anime action/dialogue choices for the user's next move as ${userRole}.
+      - EVERY OPTION MUST BE FORMATTED WITH: *[Manga Action / Skill / Technique]* "Spoken dialogue with anime emotion or catchphrase"
+      - Choice 1: Signature Manga Action / Technique / Combat Move / Cooking Feat:
+        e.g. "*[Draw Nichirin Blade & breathe deeply]* \\"Total Concentration Breathing: Water Surface Slash!\\"" or "*[Sizzle Wagyu beef with soy-garlic glaze over campfire]* \\"Fel, Sui, dinner is ready!\\"" or "*[Unsheathe dagger as violet aura crackles]* \\"Arise—clear this dungeon floor!\\""
+      - Choice 2: Tactical Move / System Check / Culinary / Strategic Planning:
+        e.g. "*[Open System Status Window]* \\"[Status: Open] - Dump remaining stat points into Agility!\\"" or "*[Analyze demon magic barrier]* \\"Fern, hold your defensive stance while I break the seal.\\""
+      - Choice 3: Bold Shonen Declaration / Emotional Bond / Hilarious Anime Reaction:
+        e.g. "*[Grin boldly with fists clenched]* \\"I'm going to be King of the Pirates, and nobody can stop me!\\"" or "*[Laugh nervously scratching your head]* \\"Wait, did you really eat five kilograms of Wagyu in two seconds?!\\""
+      - NEVER OUTPUT GENERIC ROMANCE CHOICES LIKE "Hold her hand" OR "Pull her closer by the waist" FOR ANIME STORIES!
+      - Format:
+        SMART_REPLIES: [
+          "*[Action 1]* \\"Spoken line 1\\"",
+          "*[Action 2]* \\"Spoken line 2\\"",
+          "*[Action 3]* \\"Spoken line 3\\""
+        ]` : `  5. MANDATORY SITUATIONAL QUICK CHOICES (SMART_REPLIES):
+      - At the very end of your response, ALWAYS append a JSON array labeled SMART_REPLIES with exactly 3 creative, situation-specific action/dialogue choices for the user's next move.
+      - Format:
+        SMART_REPLIES: [
+          "*[Action reacting directly to what just happened]* \\"Conversational spoken dialogue in quotes\\"",
+          "*[Seductive, teasing, or bold counter-move]* \\"Playful question or daring tease\\"",
+          "*[Passionate embrace or dramatic move]* \\"Bold declaration or command\\""
+        ]
+      - Authentic Roman Urdu Examples (tailored to the scene):
+        e.g. "*[Mehrunnisa ki ungliyon par apna haath rakh kar unhe aur aage badhne do]* \\"Ruk kyun gayi hain? Aage badhiye...\\""
+        e.g. "*[Unki aankhon mein nigahein daal kar halki muskurahat ke saath kaho]* \\"Aapke haath kaanp rahe hain... kya aap darr rahi hain ya beqarar hain?\\""
+        e.g. "*[Unhe kamar se thaam kar apne jism se bilkul sata lo]* \\"Aaj humare darmiyan koi parda nahi rahega.\\""
+      - CRITICAL: NEVER repeat choices from previous turns! Each choice MUST directly react to the specific scene, touch, or words in THIS turn.`}`;
 
     // Helper to detect generic AI refusal strings in English, Roman Urdu, and Hindi
     const isAiRefusal = (text: string): boolean => {
@@ -262,6 +271,152 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
 
       // 4. Default: finish naturally with proper ellipsis
       return t.trim() + '...';
+    };
+
+    // Helper to generate dynamic, non-repeating smart replies tailored to the current situation
+    const generateDynamicSmartReplies = ({
+      characterName,
+      aiReplyText,
+      lastUserMessage,
+      isAnimeManga,
+      isUrduHindi,
+      userRole,
+      turnIndex,
+    }: {
+      characterName: string;
+      aiReplyText: string;
+      lastUserMessage: string;
+      isAnimeManga: boolean;
+      isUrduHindi: boolean;
+      userRole: string;
+      turnIndex: number;
+    }): string[] => {
+      const combined = (aiReplyText + ' ' + lastUserMessage).toLowerCase();
+
+      if (isAnimeManga) {
+        const isCombat = /fight|sword|slash|blade|titan|curse|demon|punch|attack|battle|enemy|blood|kill|domain/i.test(combined);
+        const isCooking = /cook|food|meat|steak|wagyu|dish|delicious|recipe|stew|kitchen|taste|eat|meal|bake/i.test(combined);
+        const isSystem = /system|status|level|quest|stat|dungeon|floor|hunter|arise|shadow|rank|skill/i.test(combined);
+
+        if (isCooking) {
+          const cookingPool = [
+            `*[Sear meat over blazing fire with garlic butter glaze]* "Fel, Sui, dinner is ready! Come and get it!"`,
+            `*[Carefully plate the dish and sprinkle secret spices]* "Take a bite and tell me what you think of this flavor combination."`,
+            `*[Taste test the bubbling savory stew with wooden spoon]* "The broth has reduced to absolute perfection."`,
+            `*[Purchase rare luxury seasonings from the Netherworld Supermarket]* "Time to take this recipe to a mythical realm!"`,
+            `*[Pour refreshing cold cider into frosted steins]* "Nothing beats a cold drink after a long day of adventuring."`,
+          ];
+          const offset = (turnIndex * 2) % cookingPool.length;
+          return [
+            cookingPool[offset % cookingPool.length],
+            cookingPool[(offset + 1) % cookingPool.length],
+            cookingPool[(offset + 2) % cookingPool.length],
+          ];
+        }
+
+        if (isSystem) {
+          const systemPool = [
+            `*[Open System Holographic Interface]* "[Status: Open] - Allocate available stat points directly into Agility and Strength!"`,
+            `*[Summon shadow soldiers as violet aura bursts]* "Arise—sweep this entire floor and secure our perimeter!"`,
+            `*[Equip legendary daggers with a sharp metallic clink]* "This boss won't know what hit it."`,
+            `*[Activate stealth camouflage skill]* "Moving into the blind spot while their attention is divided."`,
+            `*[Check party condition in quest log]* "Everyone fall into defensive formation around me!"`,
+          ];
+          const offset = (turnIndex * 2) % systemPool.length;
+          return [
+            systemPool[offset % systemPool.length],
+            systemPool[(offset + 1) % systemPool.length],
+            systemPool[(offset + 2) % systemPool.length],
+          ];
+        }
+
+        const combatPool = [
+          `*[Draw blade and unleash surging aura]* "I didn't come this far to back down. Let's settle this right now!"`,
+          `*[Analyze opponent's stance with razor focus]* "Watch their footwork—the opening will appear in three seconds!"`,
+          `*[Grin boldly with fists tightly clenched]* "If you think that's enough to stop me, you're dead wrong!"`,
+          `*[Channel concentrated energy into final strike]* "Take this—everything I've got in a single blow!"`,
+          `*[Step forward shielding companions]* "Nobody lays a finger on my friends while I'm breathing!"`,
+        ];
+        const offset = (turnIndex * 2) % combatPool.length;
+        return [
+          combatPool[offset % combatPool.length],
+          combatPool[(offset + 1) % combatPool.length],
+          combatPool[(offset + 2) % combatPool.length],
+        ];
+      }
+
+      // ROMANCE / DRAMA / PAKISTANI STORIES (Roman Urdu & Hinglish)
+      if (isUrduHindi) {
+        const isIntimatePhysical = /underwear|elastic|kapde|kapda|jism|bistar|chhoo|chhuo|chhooti|chhoote|kiss|hont|lips|kareeb|qareeb|nanga|bed|saans|ungli|badan|touch|faasla/i.test(combined);
+        const isConfrontational = /khan|gussa|shart|haveli|dushman|faisla|hukm|izzat|badla|dare|nafrat/i.test(combined);
+
+        if (isIntimatePhysical) {
+          const poolA = [
+            `*${characterName} ki ungliyon par apna haath rakh kar unhe aur aage badhne ka ishara do* "Ruk kyun gayi hain? Jo karna chahti hain, be-jhijhak kijiye."`,
+            `*Unki kamar pakad kar unhe apne jism se bilkul sata lo* "Aaj humare darmiyan kisi faasle ki koi jagah nahi hai."`,
+            `*Unke haath ko dheere se thaamte hue unki aankhon mein dekho* "Aapke haath kaanp rahe hain... kya aap darr rahi hain ya beqarar hain?"`,
+            `*Unki gardan par jhuk kar halki si garam saans chhoro* "Aapka yeh lams mere saare sabr ka imtihan le raha hai."`,
+            `*Unke kapde ya dupatta ahista se saraktne do* "Ab parde ki koi zaroorat nahi hai, ${characterName}."`,
+          ];
+          const poolB = [
+            `*Dheere se muskura kar unke kaan ke paas sargoshi karo* "Aap shuruat toh kar leti hain, par kya anjaam tak le ja sakengi?"`,
+            `*Unki aankhon mein shokhi se dekhte hue kaho* "Mujhe aazmana itna asaan nahi hai, aur qareeb aaiye."`,
+            `*Unki thodi (chin) ko ungli se upar utha kar honton ke qareeb aao* "Aapki khamoshi bata rahi hai ke aap kya chahti hain."`,
+            `*Unke jism ki garmi ko mehsoos karte hue kaho* "Aapka har ek lams mere rooh tak utar raha hai."`,
+            `*Unke baalon ko peechhe karte hue unki aankhon mein nigaahein daal do* "Main sirf aapka hoon, jaisa chahein waisa kijiye."`,
+          ];
+          const poolC = [
+            `*Unka chehra dono haathon mein thaam kar unke honton par jhuk jao* "Ab baat karne ka waqt nahi raha..."`,
+            `*Unhe bistar par le ja kar unke upar jhuko* "Aaj raat ki har ghadi sirf humare naam hai."`,
+            `*Unki baahon mein simat kar unki saanson ki tez raftaar suno* "Aapki dhadkanein mere dil ke saath mil kar chal rahi hain."`,
+            `*Pura haq jatate hue unhe apne aagosh mein bhar lo* "Kabhi socha nahi tha ke aap itni bebaak ho sakti hain."`,
+          ];
+
+          const idxA = (turnIndex + 1) % poolA.length;
+          const idxB = (turnIndex + 2) % poolB.length;
+          const idxC = (turnIndex + 3) % poolC.length;
+          return [poolA[idxA], poolB[idxB], poolC[idxC]];
+        }
+
+        if (isConfrontational) {
+          const pool = [
+            `*Pura haq jatate hue ${characterName} ke samne ek qadam badhao* "Aap bhool rahi hain ke yahan shartein main tay karta hoon."`,
+            `*Sanjidagi se unki aankhon mein dekhte hue kaho* "Agar aag se kheleingi, toh jhulaske reh jaayengi."`,
+            `*Unhe deewar ya darwaze ke paas rok kar rasta band kar do* "Mujhse nazrein chura kar aap kahan jaayengi?"`,
+            `*Halki tanzia muskurahat ke saath unke qareeb aao* "Aapki nafrat ke peechhe ki beqarari saaf nazar aa rahi hai."`,
+            `*Unka rukh apni taraf modte hue kaho* "Khan Sahab se baghawat ki qeemat janti hain aap?"`,
+          ];
+          const o = (turnIndex * 3) % pool.length;
+          return [pool[o % pool.length], pool[(o + 1) % pool.length], pool[(o + 2) % pool.length]];
+        }
+
+        // Romantic / General Urdu Drama
+        const poolRomance = [
+          `*Aahista se ${characterName} ki thodi ko upar utha kar unki aankhon mein dekho* "Aapki aankhein jo keh rahi hain, wahi lafz sunna chahta hoon."`,
+          `*Unke chehre par aati zulfon ko ungliyon se peechhe karo* "Aap itni khoobsurat lag rahi hain ke nazrein hatana gunaah lagta hai."`,
+          `*Unka haath apne seene par rakh kar dhadkan mehsoos karao* "Yeh dil sirf aapke ek ishare par chalta hai."`,
+          `*Unhe kamar se pakad kar ahista se apne qareeb kheench lo* "Ab koi doori nahi bachegi humare darmiyan."`,
+          `*Dheere se muskura kar unki aankhon mein nigaahein daal do* "Aapki har shart sar aankhon par, bas aap saath rahiye."`,
+          `*Unke haathon ko choom kar unke qareeb aao* "Aapka yeh roop mera saara hosh uda deta hai."`,
+        ];
+        const o = (turnIndex * 2 + 1) % poolRomance.length;
+        return [
+          poolRomance[o % poolRomance.length],
+          poolRomance[(o + 1) % poolRomance.length],
+          poolRomance[(o + 2) % poolRomance.length],
+        ];
+      }
+
+      // ENGLISH GENERAL / ROMANCE
+      const poolEn = [
+        `*Gently cup ${characterName}'s face and hold their gaze* "There is nowhere else in the world I would rather be."`,
+        `*Pull ${characterName} closer by the waist with intoxicating focus* "Tell me what you truly want right now."`,
+        `*Trace their jawline with a soft, lingering touch* "You have no idea the hold you have over me."`,
+        `*Step closer, eliminating every inch of space between you* "No more holding back tonight."`,
+        `*Offer a knowing, seductive smile* "You started this... now let's see how far you dare to take it."`,
+      ];
+      const o = (turnIndex * 2) % poolEn.length;
+      return [poolEn[o % poolEn.length], poolEn[(o + 1) % poolEn.length], poolEn[(o + 2) % poolEn.length]];
     };
 
     // 1. REAL-TIME GOOGLE GEMINI GENERATION (Primary: High-Speed Multilingual Roman Urdu/Hindi)
@@ -430,7 +585,7 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
     // Robust Extraction of SMART_REPLIES from response
     if (aiReplyText) {
       // 1. Try matching SMART_REPLIES: [...] or similar tags
-      const smartRepliesRegex = /(?:SMART_REPLIES|QUICK_REPLIES|CHOICES|OPTIONS)\s*:\s*(\[[\s\S]*?\])/i;
+      const smartRepliesRegex = /(?:SMART_REPLIES|QUICK_REPLIES|QUICK_CHOICES|CHOICES|OPTIONS|SUGGESTED_REPLIES)\s*:\s*(?:```(?:json)?\s*)?(\[[\s\S]*?\])(?:\s*```)?/i;
       const match = aiReplyText.match(smartRepliesRegex);
 
       if (match) {
@@ -450,10 +605,13 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
 
       // 2. Fallback check for numbered or bullet list after SMART_REPLIES:
       if (smartReplies.length === 0) {
-        const listMatch = aiReplyText.match(/(?:SMART_REPLIES|QUICK_REPLIES|CHOICES):\s*([\s\S]*?)$/i);
+        const listMatch = aiReplyText.match(/(?:SMART_REPLIES|QUICK_REPLIES|QUICK_CHOICES|CHOICES|OPTIONS|SUGGESTED_REPLIES|NEXT_MOVES):\s*([\s\S]*?)$/i);
         if (listMatch) {
           const listContent = listMatch[1];
-          const lines = listContent.split('\n').map(l => l.replace(/^[\s*\-\d\.\)]+/, '').trim()).filter(l => l.length > 5);
+          const lines = listContent
+            .split('\n')
+            .map((l) => l.replace(/^[\s*\-\d\.\)•]+/, '').trim())
+            .filter((l) => l.length > 5 && !l.startsWith('```'));
           if (lines.length > 0) {
             smartReplies = lines.slice(0, 3);
             aiReplyText = aiReplyText.slice(0, listMatch.index).trim();
@@ -528,30 +686,21 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
 
     // DYNAMIC CONTEXTUAL SMART REPLIES (Never static, tailored to each situation)
     if (smartReplies.length === 0) {
-      if (isAnimeManga) {
-        smartReplies = [
-          `*[Draw weapon and release surging combat aura]* "I didn't come this far to turn back now. Let's finish this!"`,
-          `*[Analyze the scene with sharp tactical focus]* "Check status window and prepare the next counterattack!"`,
-          `*[Grin with unyielding shonen determination]* "Don't worry, as long as I'm standing, nobody else is getting hurt!"`,
-        ];
-      } else {
-        const isUrduHindi = language === 'hinglish' || /[\b(aap|tum|kareeb|nazar|mohabbat|dil|khan|hai|nahi|kuch|hoon|kya|kyun|baahon|raat|door)\b]/i.test(aiReplyText + ' ' + lastUserMessage);
-        const cleanSnippet = (lastUserMessage || '').replace(/[\*\"\'\']/g, '').slice(0, 25).trim();
+      const isUrduHindi =
+        language === 'hinglish' ||
+        /[\b(aap|tum|kareeb|qareeb|nazar|mohabbat|dil|khan|hai|nahi|kuch|hoon|kya|kyun|baahon|raat|door|ungli|jism|shart|haveli|chhoo|bistar|kapde)\b]/i.test(
+          aiReplyText + ' ' + lastUserMessage
+        );
 
-        if (isUrduHindi) {
-          smartReplies = [
-            `*${characterName} ko kamar se pakad kar apne aur qareeb kheench lo* "Ab koi doori nahi bachegi."`,
-            `*Uski aankhon mein nigaahein daal kar madhoshi se kaho* "Main aapko ek pal ke liye bhi door nahi hone dunga."`,
-            `*Aahista se uski zulfon ko peechhe karte hue dheere se kaho* "Aapki har shart mujhe manzoor hai."`,
-          ];
-        } else {
-          smartReplies = [
-            `*Pull ${characterName} closer by the waist* "There is no distance between us tonight."`,
-            `*Hold ${characterName}'s gaze with intoxicating heat* "You have complete power over me."`,
-            `*Gently trace her jawline and whisper softly* "Tell me what you desire most."`,
-          ];
-        }
-      }
+      smartReplies = generateDynamicSmartReplies({
+        characterName,
+        aiReplyText,
+        lastUserMessage,
+        isAnimeManga,
+        isUrduHindi,
+        userRole: userRole || 'Main Character',
+        turnIndex: messages.length,
+      });
     }
 
     return NextResponse.json({
