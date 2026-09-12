@@ -3,10 +3,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { useApp } from '@/lib/context/AppContext';
-import { MessageSquare, Sparkles, ChevronRight, PlusCircle, ArrowRight, Play } from 'lucide-react';
+import { MessageSquare, Sparkles, ChevronRight, PlusCircle, ArrowRight, Play, Trash2 } from 'lucide-react';
 
 export default function ChatsPage() {
-  const { sessions } = useApp();
+  const { sessions, deleteSession } = useApp();
 
   return (
     <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-24 space-y-6">
@@ -57,56 +57,82 @@ export default function ChatsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {sessions.map((session) => {
             return (
-              <Link
+              <div
                 key={session.id}
-                href={`/chat/${session.storyId}`}
-                className="flex items-center gap-4 p-4 rounded-2xl bg-[#0D0E15] border border-white/[0.08] hover:border-[#FF2E55]/60 hover:bg-[#151722] transition-all duration-200 group shadow-lg hover:-translate-y-0.5"
+                className="flex items-center gap-4 p-4 rounded-2xl bg-[#0D0E15] border border-white/[0.08] hover:border-[#FF2E55]/60 hover:bg-[#151722] transition-all duration-200 group shadow-lg"
               >
-                {/* Circular Character Thumbnail with Online Indicator */}
-                <div className="relative flex-shrink-0">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-[#FF2E55] transition-colors shadow-md">
-                    <img
-                      src={session.avatarUrl}
-                      alt={session.storyTitle}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-                  </div>
-                  <span className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-[#FF2E55] border-2 border-[#050608] shadow-glow-crimson">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF2E55] opacity-60"></span>
-                  </span>
-                </div>
-
-                {/* Chat Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <h4 className="text-base font-extrabold text-white group-hover:text-[#FF5C7A] truncate transition-colors">
-                      {session.storyTitle}
-                    </h4>
-                    <span className="text-xs font-semibold text-slate-400 flex-shrink-0 ml-2">
-                      {session.timestamp || 'Just now'}
+                {/* Clickable Area */}
+                <Link
+                  href={`/chat/${session.storyId}`}
+                  className="flex items-center gap-4 flex-1 min-w-0"
+                >
+                  {/* Circular Character Thumbnail with Online Indicator */}
+                  <div className="relative flex-shrink-0">
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-[#FF2E55] transition-colors shadow-md">
+                      <img
+                        src={session.avatarUrl}
+                        alt={session.storyTitle}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                    <span className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-[#FF2E55] border-2 border-[#050608] shadow-glow-crimson">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF2E55] opacity-60"></span>
                     </span>
                   </div>
 
-                  <div className="text-xs font-bold text-rose-300/90 mb-1 truncate flex items-center gap-1.5">
-                    <span>{session.characterName}</span>
-                    <span className="text-slate-600">•</span>
-                    <span className="text-[11px] text-[#FF2E55] font-normal">Active Memory</span>
+                  {/* Chat Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <h4 className="text-base font-extrabold text-white group-hover:text-[#FF5C7A] truncate transition-colors">
+                        {session.storyTitle}
+                      </h4>
+                      <span className="text-xs font-semibold text-slate-400 flex-shrink-0 ml-2">
+                        {session.timestamp || 'Just now'}
+                      </span>
+                    </div>
+
+                    <div className="text-xs font-bold text-rose-300/90 mb-1 truncate flex items-center gap-1.5">
+                      <span>{session.characterName}</span>
+                      <span className="text-slate-600">•</span>
+                      <span className="text-[11px] text-[#FF2E55] font-normal">Active Memory</span>
+                    </div>
+
+                    {/* Last message preview snippet */}
+                    <p className="text-xs text-slate-400 italic truncate font-sans group-hover:text-slate-300 transition-colors">
+                      {session.lastMessagePreview ||
+                        (session.messages.slice(-1)[0]?.text
+                          ? session.messages.slice(-1)[0].text.slice(0, 42) + '...'
+                          : 'Tap to continue dialogue...')}
+                    </p>
                   </div>
+                </Link>
 
-                  {/* Last message preview snippet */}
-                  <p className="text-xs text-slate-400 italic truncate font-sans group-hover:text-slate-300 transition-colors">
-                    {session.lastMessagePreview ||
-                      (session.messages.slice(-1)[0]?.text
-                        ? session.messages.slice(-1)[0].text.slice(0, 42) + '...'
-                        : 'Tap to continue dialogue...')}
-                  </p>
-                </div>
+                {/* Card Actions: Delete & Open */}
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (confirm(`Delete conversation history with ${session.characterName}?`)) {
+                        deleteSession(session.storyId);
+                      }
+                    }}
+                    className="w-8 h-8 rounded-full bg-white/5 border border-white/10 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-400 flex items-center justify-center text-slate-400 transition-all active:scale-95"
+                    title="Delete Conversation"
+                  >
+                    <Trash2 size={14} />
+                  </button>
 
-                {/* Action Play Arrow */}
-                <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 group-hover:bg-[#FF2E55] group-hover:text-white group-hover:border-[#FF2E55] flex items-center justify-center text-slate-400 transition-all flex-shrink-0">
-                  <Play size={13} className="fill-current ml-0.5" />
+                  <Link
+                    href={`/chat/${session.storyId}`}
+                    className="w-8 h-8 rounded-full bg-white/5 border border-white/10 group-hover:bg-[#FF2E55] group-hover:text-white group-hover:border-[#FF2E55] flex items-center justify-center text-slate-400 transition-all active:scale-95"
+                    title="Open Chat"
+                  >
+                    <Play size={13} className="fill-current ml-0.5" />
+                  </Link>
                 </div>
-              </Link>
+              </div>
             );
           })}
         </div>

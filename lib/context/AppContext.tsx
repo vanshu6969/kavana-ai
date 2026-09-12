@@ -20,6 +20,7 @@ interface AppContextType {
     message: MessageItem,
     updatedContext?: Partial<ContextState>
   ) => void;
+  deleteSession: (storyId: string) => void;
   stories: Story[];
   addCustomStory: (story: Story) => void;
   activeTab: string;
@@ -162,6 +163,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  const deleteSession = (storyId: string) => {
+    setSessions((prev) => {
+      const currentSessions = prev.length > 0 ? prev : getUserSessionsLocal();
+      const filtered = currentSessions.filter((s) => s.storyId !== storyId);
+      saveUserSessionsLocal(filtered);
+      return filtered;
+    });
+  };
+
   const toggleAudio = () => {
     setAudioPlaying((prev) => !prev);
   };
@@ -173,6 +183,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         isLoaded,
         getSessionByStoryId,
         appendMessageToSession,
+        deleteSession,
         stories,
         addCustomStory,
         activeTab,

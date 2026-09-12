@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useApp } from '@/lib/context/AppContext';
 import ChatMessage from '@/components/ChatMessage';
-import SmartReplyChips from '@/components/SmartReplyChips';
 import {
   ArrowLeft,
   Send,
@@ -22,6 +21,7 @@ import {
   Heart,
   PanelLeft,
   Check,
+  Trash2,
 } from 'lucide-react';
 import { MessageItem, getUserSessionsLocal } from '@/lib/supabase';
 import { Story, KAVANA_STORIES } from '@/lib/stories-data';
@@ -37,6 +37,7 @@ export default function ChatScreen() {
     isLoaded,
     getSessionByStoryId,
     appendMessageToSession,
+    deleteSession,
   } = useApp();
 
   const story: Story =
@@ -217,6 +218,27 @@ export default function ChatScreen() {
     setShowMenu(false);
   };
 
+  const handleDeleteChat = () => {
+    if (confirm(`Are you sure you want to delete your conversation history with ${story.characterName}?`)) {
+      deleteSession(story.id);
+      const initialAiMsg: MessageItem = {
+        id: `msg-${Date.now()}`,
+        sender: 'ai',
+        text: story.openingHook,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+      setMessages([initialAiMsg]);
+      setSmartReplies([]);
+      setContextState({
+        location: story?.sceneContext?.location || 'Private Suite',
+        empireControl: story?.sceneContext?.empireControl || '100%',
+        activeNpc: story?.sceneContext?.activeNpc || story.characterName || 'Companion',
+        mood: story?.sceneContext?.mood || 'Intense',
+      });
+      setShowMenu(false);
+    }
+  };
+
   const handleMicToggle = () => {
     setIsMicActive((prev) => !prev);
     if (!isMicActive) {
@@ -259,26 +281,48 @@ export default function ChatScreen() {
           {sessions.map((sess) => {
             const isCurrent = sess.storyId === storyId;
             return (
-              <Link
+              <div
                 key={sess.id}
-                href={`/chat/${sess.storyId}`}
-                onClick={() => setShowLeftSidebar(false)}
-                className={`flex items-center gap-2.5 p-2.5 rounded-xl border transition-all ${
+                className={`flex items-center justify-between gap-2 p-2.5 rounded-xl border transition-all ${
                   isCurrent
                     ? 'bg-rose-500/15 border-rose-500/80 text-white'
                     : 'bg-[#050608] border-white/[0.08] hover:border-white/20 text-slate-300'
                 }`}
               >
-                <div className="relative w-10 h-10 rounded-full overflow-hidden border border-slate-700 flex-shrink-0">
-                  <img src={sess.avatarUrl} alt={sess.storyTitle} className="w-full h-full object-cover" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h5 className="text-xs font-bold text-white truncate">{sess.storyTitle}</h5>
-                  <p className="text-[11px] text-slate-400 truncate italic">
-                    {sess.lastMessagePreview}
-                  </p>
-                </div>
-              </Link>
+                <Link
+                  href={`/chat/${sess.storyId}`}
+                  onClick={() => setShowLeftSidebar(false)}
+                  className="flex items-center gap-2.5 flex-1 min-w-0"
+                >
+                  <div className="relative w-10 h-10 rounded-full overflow-hidden border border-slate-700 flex-shrink-0">
+                    <img src={sess.avatarUrl} alt={sess.storyTitle} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h5 className="text-xs font-bold text-white truncate">{sess.storyTitle}</h5>
+                    <p className="text-[11px] text-slate-400 truncate italic">
+                      {sess.lastMessagePreview}
+                    </p>
+                  </div>
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (confirm(`Delete conversation with ${sess.characterName}?`)) {
+                      deleteSession(sess.storyId);
+                      if (sess.storyId === storyId) {
+                        handleDeleteChat();
+                      }
+                    }
+                  }}
+                  className="p-1 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors flex-shrink-0"
+                  title="Delete Story Chat"
+                >
+                  <Trash2 size={13} />
+                </button>
+              </div>
             );
           })}
         </div>
@@ -347,6 +391,15 @@ export default function ChatScreen() {
 
           {/* Right Header Actions */}
           <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 ml-2">
+            {/* Quick Delete Chat Button */}
+            <button
+              onClick={handleDeleteChat}
+              className="w-9 h-9 rounded-full bg-[#0D0E15] border border-white/[0.08] hover:border-red-500/40 hover:bg-red-500/10 text-slate-400 hover:text-red-400 flex items-center justify-center transition-all active:scale-95"
+              title="Delete Chat"
+            >
+              <Trash2 size={16} />
+            </button>
+
             {/* Character Lore & Live Status Drawer Toggle */}
             <button
               onClick={() => setShowInfoDrawer((prev) => !prev)}
@@ -372,6 +425,13 @@ export default function ChatScreen() {
 
               {showMenu && (
                 <div className="absolute right-0 top-10 w-44 rounded-2xl bg-[#0D0E15] border border-white/[0.08] p-1.5 shadow-2xl z-50 animate-fade-in text-xs">
+                  <button
+                    onClick={handleDeleteChat}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-red-400 hover:bg-red-500/15 font-semibold transition-colors"
+                  >
+                    <Trash2 size={14} />
+                    <span>Delete Chat</span>
+                  </button>
                   <button
                     onClick={handleResetChat}
                     className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-rose-400 hover:bg-rose-500/10 font-semibold transition-colors"
@@ -440,17 +500,9 @@ export default function ChatScreen() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* INPUT AND SUGGESTIONS DOCK */}
+        {/* INPUT DOCK (CHOICE BUTTON REMOVED) */}
         <footer className="flex-shrink-0 bg-[#050608]/95 backdrop-blur-xl border-t border-white/[0.08] px-2.5 sm:px-6 py-2 sm:py-3 z-20 pb-[max(0.6rem,env(safe-area-inset-bottom))]">
           <div className="max-w-3xl mx-auto w-full">
-            {/* Compact Smart Reply Chips Carousel */}
-            {!isAiTyping && smartReplies.length > 0 && (
-              <SmartReplyChips
-                replies={smartReplies}
-                onSelectReply={(reply) => handleSendMessage(reply)}
-                disabled={isAiTyping}
-              />
-            )}
 
             {/* Input Bar */}
             <form
