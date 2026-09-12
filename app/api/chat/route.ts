@@ -196,20 +196,34 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
     // Helper to detect heavily degraded output, stuttering loops, or gibberish
     const isDegradedOutput = (text: string): boolean => {
       if (!text || text.length < 15) return true;
+      const t = text.trim();
 
       // 1. Repeating loops: same 8+ char sequence repeated 2 or more times
-      const loopMatch = text.match(/(.{8,}?)(?:[\s*.,?!"'-]*\1){1,}/i);
+      const loopMatch = t.match(/(.{8,}?)(?:[\s*.,?!"'-]*\1){1,}/i);
       if (loopMatch && loopMatch[0].length > 20) {
         return true;
       }
 
       // 2. Corrupted hyphens, stuttering tokens, or obsolete archaic words
-      if (/\b(haharre|dhhai|gesuon|zulf-e|zulfon-e|gesuein|barham|ha-ha-hai|k-k-k)\b/i.test(text)) {
+      if (/\b(haharre|dhhai|gesuon|zulf-e|zulfon-e|gesuein|barham|ha-ha-hai|k-k-k)\b/i.test(t)) {
         return true;
       }
 
       // 3. Broken third-person AI commentary
-      if (/\buski aawaz bohot\b/i.test(text) || /\bkamaron ko gesuon\b/i.test(text)) {
+      if (/\buski aawaz bohot\b/i.test(t) || /\bkamaron ko gesuon\b/i.test(t)) {
+        return true;
+      }
+
+      // 4. Truncated mid-word or trailing single letters (e.g. ", j" or ending on trailing comma/conjunction)
+      if (/[,\-]\s*[a-zA-Z*]?$/i.test(t)) {
+        return true;
+      }
+      if (/\b(?:j|a|aur|ki|ke|par|ko|ch|dalti|hatati|hoti)\s*\*?$/i.test(t) && !/[.!?]["'*]?$/.test(t)) {
+        return true;
+      }
+
+      // 5. Incomplete single action fragment with missing spoken dialogue
+      if (!t.includes('"') && t.length < 85) {
         return true;
       }
 
@@ -471,7 +485,68 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
         lastUserMessage + ' ' + messages.slice(-3).map((m) => m.text).join(' ')
       );
 
-    // 1. REAL-TIME GOOGLE GEMINI GENERATION (Used for general story progression, bypassed on explicit 18+ sex to prevent safety cuts)
+    // 1. OPENROUTER INTEGRATION (Primary: High-Fidelity Dedicated Uncensored Roleplay Models)
+    if (OPENROUTER_API_KEY && !aiReplyText) {
+      try {
+        const openRouterMessages = [
+          { role: 'system', content: systemPrompt },
+          ...messages.slice(-12).map((m) => ({
+            role: m.sender === 'user' ? 'user' : 'assistant',
+            content: m.text,
+          })),
+        ];
+
+        // Intelligent multilingual and uncensored models (DeepSeek flagship leading)
+        const openRouterModels = [
+          'deepseek/deepseek-chat',
+          'qwen/qwen-2.5-72b-instruct',
+          'mistralai/mistral-nemo',
+          'meta-llama/llama-3.3-70b-instruct',
+        ];
+
+        for (const orModel of openRouterModels) {
+          try {
+            const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${OPENROUTER_API_KEY.trim()}`,
+                'HTTP-Referer': 'https://auraflex.vercel.app',
+                'X-Title': 'AuraFlex AI',
+              },
+              body: JSON.stringify({
+                model: orModel,
+                messages: openRouterMessages,
+                temperature: 0.7,
+                max_tokens: 600,
+                frequency_penalty: 0.05,
+                presence_penalty: 0.0,
+              }),
+            });
+
+            if (orRes.ok) {
+              const orData = await orRes.json();
+              const text = orData.choices?.[0]?.message?.content?.trim();
+              if (text && !isAiRefusal(text) && !isDegradedOutput(text)) {
+                aiReplyText = text;
+                break;
+              } else if (text) {
+                console.warn(`Model ${orModel} produced refusal or degraded output, trying next model...`);
+              }
+            } else {
+              const errTxt = await orRes.text();
+              console.warn(`OpenRouter model ${orModel} returned ${orRes.status}:`, errTxt);
+            }
+          } catch (modelErr) {
+            console.warn(`OpenRouter fetch error for ${orModel}:`, modelErr);
+          }
+        }
+      } catch (orErr) {
+        console.error('OpenRouter top-level error:', orErr);
+      }
+    }
+
+    // 2. REAL-TIME GOOGLE GEMINI GENERATION (Secondary fallback if OpenRouter is unavailable)
     if (GEMINI_API_KEY && !aiReplyText && !isExplicitAdult) {
       try {
         const geminiContents: {
@@ -510,7 +585,6 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
           'gemini-3.6-flash',
           'gemini-flash-latest',
           'gemini-3.5-flash',
-          'gemini-pro-latest',
         ];
 
         // Safety filters explicitly set to BLOCK_NONE for adult creative fiction
@@ -569,67 +643,6 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
         }
       } catch (err) {
         console.error('Gemini API call error:', err);
-      }
-    }
-
-    // 2. OPENROUTER INTEGRATION (Secondary fallback: Dedicated Uncensored 18+ Roleplay Models)
-    if (OPENROUTER_API_KEY && !aiReplyText) {
-      try {
-        const openRouterMessages = [
-          { role: 'system', content: systemPrompt },
-          ...messages.slice(-12).map((m) => ({
-            role: m.sender === 'user' ? 'user' : 'assistant',
-            content: m.text,
-          })),
-        ];
-
-        // Intelligent multilingual and creative roleplay models (no stutter/loop models)
-        const openRouterModels = [
-          'meta-llama/llama-3.3-70b-instruct',
-          'deepseek/deepseek-chat',
-          'qwen/qwen-2.5-72b-instruct',
-          'mistralai/mistral-large-2411',
-        ];
-
-        for (const orModel of openRouterModels) {
-          try {
-            const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${OPENROUTER_API_KEY.trim()}`,
-                'HTTP-Referer': 'https://auraflex.vercel.app',
-                'X-Title': 'AuraFlex AI',
-              },
-              body: JSON.stringify({
-                model: orModel,
-                messages: openRouterMessages,
-                temperature: 0.7,
-                max_tokens: 600,
-                frequency_penalty: 0.05,
-                presence_penalty: 0.0,
-              }),
-            });
-
-            if (orRes.ok) {
-              const orData = await orRes.json();
-              const text = orData.choices?.[0]?.message?.content?.trim();
-              if (text && !isAiRefusal(text) && !isDegradedOutput(text)) {
-                aiReplyText = text;
-                break;
-              } else if (text) {
-                console.warn(`Model ${orModel} produced refusal or degraded output, trying next model...`);
-              }
-            } else {
-              const errTxt = await orRes.text();
-              console.warn(`OpenRouter model ${orModel} returned ${orRes.status}:`, errTxt);
-            }
-          } catch (modelErr) {
-            console.warn(`OpenRouter fetch error for ${orModel}:`, modelErr);
-          }
-        }
-      } catch (orErr) {
-        console.error('OpenRouter top-level error:', orErr);
       }
     }
 
