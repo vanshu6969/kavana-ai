@@ -112,7 +112,7 @@ export default function ChatScreen() {
       if (last.sender === 'ai' && last.smartReplies && last.smartReplies.length > 0) {
         setSmartReplies(last.smartReplies);
       } else {
-        setSmartReplies([]);
+        setSmartReplies(story.smartReplies || []);
       }
     } else {
       const initialAiMsg: MessageItem = {
@@ -123,7 +123,7 @@ export default function ChatScreen() {
         smartReplies: story.smartReplies,
       };
       setMessages([initialAiMsg]);
-      setSmartReplies([]);
+      setSmartReplies(story.smartReplies || []);
       appendMessageToSession(story.id, initialAiMsg);
     }
   }, [storyId, story?.id, isLoaded, sessions]);
