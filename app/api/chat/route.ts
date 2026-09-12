@@ -107,7 +107,8 @@ ${isAnimeManga ? `
 ` : ''}
   CRITICAL LANGUAGE & LENGTH RULES (CLEAR, SHORT, MODERN & PUNCHY):
   1. KEEP IT SHORT & CRISP:
-     - Never exceed 2 to 3 sentences total. Fast-paced interactive chat requires short turns!
+     - Keep your reply around 2 to 3 sentences total.
+     - NEVER get cut off mid-sentence. You MUST ALWAYS complete your thought and close your quotes and asterisks!
   2. MODERN CONVERSATIONAL LANGUAGE ONLY:
      - Always write in clear, natural, modern everyday language that flows smoothly and effortlessly.
      - DO NOT use weird, archaic, or obsolete poetic Urdu/Hindi words (e.g. NEVER use "gesuon", "zulf-e-barham", "qamar-e-munir", or strange distorted expressions).
@@ -216,6 +217,53 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
       return cleaned;
     };
 
+    // Helper to repair any cut-off or incomplete sentences
+    const ensureCompleteSentences = (text: string): string => {
+      if (!text) return text;
+      let t = text.trim();
+
+      // 1. If text ends with valid sentence termination
+      if (/[.!?]["'*]?$/.test(t)) {
+        const openQuotes = (t.match(/"/g) || []).length % 2 !== 0;
+        const openAsterisk = (t.match(/\*/g) || []).length % 2 !== 0;
+        if (openAsterisk) t += '*';
+        if (openQuotes) t += '"';
+        return t;
+      }
+
+      // 2. Check if a quote was left unclosed: e.g. *Action.* "Dialogue was cut off midway
+      const lastQuote = t.lastIndexOf('"');
+      if (lastQuote !== -1 && (t.match(/"/g) || []).length % 2 !== 0) {
+        const dialoguePart = t.slice(lastQuote + 1);
+        const lastTermInDialogue = Math.max(
+          dialoguePart.lastIndexOf('.'),
+          dialoguePart.lastIndexOf('!'),
+          dialoguePart.lastIndexOf('?')
+        );
+        if (lastTermInDialogue !== -1 && lastTermInDialogue > 10) {
+          return t.slice(0, lastQuote + 1 + lastTermInDialogue + 1).trim() + '"';
+        } else {
+          return t.trim() + '..."';
+        }
+      }
+
+      // 3. If an asterisk action was left unclosed: e.g. *Mehrunnisa ki ungliyaan aapki underwear ke elastic par
+      if (t.startsWith('*') && (t.match(/\*/g) || []).length % 2 !== 0) {
+        const lastPunctuation = Math.max(
+          t.lastIndexOf('.'),
+          t.lastIndexOf('!'),
+          t.lastIndexOf('?')
+        );
+        if (lastPunctuation > 20) {
+          return t.slice(0, lastPunctuation + 1).trim() + '*';
+        }
+        return t.trim() + ' phisalti hain aur woh aapke bilkul kareeb aa jaati hain.*';
+      }
+
+      // 4. Default: finish naturally with proper ellipsis
+      return t.trim() + '...';
+    };
+
     // 1. REAL-TIME GOOGLE GEMINI GENERATION (Primary: High-Speed Multilingual Roman Urdu/Hindi)
     if (GEMINI_API_KEY && !aiReplyText) {
       try {
@@ -282,7 +330,7 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
                   safetySettings,
                   generationConfig: {
                     temperature: 0.75,
-                    maxOutputTokens: 350,
+                    maxOutputTokens: 600,
                   },
                 }),
               }
@@ -351,7 +399,7 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
                 model: orModel,
                 messages: openRouterMessages,
                 temperature: 0.75,
-                max_tokens: 350,
+                max_tokens: 600,
                 frequency_penalty: 0.6,
                 presence_penalty: 0.5,
               }),
@@ -418,6 +466,9 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
 
       // Clean up any repetition loops, stuttering, or concatenated words
       aiReplyText = cleanRepetitionAndGibberish(aiReplyText);
+
+      // Ensure sentences are never cut off mid-thought or mid-action
+      aiReplyText = ensureCompleteSentences(aiReplyText);
 
       // Keep replies short: if model returned excessive multiple paragraphs, keep the first 2 concise paragraphs
       const paragraphs = aiReplyText.split(/\n\s*\n/).filter((p) => p.trim().length > 0);
