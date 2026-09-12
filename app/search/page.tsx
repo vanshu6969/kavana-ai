@@ -20,15 +20,15 @@ export default function SearchPage() {
 
   const quickTags = [
     'All',
+    'Romance',
+    'Revenge & Drama',
+    'Anime & Fantasy',
+    'Isekai & Cooking',
     'Pakistani Drama',
+    'Crime & Mafia',
+    'Billionaire CEO',
+    'Historical & Royal',
     'Male POV',
-    'Mirzapur',
-    'Enemies to Lovers',
-    'Arranged Marriage',
-    'Mafia',
-    'Anime',
-    'Billionaire',
-    'Gothic',
   ];
 
   const filteredStories = stories.filter((story) => {
@@ -44,7 +44,75 @@ export default function SearchPage() {
     const matchesTag =
       !selectedTag ||
       selectedTag === 'All' ||
-      (selectedTag === 'Male POV' && (story.tags.some(t => t.includes('Male')) || story.userRole.toLowerCase().includes('husband') || story.userRole.toLowerCase().includes('murtasim') || story.userRole.toLowerCase().includes('shahmeer') || story.userRole.toLowerCase().includes('tycoon') || story.userRole.toLowerCase().includes('don'))) ||
+      (selectedTag === 'Anime & Fantasy' && (
+        story.category === 'Anime' ||
+        story.category === 'Fantasy' ||
+        story.tags.some((t) => {
+          const l = t.toLowerCase();
+          return l.includes('anime') || l.includes('manga') || l.includes('fantasy');
+        })
+      )) ||
+      (selectedTag === 'Revenge & Drama' && (
+        story.category.toLowerCase().includes('revenge') ||
+        story.category.toLowerCase().includes('drama') ||
+        story.tags.some((t) => {
+          const l = t.toLowerCase();
+          return l.includes('revenge') || l.includes('drama') || l.includes('badla') || l.includes('inteqam') || l.includes('vengeance');
+        })
+      )) ||
+      (selectedTag === 'Isekai & Cooking' && (
+        story.tags.some((t) => {
+          const l = t.toLowerCase();
+          return l.includes('cooking') || l.includes('isekai') || l.includes('gourmet') || l.includes('food');
+        })
+      )) ||
+      (selectedTag === 'Romance' && (
+        story.category === 'Romance' ||
+        story.tags.some((t) => {
+          const l = t.toLowerCase();
+          return l.includes('romance') || l.includes('love') || l.includes('ishq') || l.includes('lovers');
+        })
+      )) ||
+      (selectedTag === 'Crime & Mafia' && (
+        story.category === 'Crime' ||
+        story.category === 'Crime & Mafia' ||
+        story.tags.some((t) => {
+          const l = t.toLowerCase();
+          return l.includes('mafia') || l.includes('crime') || l.includes('syndicate') || l.includes('don');
+        })
+      )) ||
+      (selectedTag === 'Pakistani Drama' && (
+        story.category === 'Pakistani Drama' ||
+        story.tags.some((t) => t.toLowerCase().includes('pakistani'))
+      )) ||
+      (selectedTag === 'Billionaire CEO' && (
+        story.tags.some((t) => {
+          const l = t.toLowerCase();
+          return l.includes('billionaire') || l.includes('ceo') || l.includes('tycoon');
+        }) ||
+        story.userRole.toLowerCase().includes('billionaire') ||
+        story.userRole.toLowerCase().includes('tycoon')
+      )) ||
+      (selectedTag === 'Historical & Royal' && (
+        story.category === 'Historical' ||
+        story.category === 'Royal' ||
+        story.tags.some((t) => {
+          const l = t.toLowerCase();
+          return l.includes('royal') || l.includes('historical') || l.includes('kingdom') || l.includes('emperor');
+        })
+      )) ||
+      (selectedTag === 'Male POV' && (
+        story.tags.some(t => t.includes('Male')) ||
+        story.userRole.toLowerCase().includes('husband') ||
+        story.userRole.toLowerCase().includes('murtasim') ||
+        story.userRole.toLowerCase().includes('shahmeer') ||
+        story.userRole.toLowerCase().includes('tycoon') ||
+        story.userRole.toLowerCase().includes('don') ||
+        story.userRole.toLowerCase().includes('mukoda') ||
+        story.userRole.toLowerCase().includes('kirito') ||
+        story.userRole.toLowerCase().includes('luffy') ||
+        story.userRole.toLowerCase().includes('ichigo')
+      )) ||
       story.tags.some((t) => t.toLowerCase().includes(selectedTag.toLowerCase())) ||
       story.category.toLowerCase().includes(selectedTag.toLowerCase());
 
