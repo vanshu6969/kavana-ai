@@ -24,6 +24,7 @@ import {
   Check,
 } from 'lucide-react';
 import { MessageItem } from '@/lib/supabase';
+import { Story, KAVANA_STORIES } from '@/lib/stories-data';
 
 export default function ChatScreen() {
   const params = useParams();
@@ -37,28 +38,42 @@ export default function ChatScreen() {
     appendMessageToSession,
   } = useApp();
 
-  const story = stories.find((s) => s.id === storyId) || stories[1];
+  const story: Story =
+    stories.find((s) => s.id === storyId) ||
+    (() => {
+      if (typeof window !== 'undefined') {
+        try {
+          const saved = localStorage.getItem('kavana_custom_stories_v1');
+          if (saved) {
+            const list: Story[] = JSON.parse(saved);
+            const found = list.find((item: Story) => item.id === storyId);
+            if (found) return found;
+          }
+        } catch {}
+      }
+      return stories[1] || KAVANA_STORIES[0];
+    })();
 
   const existingSession = getSessionByStoryId(storyId);
 
   const [messages, setMessages] = useState<MessageItem[]>([
     {
-      id: `initial-ai-${story.id}`,
+      id: `initial-ai-${story?.id || storyId}`,
       sender: 'ai',
-      text: story.openingHook,
+      text: story?.openingHook || 'The story begins...',
       timestamp: '8/26/2026',
-      smartReplies: story.smartReplies,
+      smartReplies: story?.smartReplies || [],
     },
   ]);
   const [inputText, setInputText] = useState('');
   const [isAiTyping, setIsAiTyping] = useState(false);
   const [contextState, setContextState] = useState({
-    location: story.sceneContext?.location || 'Sindh Haveli',
-    empireControl: story.sceneContext?.empireControl || '100%',
-    activeNpc: story.sceneContext?.activeNpc || story.characterName || 'Murtasim Khan',
-    mood: story.sceneContext?.mood || 'Intense',
+    location: story?.sceneContext?.location || 'Private Suite',
+    empireControl: story?.sceneContext?.empireControl || '100%',
+    activeNpc: story?.sceneContext?.activeNpc || story?.characterName || 'Companion',
+    mood: story?.sceneContext?.mood || 'Intense',
   });
-  const [smartReplies, setSmartReplies] = useState<string[]>(story.smartReplies || []);
+  const [smartReplies, setSmartReplies] = useState<string[]>(story?.smartReplies || []);
   const [showMenu, setShowMenu] = useState(false);
   const [isMicActive, setIsMicActive] = useState(false);
   const [showInfoDrawer, setShowInfoDrawer] = useState(false);
@@ -76,6 +91,8 @@ export default function ChatScreen() {
 
   // Initialize messages from existing session or from the story openingHook
   useEffect(() => {
+    if (!story) return;
+
     if (existingSession && existingSession.messages.length > 0) {
       setMessages(existingSession.messages);
       if (existingSession.contextState) {
@@ -99,7 +116,7 @@ export default function ChatScreen() {
       setSmartReplies(story.smartReplies || []);
       appendMessageToSession(story.id, initialAiMsg);
     }
-  }, [storyId]);
+  }, [storyId, story?.id]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -566,7 +583,7 @@ export default function ChatScreen() {
           <div className="pt-2">
             <span className="text-[10px] font-bold text-slate-400 block mb-1">Tags:</span>
             <div className="flex flex-wrap gap-1">
-              {story.tags.map((t, i) => (
+              {(story.tags || []).map((t: string, i: number) => (
                 <span key={i} className="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">
                   {t}
                 </span>

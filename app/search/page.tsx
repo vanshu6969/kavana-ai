@@ -3,12 +3,20 @@
 import React, { useState } from 'react';
 import { useApp } from '@/lib/context/AppContext';
 import StoryCard from '@/components/StoryCard';
-import { Search, X, Film, Sparkles, SlidersHorizontal } from 'lucide-react';
+import { Search, X, Film, Sparkles, Wand2, Plus } from 'lucide-react';
+import CreateStoryModal from '@/components/CreateStoryModal';
 
 export default function SearchPage() {
   const { stories } = useApp();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [createModalTitle, setCreateModalTitle] = useState('');
+
+  const openCreateWithTitle = (customTitle?: string) => {
+    setCreateModalTitle(customTitle || searchQuery || '');
+    setShowCreateModal(true);
+  };
 
   const quickTags = [
     'All',
@@ -83,6 +91,26 @@ export default function SearchPage() {
           )}
         </div>
 
+        {/* AI Create Prompt Banner */}
+        <div className="w-full p-3 rounded-xl bg-gradient-to-r from-rose-950/40 via-red-950/20 to-black/40 border border-[#FF2E55]/30 flex flex-col sm:flex-row items-center justify-between gap-2.5">
+          <div className="flex items-center gap-2 text-left">
+            <div className="w-7 h-7 rounded-lg bg-[#FF2E55]/20 flex items-center justify-center text-[#FF2E55] shrink-0">
+              <Wand2 size={15} />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-white">Have a specific story title or idea in mind?</p>
+              <p className="text-[10px] text-slate-400">AI creates the scene, male protagonist role & uncensored choices instantly</p>
+            </div>
+          </div>
+          <button
+            onClick={() => openCreateWithTitle()}
+            className="w-full sm:w-auto px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-[#FF2E55] to-rose-600 hover:from-red-600 hover:to-rose-700 text-white text-xs font-black shadow-glow-crimson flex items-center justify-center gap-1.5 cursor-pointer shrink-0 transition-all active:scale-95"
+          >
+            <Plus size={14} className="stroke-[3]" />
+            <span>Generate Story</span>
+          </button>
+        </div>
+
         {/* Quick Tag Filter Pills (Horizontally scrollable on small mobile) */}
         <div className="w-full flex sm:flex-wrap items-center justify-start sm:justify-center gap-1.5 sm:gap-2 pt-1 overflow-x-auto pb-1 scrollbar-none px-1">
           {quickTags.map((tag) => {
@@ -124,20 +152,36 @@ export default function SearchPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 px-4 rounded-3xl bg-[#0D0E15] border border-white/[0.08] max-w-lg mx-auto">
-              <p className="text-base font-bold text-slate-200">No stories found</p>
-              <p className="text-xs sm:text-sm text-slate-400 mt-1">
-                Try searching for 'Murtasim', 'Anjali', 'Mirzapur', 'Gojo', or 'Still Yours'
-              </p>
-              <button
-                onClick={() => {
-                  setSearchQuery('');
-                  setSelectedTag(null);
-                }}
-                className="mt-4 px-5 py-2 rounded-xl bg-[#FF2E55] text-white text-xs font-bold shadow-glow-crimson"
-              >
-                Reset Search Filters
-              </button>
+            <div className="text-center py-12 px-4 rounded-3xl bg-[#0D0E15] border border-white/[0.08] max-w-lg mx-auto space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-[#FF2E55] mx-auto">
+                <Wand2 size={24} />
+              </div>
+              <div>
+                <p className="text-base font-bold text-slate-200">
+                  No story found for "{searchQuery}"
+                </p>
+                <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                  Don't worry! Let AI generate a complete interactive story titled <span className="text-[#FF2E55] font-bold">"{searchQuery}"</span> right now.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-2">
+                <button
+                  onClick={() => openCreateWithTitle(searchQuery)}
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FF2E55] to-rose-600 hover:from-red-600 hover:to-rose-700 text-white text-xs font-black shadow-glow-crimson flex items-center justify-center gap-1.5"
+                >
+                  <Sparkles size={14} />
+                  <span>Create "{searchQuery}" with AI</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSelectedTag(null);
+                  }}
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/10 text-slate-300 text-xs font-semibold"
+                >
+                  Clear Search
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -150,7 +194,7 @@ export default function SearchPage() {
               <span>Recommended Characters & Series</span>
             </h3>
             <span className="text-xs sm:text-sm font-semibold text-slate-400">
-              40+ Available
+              {stories.length} Available
             </span>
           </div>
 
@@ -161,6 +205,13 @@ export default function SearchPage() {
           </div>
         </div>
       )}
+
+      {/* Modal for Creating Story */}
+      <CreateStoryModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        initialTitle={createModalTitle}
+      />
     </div>
   );
 }

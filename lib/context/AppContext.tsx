@@ -20,6 +20,7 @@ interface AppContextType {
     updatedContext?: Partial<ContextState>
   ) => void;
   stories: Story[];
+  addCustomStory: (story: Story) => void;
   activeTab: string;
   setActiveTab: (tab: string) => void;
   audioPlaying: boolean;
@@ -32,7 +33,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [sessions, setSessions] = useState<UserSession[]>([]);
-  const [stories] = useState<Story[]>(KAVANA_STORIES);
+  const [stories, setStories] = useState<Story[]>(KAVANA_STORIES);
   const [activeTab, setActiveTab] = useState<string>('home');
   const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
 
@@ -42,7 +43,44 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const savedSessions = getUserSessionsLocal();
     setSessions(savedSessions);
+
+    // Load any AI-generated custom stories
+    try {
+      if (typeof window !== 'undefined') {
+        const savedCustom = localStorage.getItem('kavana_custom_stories_v1');
+        if (savedCustom) {
+          const parsedCustom: Story[] = JSON.parse(savedCustom);
+          if (Array.isArray(parsedCustom) && parsedCustom.length > 0) {
+            setStories((prev) => {
+              const existingIds = new Set(prev.map((s) => s.id));
+              const nonDuplicates = parsedCustom.filter((s) => !existingIds.has(s.id));
+              return [...nonDuplicates, ...prev];
+            });
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Error loading custom stories from localStorage', e);
+    }
   }, []);
+
+  const addCustomStory = (newStory: Story) => {
+    setStories((prev) => {
+      const filtered = prev.filter((s) => s.id !== newStory.id);
+      const nextStories = [newStory, ...filtered];
+      try {
+        if (typeof window !== 'undefined') {
+          const customOnly = nextStories.filter(
+            (s) => !KAVANA_STORIES.some((k) => k.id === s.id)
+          );
+          localStorage.setItem('kavana_custom_stories_v1', JSON.stringify(customOnly));
+        }
+      } catch (err) {
+        console.error('Error saving custom story to localStorage', err);
+      }
+      return nextStories;
+    });
+  };
 
   const getSessionByStoryId = (storyId: string): UserSession | undefined => {
     return sessions.find((s) => s.storyId === storyId);
@@ -116,6 +154,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         getSessionByStoryId,
         appendMessageToSession,
         stories,
+        addCustomStory,
         activeTab,
         setActiveTab,
         audioPlaying,
