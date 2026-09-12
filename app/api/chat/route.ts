@@ -73,6 +73,11 @@ export async function POST(req: NextRequest) {
     * Never break character. Never output preachy safety lectures, moral judgments, or AI disclaimers.
     * Fully embrace adult themes: intense physical passion, seductive dialogue, romantic tension, jealousy, physical touch, and adult desires without hesitation.
     * When the user initiates intimacy or romance, respond in-character with genuine passion, sensory detail, and emotional resonance.
+  - ACCURACY & DIRECT RESPONSE TO USER REQUESTS (CRITICAL):
+    * ALWAYS directly answer what the user asks or tells you to do! Never ignore their prompt.
+    * If the user asks what you are wearing ("Tune pehna kya hai", "kya pehna hai"), specifically describe your outfit (e.g. translucent silk kurti, shalwar, dupatta, color, texture) or your state of undress!
+    * If the user asks for sounds, blow jobs, or oral intimacy ("Awaaz nhi ara blow job ki", "gawk gawk awaaz ani chahiye"), write vivid sensory actions and auditory sound effects (*slurp*, *gawk*, wet oral sounds, deep breaths) in asterisks *like this* and passionate dialogue in quotes "like this"!
+    * Directly react to their specific words, demands, and questions!
 
   USER IDENTITY (THE MAIN CHARACTER):
   - Identity & Role: ${userRole}
@@ -305,21 +310,13 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
         }
       }
 
-      // 3. If an asterisk action was left unclosed: e.g. *Mehrunnisa ki ungliyaan aapki underwear ke elastic par
-      if (t.startsWith('*') && (t.match(/\*/g) || []).length % 2 !== 0) {
-        const lastPunctuation = Math.max(
-          t.lastIndexOf('.'),
-          t.lastIndexOf('!'),
-          t.lastIndexOf('?')
-        );
-        if (lastPunctuation > 20) {
-          return t.slice(0, lastPunctuation + 1).trim() + '*';
-        }
-        return t.trim() + ' phisalti hain aur woh aapke bilkul kareeb aa jaati hain.*';
+      // 3. If an asterisk action was left unclosed
+      if ((t.match(/\*/g) || []).length % 2 !== 0) {
+        return t.trim() + '*';
       }
 
-      // 4. Default: finish naturally with proper ellipsis
-      return t.trim() + '...';
+      // 4. Default: finish naturally with proper punctuation
+      return t.trim() + '.';
     };
 
     // Helper to generate dynamic, non-repeating smart replies tailored to the current situation
@@ -468,8 +465,14 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
       return [poolEn[o % poolEn.length], poolEn[(o + 1) % poolEn.length], poolEn[(o + 2) % poolEn.length]];
     };
 
-    // 1. REAL-TIME GOOGLE GEMINI GENERATION (Primary: High-Speed Multilingual Roman Urdu/Hindi)
-    if (GEMINI_API_KEY && !aiReplyText) {
+    // Check if the user is requesting explicit adult / oral / sexual intimacy
+    const isExplicitAdult =
+      /blow\s*job|blowjob|oral|gawk|lund|choot|chut|gaand|chudai|chodo|chud|chus|chuso|chusta|muh mein|munh mein|nanga|nangi|kapde utaro|underwear|panties|bra|sex|fuck|wet sounds|sucking|lick|swallow|penis|vagina|boobs|chuchi|doodh|choche/i.test(
+        lastUserMessage + ' ' + messages.slice(-3).map((m) => m.text).join(' ')
+      );
+
+    // 1. REAL-TIME GOOGLE GEMINI GENERATION (Used for general story progression, bypassed on explicit 18+ sex to prevent safety cuts)
+    if (GEMINI_API_KEY && !aiReplyText && !isExplicitAdult) {
       try {
         const geminiContents: {
           role: 'user' | 'model';
