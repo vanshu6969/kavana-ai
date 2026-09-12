@@ -23,7 +23,7 @@ import {
   PanelLeft,
   Check,
 } from 'lucide-react';
-import { MessageItem } from '@/lib/supabase';
+import { MessageItem, getUserSessionsLocal } from '@/lib/supabase';
 import { Story, KAVANA_STORIES } from '@/lib/stories-data';
 
 export default function ChatScreen() {
@@ -34,6 +34,7 @@ export default function ChatScreen() {
   const {
     stories,
     sessions,
+    isLoaded,
     getSessionByStoryId,
     appendMessageToSession,
   } = useApp();
@@ -56,24 +57,64 @@ export default function ChatScreen() {
 
   const existingSession = getSessionByStoryId(storyId);
 
-  const [messages, setMessages] = useState<MessageItem[]>([
-    {
-      id: `initial-ai-${story?.id || storyId}`,
-      sender: 'ai',
-      text: story?.openingHook || 'The story begins...',
-      timestamp: '8/26/2026',
-      smartReplies: story?.smartReplies || [],
-    },
-  ]);
+  // Initialize messages directly from saved session if present to avoid wipeout / empty flicker on reload
+  const [messages, setMessages] = useState<MessageItem[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const local = getUserSessionsLocal();
+        const found = local.find((s) => s.storyId === storyId);
+        if (found && found.messages && found.messages.length > 0) {
+          return found.messages;
+        }
+      } catch {}
+    }
+    return [
+      {
+        id: `initial-ai-${story?.id || storyId}`,
+        sender: 'ai',
+        text: story?.openingHook || 'The story begins...',
+        timestamp: '8/26/2026',
+        smartReplies: story?.smartReplies || [],
+      },
+    ];
+  });
+
   const [inputText, setInputText] = useState('');
   const [isAiTyping, setIsAiTyping] = useState(false);
-  const [contextState, setContextState] = useState({
-    location: story?.sceneContext?.location || 'Private Suite',
-    empireControl: story?.sceneContext?.empireControl || '100%',
-    activeNpc: story?.sceneContext?.activeNpc || story?.characterName || 'Companion',
-    mood: story?.sceneContext?.mood || 'Intense',
+  const [contextState, setContextState] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const local = getUserSessionsLocal();
+        const found = local.find((s) => s.storyId === storyId);
+        if (found?.contextState) {
+          return found.contextState;
+        }
+      } catch {}
+    }
+    return {
+      location: story?.sceneContext?.location || 'Private Suite',
+      empireControl: story?.sceneContext?.empireControl || '100%',
+      activeNpc: story?.sceneContext?.activeNpc || story?.characterName || 'Companion',
+      mood: story?.sceneContext?.mood || 'Intense',
+    };
   });
-  const [smartReplies, setSmartReplies] = useState<string[]>(story?.smartReplies || []);
+
+  const [smartReplies, setSmartReplies] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const local = getUserSessionsLocal();
+        const found = local.find((s) => s.storyId === storyId);
+        if (found && found.messages && found.messages.length > 0) {
+          const last = found.messages.slice(-1)[0];
+          if (last.sender === 'ai' && last.smartReplies && last.smartReplies.length > 0) {
+            return last.smartReplies;
+          }
+        }
+      } catch {}
+    }
+    return story?.smartReplies || [];
+  });
+
   const [showMenu, setShowMenu] = useState(false);
   const [isMicActive, setIsMicActive] = useState(false);
   const [showInfoDrawer, setShowInfoDrawer] = useState(false);
@@ -93,18 +134,26 @@ export default function ChatScreen() {
   useEffect(() => {
     if (!story) return;
 
-    if (existingSession && existingSession.messages.length > 0) {
-      setMessages(existingSession.messages);
-      if (existingSession.contextState) {
-        setContextState(existingSession.contextState);
+    // Check if a session exists in context or directly in localStorage
+    const session =
+      getSessionByStoryId(storyId) ||
+      (typeof window !== 'undefined'
+        ? getUserSessionsLocal().find((s) => s.storyId === storyId)
+        : undefined);
+
+    if (session && session.messages && session.messages.length > 0) {
+      setMessages(session.messages);
+      if (session.contextState) {
+        setContextState(session.contextState);
       }
-      const last = existingSession.messages.slice(-1)[0];
+      const last = session.messages.slice(-1)[0];
       if (last.sender === 'ai' && last.smartReplies && last.smartReplies.length > 0) {
         setSmartReplies(last.smartReplies);
       } else {
         setSmartReplies(story.smartReplies || []);
       }
     } else {
+      // Only seed initial message if NO session exists anywhere
       const initialAiMsg: MessageItem = {
         id: `msg-${Date.now()}`,
         sender: 'ai',
@@ -116,7 +165,7 @@ export default function ChatScreen() {
       setSmartReplies(story.smartReplies || []);
       appendMessageToSession(story.id, initialAiMsg);
     }
-  }, [storyId, story?.id]);
+  }, [storyId, story?.id, isLoaded]);
 
   // Auto-scroll to bottom
   useEffect(() => {

@@ -13,6 +13,7 @@ import { KAVANA_STORIES, Story } from '@/lib/stories-data';
 
 interface AppContextType {
   sessions: UserSession[];
+  isLoaded: boolean;
   getSessionByStoryId: (storyId: string) => UserSession | undefined;
   appendMessageToSession: (
     storyId: string,
@@ -32,7 +33,10 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [sessions, setSessions] = useState<UserSession[]>([]);
+  const [sessions, setSessions] = useState<UserSession[]>(() => {
+    return getUserSessionsLocal();
+  });
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [stories, setStories] = useState<Story[]>(KAVANA_STORIES);
   const [activeTab, setActiveTab] = useState<string>('home');
   const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
@@ -42,7 +46,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const savedSessions = getUserSessionsLocal();
-    setSessions(savedSessions);
+    if (savedSessions && savedSessions.length > 0) {
+      setSessions(savedSessions);
+    }
+    setIsLoaded(true);
 
     // Load any AI-generated custom stories
     try {
@@ -83,7 +90,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const getSessionByStoryId = (storyId: string): UserSession | undefined => {
-    return sessions.find((s) => s.storyId === storyId);
+    const fromState = sessions.find((s) => s.storyId === storyId);
+    if (fromState) return fromState;
+    if (typeof window !== 'undefined') {
+      const fromLocal = getUserSessionsLocal().find((s) => s.storyId === storyId);
+      if (fromLocal) return fromLocal;
+    }
+    return undefined;
   };
 
   const appendMessageToSession = (
@@ -92,17 +105,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     updatedContext?: Partial<ContextState>
   ) => {
     setSessions((prev) => {
-      const existingIndex = prev.findIndex((s) => s.storyId === storyId);
+      // Always fallback to localStorage if prev is empty to prevent wipeouts
+      const currentSessions = prev.length > 0 ? prev : getUserSessionsLocal();
+      const existingIndex = currentSessions.findIndex((s) => s.storyId === storyId);
       const story = stories.find((st) => st.id === storyId);
       const snippet = message.text.length > 40 ? message.text.slice(0, 38) + '...' : message.text;
 
       let nextSessions: UserSession[];
 
       if (existingIndex >= 0) {
-        const existing = prev[existingIndex];
+        const existing = currentSessions[existingIndex];
+        // Deduplicate message by ID
+        const alreadyExists = existing.messages.some((m) => m.id === message.id);
+        const nextMessages = alreadyExists ? existing.messages : [...existing.messages, message];
+
         const updatedSession: UserSession = {
           ...existing,
-          messages: [...existing.messages, message],
+          messages: nextMessages,
           contextState: {
             ...existing.contextState,
             ...(updatedContext || {}),
@@ -113,7 +132,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         // Move updated session to top
         nextSessions = [
           updatedSession,
-          ...prev.filter((_, idx) => idx !== existingIndex),
+          ...currentSessions.filter((_, idx) => idx !== existingIndex),
         ];
       } else {
         // Create new session
@@ -135,7 +154,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           lastMessagePreview: snippet,
           timestamp: 'Just now',
         };
-        nextSessions = [newSession, ...prev];
+        nextSessions = [newSession, ...currentSessions];
       }
 
       saveUserSessionsLocal(nextSessions);
@@ -151,6 +170,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     <AppContext.Provider
       value={{
         sessions,
+        isLoaded,
         getSessionByStoryId,
         appendMessageToSession,
         stories,
