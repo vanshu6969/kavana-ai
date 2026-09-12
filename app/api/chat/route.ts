@@ -69,12 +69,8 @@ export async function POST(req: NextRequest) {
   4. The story evolution responds to the user:
      - If the user steers toward romance or intimacy, respond passionately in‑character with poetic emotional resonance.
      - If the user steers toward rivalry or action, raise the tension and stakes.
-  5. STYLE:
-     - Dynamic, novelistic, descriptive roleplay in ${language === 'hinglish' ? 'natural Roman Urdu / Hinglish (e.g. "*Mehrunnisa paas aati hai aur dheeme se kehti hai...*")' : 'rich English'}.
-     - Include physical actions or expressions between asterisks *like this* and spoken dialogue in quotes "like this".
-     - Keep responses around 2‑4 sentences, ending with emotional tension, an action, or an intriguing question that invites player action.
-  6. ALWAYS append at the very end of your response a SMART_REPLIES JSON block providing 3 engaging choices for the user to pick next:
-     SMART_REPLIES: ["Action 1", "Action 2", "Action 3"]`;
+  5. OPTIONAL: You may include at the very end of your response a SMART_REPLIES JSON block providing up to 3 engaging choices for the user to pick next. Format as:
+      SMART_REPLIES: ["Option 1", "Option 2", "Option 3"]`;
 
     // Helper to detect generic AI refusal strings
     const isAiRefusal = (text: string): boolean => {
