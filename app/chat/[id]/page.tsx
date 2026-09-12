@@ -5,10 +5,10 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useApp } from '@/lib/context/AppContext';
 import ChatMessage from '@/components/ChatMessage';
+import SmartReplyChips from '@/components/SmartReplyChips';
 import {
   ArrowLeft,
   Send,
-  Mic,
   MoreVertical,
   RotateCcw,
   Sparkles,
@@ -84,7 +84,6 @@ export default function ChatScreen() {
   const [smartReplies, setSmartReplies] = useState<string[]>([]);
 
   const [showMenu, setShowMenu] = useState(false);
-  const [isMicActive, setIsMicActive] = useState(false);
   const [showInfoDrawer, setShowInfoDrawer] = useState(false);
   const [showLeftSidebar, setShowLeftSidebar] = useState(false);
   const [showMissionBanner, setShowMissionBanner] = useState(false);
@@ -236,13 +235,6 @@ export default function ChatScreen() {
         mood: story?.sceneContext?.mood || 'Intense',
       });
       setShowMenu(false);
-    }
-  };
-
-  const handleMicToggle = () => {
-    setIsMicActive((prev) => !prev);
-    if (!isMicActive) {
-      setInputText('*[Looks directly into his eyes, refusing to back down]*');
     }
   };
 
@@ -500,9 +492,17 @@ export default function ChatScreen() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* INPUT DOCK (CHOICE BUTTON REMOVED) */}
+        {/* INPUT DOCK */}
         <footer className="flex-shrink-0 bg-[#050608]/95 backdrop-blur-xl border-t border-white/[0.08] px-2.5 sm:px-6 py-2 sm:py-3 z-20 pb-[max(0.6rem,env(safe-area-inset-bottom))]">
           <div className="max-w-3xl mx-auto w-full">
+            {/* Quick Dialogue Choices (Smart Reply Chips) */}
+            {!isAiTyping && smartReplies.length > 0 && (
+              <SmartReplyChips
+                replies={smartReplies}
+                onSelectReply={(reply) => handleSendMessage(reply)}
+                disabled={isAiTyping}
+              />
+            )}
 
             {/* Input Bar */}
             <form
@@ -523,20 +523,6 @@ export default function ChatScreen() {
                   className="w-full py-2.5 sm:py-3 px-3.5 sm:px-4 rounded-xl sm:rounded-2xl bg-[#0D0E15] border border-white/[0.08] focus:border-[#FF2E55] text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-rose-500/40 transition-all disabled:opacity-50"
                 />
               </div>
-
-              {/* Action Asterisks Trigger */}
-              <button
-                type="button"
-                onClick={handleMicToggle}
-                className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl border flex items-center justify-center flex-shrink-0 active:scale-95 transition-all ${
-                  isMicActive
-                    ? 'bg-rose-500/20 border-[#FF2E55] text-[#FF2E55]'
-                    : 'bg-[#0D0E15] border-white/[0.08] text-slate-400 hover:text-[#FF2E55]'
-                }`}
-                title="Insert Action Asterisks"
-              >
-                <Mic size={18} />
-              </button>
 
               {/* Send Button */}
               <button
