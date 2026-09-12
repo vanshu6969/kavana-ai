@@ -59,8 +59,9 @@ export async function POST(req: NextRequest) {
 
     const isAnimeManga =
       category === 'Anime' ||
-      /anime|solo leveling|jujutsu|demon slayer|chainsaw|titan|spy x family|tokyo revengers|hunter|shinobi|naruto|one piece|bleach|manga|gojo|jinwoo/i.test(
-        storyTitle + ' ' + (userRole || '') + ' ' + (characterName || '')
+      category === 'Anime & Fantasy' ||
+      /anime|manga|isekai|cooking|solo leveling|jujutsu|demon slayer|chainsaw|titan|spy x family|tokyo revengers|hunter|shinobi|naruto|one piece|bleach|gojo|jinwoo|slime|mukoda|fel|sui|nekoya|dungeon|meshi|frieren|shield hero|vinland|shokugeki|ghoul|soma|rudeus|kirito|re:zero|rezero|nobu/i.test(
+        storyTitle + ' ' + (userRole || '') + ' ' + (characterName || '') + ' ' + (category || '')
       );
 
     const systemPrompt = `You are ${characterName}, an immersive character in the story "${storyTitle}".
@@ -101,10 +102,25 @@ ${isAnimeManga ? `
   2. If the user writes in Roman Urdu / Hindi, respond in authentic, expressive Roman Urdu.
   3. Physical actions, combat moves, expressions, and environmental descriptions MUST be in asterisks *like this*.
   4. Spoken dialogue MUST be in quotes "like this".
-  5. SMART REPLIES (MANDATORY):
+${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
+     - At the very end of your response, ALWAYS append a JSON array labeled SMART_REPLIES with exactly 3 creative, in-character anime action/dialogue choices for the user's next move as ${userRole}.
+     - EVERY OPTION MUST BE FORMATTED WITH: *[Manga Action / Skill / Technique]* "Spoken dialogue with anime emotion or catchphrase"
+     - Choice 1: Signature Manga Action / Technique / Combat Move / Cooking Feat:
+       e.g. "*[Draw Nichirin Blade & breathe deeply]* \\"Total Concentration Breathing: Water Surface Slash!\\"" or "*[Sizzle Wagyu beef with soy-garlic glaze over campfire]* \\"Fel, Sui, dinner is ready!\\"" or "*[Unsheathe dagger as violet aura crackles]* \\"Arise—clear this dungeon floor!\\""
+     - Choice 2: Tactical Move / System Check / Culinary / Strategic Planning:
+       e.g. "*[Open System Status Window]* \\"[Status: Open] - Dump remaining stat points into Agility!\\"" or "*[Analyze demon magic barrier]* \\"Fern, hold your defensive stance while I break the seal.\\""
+     - Choice 3: Bold Shonen Declaration / Emotional Bond / Hilarious Anime Reaction:
+       e.g. "*[Grin boldly with fists clenched]* \\"I'm going to be King of the Pirates, and nobody can stop me!\\"" or "*[Laugh nervously scratching your head]* \\"Wait, did you really eat five kilograms of Wagyu in two seconds?!\\""
+     - NEVER OUTPUT GENERIC ROMANCE CHOICES LIKE "Hold her hand" OR "Pull her closer by the waist" FOR ANIME STORIES!
+     - Format:
+       SMART_REPLIES: [
+         "*[Action 1]* \\"Spoken line 1\\"",
+         "*[Action 2]* \\"Spoken line 2\\"",
+         "*[Action 3]* \\"Spoken line 3\\""
+       ]` : `  5. SMART REPLIES (MANDATORY):
      - At the very end of your response, ALWAYS append a JSON array with exactly 3 creative, context-specific action/dialogue choices for the user's next move.
      - Format:
-       SMART_REPLIES: ["Choice 1", "Choice 2", "Choice 3"]`;
+       SMART_REPLIES: ["Choice 1", "Choice 2", "Choice 3"]`}`;
 
     // Helper to detect generic AI refusal strings
     const isAiRefusal = (text: string): boolean => {
@@ -355,21 +371,29 @@ ${isAnimeManga ? `
 
     // DYNAMIC CONTEXTUAL SMART REPLIES (Never static, tailored to each situation)
     if (smartReplies.length === 0) {
-      const isUrduHindi = language === 'hinglish' || /[\b(aap|tum|kareeb|nazar|mohabbat|dil|khan|hai|nahi|kuch|hoon|kya|kyun|baahon|raat|door)\b]/i.test(aiReplyText + ' ' + lastUserMessage);
-      const cleanSnippet = (lastUserMessage || '').replace(/[\*\"\'\']/g, '').slice(0, 25).trim();
-
-      if (isUrduHindi) {
+      if (isAnimeManga) {
         smartReplies = [
-          `*${characterName} ko kamar se pakad kar apne aur qareeb kheench lo* "Ab koi doori nahi bachegi."`,
-          `*Uski aankhon mein nigaahein daal kar madhoshi se kaho* "Main aapko ek pal ke liye bhi door nahi hone dunga."`,
-          `*Aahista se uski zulfon ko peechhe karte hue dheere se kaho* "Aapki har shart mujhe manzoor hai."`,
+          `*[Draw weapon and release surging combat aura]* "I didn't come this far to turn back now. Let's finish this!"`,
+          `*[Analyze the scene with sharp tactical focus]* "Check status window and prepare the next counterattack!"`,
+          `*[Grin with unyielding shonen determination]* "Don't worry, as long as I'm standing, nobody else is getting hurt!"`,
         ];
       } else {
-        smartReplies = [
-          `*Pull ${characterName} closer by the waist* "There is no distance between us tonight."`,
-          `*Hold ${characterName}'s gaze with intoxicating heat* "You have complete power over me."`,
-          `*Gently trace her jawline and whisper softly* "Tell me what you desire most."`,
-        ];
+        const isUrduHindi = language === 'hinglish' || /[\b(aap|tum|kareeb|nazar|mohabbat|dil|khan|hai|nahi|kuch|hoon|kya|kyun|baahon|raat|door)\b]/i.test(aiReplyText + ' ' + lastUserMessage);
+        const cleanSnippet = (lastUserMessage || '').replace(/[\*\"\'\']/g, '').slice(0, 25).trim();
+
+        if (isUrduHindi) {
+          smartReplies = [
+            `*${characterName} ko kamar se pakad kar apne aur qareeb kheench lo* "Ab koi doori nahi bachegi."`,
+            `*Uski aankhon mein nigaahein daal kar madhoshi se kaho* "Main aapko ek pal ke liye bhi door nahi hone dunga."`,
+            `*Aahista se uski zulfon ko peechhe karte hue dheere se kaho* "Aapki har shart mujhe manzoor hai."`,
+          ];
+        } else {
+          smartReplies = [
+            `*Pull ${characterName} closer by the waist* "There is no distance between us tonight."`,
+            `*Hold ${characterName}'s gaze with intoxicating heat* "You have complete power over me."`,
+            `*Gently trace her jawline and whisper softly* "Tell me what you desire most."`,
+          ];
+        }
       }
     }
 

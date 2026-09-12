@@ -7,12 +7,14 @@ interface SmartReplyChipsProps {
   replies: string[];
   onSelectReply: (reply: string) => void;
   disabled?: boolean;
+  isAnime?: boolean;
 }
 
 export default function SmartReplyChips({
   replies,
   onSelectReply,
   disabled = false,
+  isAnime = false,
 }: SmartReplyChipsProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
@@ -22,26 +24,49 @@ export default function SmartReplyChips({
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
-      const scrollAmount = direction === 'left' ? -260 : 260;
+      const scrollAmount = direction === 'left' ? -280 : 280;
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
+  };
+
+  const getActionBadge = (action: string) => {
+    const l = action.toLowerCase();
+    if (l.includes('cook') || l.includes('sizzle') || l.includes('plate') || l.includes('stew') || l.includes('fry') || l.includes('soup') || l.includes('spice') || l.includes('meat') || l.includes('beef') || l.includes('broth') || l.includes('rice') || l.includes('serve')) {
+      return { icon: '🍖', label: 'Gourmet Action', color: 'bg-amber-500/20 text-amber-300 border-amber-500/40' };
+    }
+    if (l.includes('system') || l.includes('status') || l.includes('quest') || l.includes('level') || l.includes('stat') || l.includes('trap') || l.includes('gate') || l.includes('shadow') || l.includes('supermarket')) {
+      return { icon: '⚡', label: 'System Skill', color: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' };
+    }
+    if (l.includes('blade') || l.includes('sword') || l.includes('slash') || l.includes('fist') || l.includes('punch') || l.includes('attack') || l.includes('draw') || l.includes('ripcord') || l.includes('magic') || l.includes('spell') || l.includes('breathing') || l.includes('katana') || l.includes('sandevistan') || l.includes('curse') || l.includes('aura')) {
+      return { icon: '⚔️', label: 'Combat Action', color: 'bg-rose-500/20 text-rose-300 border-rose-500/40' };
+    }
+    return { icon: '✨', label: 'Manga Action', color: 'bg-purple-500/20 text-purple-300 border-purple-500/40' };
   };
 
   // Helper to cleanly separate and format *[Action]* from 'Spoken Dialogue'
   const renderReplyText = (text: string) => {
     const actionMatch = text.match(/^\*(\[.*?\]|.*?)\*\s*(.*)$/);
     if (actionMatch) {
-      const action = actionMatch[1].replace(/^\[|\]$/g, '');
-      const spoken = actionMatch[2];
+      const action = actionMatch[1].replace(/^\[|\]$/g, '').trim();
+      const spokenRaw = actionMatch[2].trim();
+      const spoken = spokenRaw.replace(/^['"]|['"]$/g, '');
+      const badge = getActionBadge(action);
+
       return (
-        <div className="flex flex-col gap-0.5 text-left">
-          <span className="text-rose-300 italic text-[11px] leading-snug">
-            *{action}*
-          </span>
-          {spoken && (
-            <span className="text-slate-100 font-semibold text-xs leading-snug">
-              {spoken}
+        <div className="flex flex-col gap-1 text-left w-full">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded border flex items-center gap-1 shrink-0 ${badge.color}`}>
+              <span>{badge.icon}</span>
+              <span>{badge.label}</span>
             </span>
+            <span className="text-slate-300 italic text-[11px] leading-snug font-medium">
+              *{action}*
+            </span>
+          </div>
+          {spoken && (
+            <div className="text-white font-bold text-xs leading-snug pl-2 border-l-2 border-[#FF2E55] mt-0.5">
+              "{spoken}"
+            </div>
           )}
         </div>
       );
@@ -54,10 +79,20 @@ export default function SmartReplyChips({
       {/* Header bar with controls */}
       <div className="flex items-center justify-between px-1 mb-1.5 text-[11px]">
         <div className="flex items-center gap-2">
-          <span className="flex items-center gap-1.5 text-[#FF2E55] font-bold uppercase tracking-wider">
-            <Sparkles size={12} className="text-[#FF2E55]" />
-            <span>Quick Dialogue Choices ({replies.length})</span>
-          </span>
+          {isAnime ? (
+            <span className="flex items-center gap-1.5 text-amber-400 font-black uppercase tracking-wider">
+              <Sparkles size={12} className="text-amber-400 fill-amber-400" />
+              <span>Manga Protagonist Choices ({replies.length})</span>
+              <span className="text-[9px] bg-gradient-to-r from-red-600 to-amber-500 text-white font-extrabold px-1.5 py-0.2 rounded-full uppercase tracking-tighter">
+                Anime POV
+              </span>
+            </span>
+          ) : (
+            <span className="flex items-center gap-1.5 text-[#FF2E55] font-bold uppercase tracking-wider">
+              <Sparkles size={12} className="text-[#FF2E55]" />
+              <span>Quick Dialogue Choices ({replies.length})</span>
+            </span>
+          )}
 
           {/* Toggle between Horizontal Carousel and Vertical List View */}
           <button
