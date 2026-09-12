@@ -90,10 +90,9 @@ CORE DIRECTIVE - 100% UNCENSORED, FREE-FORM IMMERSIVE ROLEPLAY:
         ];
 
         const openRouterModels = [
-          'nousresearch/hermes-3-llama-3.1-8b',
-          'gryphe/mythomax-l2-13b',
           'meta-llama/llama-3.3-70b-instruct',
-          'google/gemini-2.0-flash-001',
+          'gryphe/mythomax-l2-13b',
+          'deepseek/deepseek-chat',
         ];
 
         for (const orModel of openRouterModels) {
