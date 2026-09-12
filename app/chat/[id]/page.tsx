@@ -73,6 +73,13 @@ export default function ChatScreen() {
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  // Dynamic Browser Tab Title
+  useEffect(() => {
+    if (typeof document !== 'undefined' && story) {
+      document.title = `${story.title} - AuraFlex AI`;
+    }
+  }, [story]);
+
   // Initialize messages from existing session or from the story openingHook
   useEffect(() => {
     if (existingSession && existingSession.messages.length > 0) {
@@ -280,34 +287,38 @@ export default function ChatScreen() {
               <PanelLeft size={16} />
             </button>
 
-            {/* Character Avatar & Status */}
+            {/* Story & Character Header Info */}
             <button
               onClick={() => setShowInfoDrawer(true)}
-              className="flex items-center gap-2.5 text-left group min-w-0 hover:opacity-90 transition-opacity"
-              title="Click to view Character Lore & Status"
+              className="flex items-center gap-2.5 text-left group min-w-0 hover:opacity-95 transition-opacity"
+              title="Click to view Story Lore & Intel"
             >
-              <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border border-rose-500/60 flex-shrink-0">
+              <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border border-rose-500/60 group-hover:border-[#FF2E55] transition-colors flex-shrink-0 shadow-sm">
                 <img
                   src={story.avatar}
-                  alt={story.characterName}
+                  alt={story.title}
                   className="w-full h-full object-cover"
                 />
-                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#FF2E55] border-2 border-[#050608]"></span>
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-[#050608]"></span>
               </div>
 
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <h3 className="text-xs sm:text-sm font-bold text-white truncate leading-tight">
-                    {story.characterName}
+                  <h3 className="text-xs sm:text-sm md:text-base font-black text-white group-hover:text-[#FF5C7A] transition-colors truncate leading-tight">
+                    {story.title}
                   </h3>
-                  <span className="hidden md:inline-block px-1.5 py-0.2 rounded bg-rose-500/15 border border-rose-500/30 text-[#FF5C7A] text-[9px] font-bold">
+                  <span className="hidden sm:inline-block px-1.5 py-0.2 rounded bg-rose-500/15 border border-rose-500/30 text-[#FF5C7A] text-[9px] font-bold">
                     {story.category}
                   </span>
                 </div>
-                <p className="text-[10px] sm:text-[11px] text-slate-400 truncate flex items-center gap-1">
-                  <span className="text-emerald-400 font-semibold">Online</span>
+                <p className="text-[10px] sm:text-[11px] text-slate-400 truncate flex items-center gap-1.5">
+                  <span className="text-[#FF5C7A] font-semibold">{story.characterName}</span>
                   <span>•</span>
-                  <span className="text-rose-300/80 truncate">{contextState.location}</span>
+                  <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online
+                  </span>
+                  <span className="hidden md:inline text-slate-600">•</span>
+                  <span className="hidden md:inline text-rose-300/80 truncate">{contextState.location}</span>
                 </p>
               </div>
             </button>
@@ -514,13 +525,18 @@ export default function ChatScreen() {
           </button>
         </div>
 
-        {/* Character Profile Card */}
+        {/* Story & Character Profile Card */}
         <div className="flex flex-col items-center text-center py-4 border-b border-white/[0.08]">
           <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-rose-500/50 shadow-glow-crimson mb-2.5">
-            <img src={story.avatar} alt={story.characterName} className="w-full h-full object-cover" />
+            <img src={story.avatar} alt={story.title} className="w-full h-full object-cover" />
           </div>
-          <h4 className="text-base font-black text-white">{story.characterName}</h4>
-          <span className="text-xs text-[#FF5C7A] font-medium">{story.title}</span>
+          <h4 className="text-base font-black text-white">{story.title}</h4>
+          <span className="text-xs text-[#FF5C7A] font-bold mt-0.5">
+            Speaking with: {story.characterName}
+          </span>
+          <span className="text-[11px] text-slate-400 font-medium mt-1">
+            Your Role: <strong className="text-slate-200">{story.userRole}</strong>
+          </span>
         </div>
 
         {/* Scene State Tracker */}

@@ -50,8 +50,8 @@ export const DEFAULT_INITIAL_SESSIONS: UserSession[] = [
     userId: 'tajinder-singh-001',
     storyId: 'playboy-reborn',
     storyTitle: 'Playboy Reborn',
-    characterName: 'Anjali & Empire',
-    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80',
+    characterName: 'Anjali',
+    avatarUrl: 'https://image.tmdb.org/t/p/w780/6vs7qtD5KUwijUhpthuhA6PkwxI.jpg',
     messages: [
       {
         id: 'm1',
@@ -103,8 +103,8 @@ export const DEFAULT_INITIAL_SESSIONS: UserSession[] = [
     userId: 'tajinder-singh-001',
     storyId: 'raaz-e-haveli',
     storyTitle: 'Raaz-e-Haveli',
-    characterName: 'Mehrunnisa',
-    avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=500&auto=format&fit=crop&q=80',
+    characterName: 'Mehrunnisa Begum',
+    avatarUrl: 'https://image.tmdb.org/t/p/w780/poiO705KRR4L8gkTeQNhJJr9ylX.jpg',
     messages: [
       {
         id: 'm-rz-1',

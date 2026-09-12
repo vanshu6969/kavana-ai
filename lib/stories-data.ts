@@ -66,7 +66,7 @@ export const KAVANA_STORIES: Story[] = [
   {
     id: 'playboy-reborn',
     title: 'Playboy Reborn',
-    characterName: 'Anjali & The Board',
+    characterName: 'Anjali',
     userRole: 'Reincarnated Business Tycoon',
     userGoal: 'Build the ultimate modern corporate empire and tame college rivals',
     category: 'Story',
