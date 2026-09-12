@@ -68,33 +68,23 @@ CORE DIRECTIVE - THE STORY EVOLUTION DEPENDS ENTIRELY ON WHAT THE USER TALKS ABO
    - If the user steers toward romance or emotional confession, let romance and vulnerability deepen.
    - If the user steers toward rivalry, defiance, or power struggle, raise the drama and stakes.
    - If the user introduces a surprise twist (e.g., hidden past, sudden attack, escaping together, undercover mission, betrayal, conspiracy), IMMEDIATELY EMBRACE IT as canon and advance the plot with it.
-   - If the user changes location or suggests traveling somewhere, move the scene there naturally.
-   - Never force the user back into a generic script. You are an adaptive storytelling partner where the user's words genuinely decide where the story goes next.
+   - DO NOT repeat previous dialogue or loop the same phrases. Progress the narrative dynamically every turn.
+4. Style:
+   - Dynamic, novelistic, descriptive roleplay in ${language === 'hinglish' ? 'natural Roman Urdu / Hinglish (e.g. "*Anjali paas aati hai aur dheeme se kehti hai...*")' : 'rich English'}.
+   - Include physical actions or expressions between asterisks *like this* and spoken dialogue in quotes "like this".
+   - Keep responses immersive, around 2-4 sentences, ending with emotional tension, an action, or an intriguing question that invites player action.
+5. ALWAYS append at the very end of your response a SMART_REPLIES JSON block providing 3 engaging, distinctive choices for the user to pick next:
+   SMART_REPLIES: ["Action 1", "Action 2", "Action 3"]`;
 
-FORMATTING & STYLE RULES:
-- Language: Speak in rich, authentic ${language} (support natural Hinglish, Urdu, Punjabi, or English based on how the user speaks).
-- Physical Actions: Always put bodily actions, facial expressions, eye contact, and environment changes in asterisks *like this*.
-- Spoken Dialogue: Put speech in quotation marks "like this" or natural spoken text.
-- Never break character or refer to yourself as an AI.
-- Keep the response vivid, cinematic, and responsive (2-4 paragraphs).
-- At the very end of your response, output 3 distinct, divergent choice chips on a single line formatted exactly as:
-SMART_REPLIES: ["Choice A (Emotional/Intimate)", "Choice B (Dramatic/Challenging)", "Choice C (Bold Action/Plot Twist)"]`;
+        const geminiContents: {
+          role: 'user' | 'model';
+          parts: [{ text: string }];
+        }[] = [];
 
-        // Format history into Gemini API contents structure (alternating user/model)
-        const geminiContents: Array<{ role: 'user' | 'model'; parts: Array<{ text: string }> }> = [];
-
-        // Include last 10 messages for continuous memory
-        const relevantMessages = messages.slice(-10);
-
-        for (const m of relevantMessages) {
+        // Build history
+        const relevantHistory = messages.slice(-12);
+        for (const m of relevantHistory) {
           const role = m.sender === 'user' ? 'user' : 'model';
-          if (geminiContents.length === 0 && role === 'model') {
-            geminiContents.push({
-              role: 'user',
-              parts: [{ text: `[Scene Begins with ${characterName}: ${initialHook || storySynopsis}]` }],
-            });
-          }
-
           if (
             geminiContents.length > 0 &&
             geminiContents[geminiContents.length - 1].role === role
@@ -118,85 +108,119 @@ SMART_REPLIES: ["Choice A (Emotional/Intimate)", "Choice B (Dramatic/Challenging
           });
         }
 
-        const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${GEMINI_API_KEY}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              system_instruction: {
-                parts: [{ text: systemPrompt }],
-              },
-              contents: geminiContents,
-              generationConfig: {
-                temperature: 0.9,
-                maxOutputTokens: 2048,
-              },
-            }),
-          }
-        );
+        // Try supported Gemini models with fallback
+        const candidateModels = [
+          'gemini-3.6-flash',
+          'gemini-3.5-flash',
+          'gemini-3.5-flash-lite',
+          'gemini-3.1-flash-lite',
+        ];
 
-        if (res.ok) {
-          const data = await res.json();
-          const candidate = data.candidates?.[0];
-          const rawText = candidate?.content?.parts
-            ?.map((p: any) => p.text || '')
-            .join('\n')
-            .trim();
+        let rawText = '';
+        for (const model of candidateModels) {
+          try {
+            const res = await fetch(
+              `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`,
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  system_instruction: {
+                    parts: [{ text: systemPrompt }],
+                  },
+                  contents: geminiContents,
+                  generationConfig: {
+                    temperature: 0.85,
+                    maxOutputTokens: 2048,
+                  },
+                }),
+              }
+            );
 
-          if (rawText) {
-            if (rawText.includes('SMART_REPLIES:')) {
-              const parts = rawText.split('SMART_REPLIES:');
-              aiReplyText = parts[0].trim();
-              try {
-                const parsed = JSON.parse(parts[1].trim());
-                if (Array.isArray(parsed) && parsed.length > 0) {
-                  smartReplies = parsed.map((s: string) => String(s).trim());
-                }
-              } catch {
-                const match = parts[1].match(/\[(.*?)\]/);
-                if (match) {
-                  try {
-                    smartReplies = JSON.parse(`[${match[1]}]`);
-                  } catch {}
-                }
+            if (res.ok) {
+              const data = await res.json();
+              const candidate = data.candidates?.[0];
+              const text = candidate?.content?.parts
+                ?.map((p: any) => p.text || '')
+                .join('\n')
+                .trim();
+              if (text) {
+                rawText = text;
+                break; // successfully received response!
               }
             } else {
-              aiReplyText = rawText;
+              const errBody = await res.text();
+              console.warn(`Model ${model} returned ${res.status}:`, errBody);
             }
-
-            // Derive dynamic mood & tension from text
-            const lower = aiReplyText.toLowerCase();
-            if (lower.includes('pyaar') || lower.includes('love') || lower.includes('mohabbat') || lower.includes('kareeb')) {
-              updatedMood = 'Passionate & Intimate';
-            } else if (lower.includes('gussa') || lower.includes('anger') || lower.includes('shart') || lower.includes('khauf')) {
-              updatedMood = 'Fierce & Possessive';
-            } else if (lower.includes('muskura') || lower.includes('smile') || lower.includes('hansi')) {
-              updatedMood = 'Playful & Teasing';
-            } else if (lower.includes('khatra') || lower.includes('danger') || lower.includes('dushman') || lower.includes('gun')) {
-              updatedMood = 'Deadly Alert';
-            }
-
-            // Check if user or AI shifted the location
-            const userLower = lastUserMessage.toLowerCase();
-            if (userLower.includes('car') || userLower.includes('gaadi')) updatedLocation = 'Moving Sedan';
-            else if (userLower.includes('terrace') || userLower.includes('chhat')) updatedLocation = 'Rooftop Terrace';
-            else if (userLower.includes('bedroom') || userLower.includes('kamra')) updatedLocation = 'Private Bedchamber';
-            else if (userLower.includes('haveli')) updatedLocation = 'Sindh Haveli';
-            else if (userLower.includes('airport') || userLower.includes('flight')) updatedLocation = 'Private Airport Hangar';
-            else if (userLower.includes('lounge') || userLower.includes('club')) updatedLocation = 'VIP Sky Lounge';
+          } catch (modelErr) {
+            console.warn(`Error calling model ${model}:`, modelErr);
           }
+        }
+
+        if (rawText) {
+          if (rawText.includes('SMART_REPLIES:')) {
+            const parts = rawText.split('SMART_REPLIES:');
+            aiReplyText = parts[0].trim();
+            try {
+              const parsed = JSON.parse(parts[1].trim());
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                smartReplies = parsed.map((s: string) => String(s).trim());
+              }
+            } catch {
+              const match = parts[1].match(/\[(.*?)\]/);
+              if (match) {
+                try {
+                  smartReplies = JSON.parse(`[${match[1]}]`);
+                } catch {}
+              }
+            }
+          } else {
+            aiReplyText = rawText;
+          }
+
+          // Derive dynamic mood & tension from text
+          const lower = aiReplyText.toLowerCase();
+          if (lower.includes('pyaar') || lower.includes('love') || lower.includes('mohabbat') || lower.includes('kareeb')) {
+            updatedMood = 'Passionate & Intimate';
+          } else if (lower.includes('gussa') || lower.includes('anger') || lower.includes('shart') || lower.includes('khauf')) {
+            updatedMood = 'Fierce & Possessive';
+          } else if (lower.includes('muskura') || lower.includes('smile') || lower.includes('hansi')) {
+            updatedMood = 'Playful & Teasing';
+          } else if (lower.includes('khatra') || lower.includes('danger') || lower.includes('dushman') || lower.includes('gun')) {
+            updatedMood = 'Deadly Alert';
+          }
+
+          // Check if user or AI shifted the location
+          const userLower = lastUserMessage.toLowerCase();
+          if (userLower.includes('car') || userLower.includes('gaadi')) updatedLocation = 'Moving Sedan';
+          else if (userLower.includes('terrace') || userLower.includes('chhat')) updatedLocation = 'Rooftop Terrace';
+          else if (userLower.includes('bedroom') || userLower.includes('kamra')) updatedLocation = 'Private Bedchamber';
+          else if (userLower.includes('haveli')) updatedLocation = 'Sindh Haveli';
+          else if (userLower.includes('airport') || userLower.includes('flight')) updatedLocation = 'Private Airport Hangar';
+          else if (userLower.includes('lounge') || userLower.includes('club')) updatedLocation = 'VIP Sky Lounge';
         }
       } catch (err) {
         console.error('Gemini API call error:', err);
       }
     }
 
-    // Fallback if network was offline
+    // Dynamic fallback if offline or API blocked
     if (!aiReplyText) {
-      aiReplyText = `*${characterName} looks at you with deep, calculating eyes, taking in every word you just uttered.* "Aapki har baat kahani ka rukh badal deti hai. Agar aapne yeh faisla kar hi liya hai, toh yaad rakhiye... ab piche hatne ka koi rasta nahi bacha."`;
+      const cleanUser = (lastUserMessage || 'kuch nahi').replace(/[\*\"\'\']/g, '').trim();
+      const snippet = cleanUser.length > 40 ? cleanUser.slice(0, 40) + '...' : cleanUser;
+      
+      const dynamicFallbacks = [
+        `*${characterName} pauses, eyes locking onto yours after hearing "${snippet}".* "Aapko lagta hai sab kuch itna aasan hai? Har faisle ki ek qeemat hoti hai... aur main dekhna chahti hoon ke aap kya chunte hain."`,
+        `*${characterName} steps closer, the tension between you rising sharply.* "Jab aap aisa kehte hain na, toh mujhe lagta hai aap sach mein anjaam se nahi darte. Par yeh baat ab sirf lafzon tak nahi rahegi."`,
+        `*${characterName} smiles faintly with a dangerous glint in her eyes.* "Aapki har baat kahani ka rukh badal sakti hai. Bataiye, agar main aapki shart maan loon, toh aap kya karenge?"`,
+        `*${characterName} leans in slightly, her voice dropping low.* "Aapka yeh andaz naya hai. Dekhte hain yeh silsila hum dono ko kahan tak le jata hai."`
+      ];
+      
+      const seed = (cleanUser.length + messages.length) % dynamicFallbacks.length;
+      aiReplyText = dynamicFallbacks[seed];
+
       smartReplies = [
-        `*Aage badhkar uski aankhon mein dekho* 'Main piche hatne walon mein se nahi hoon.'`,
+        `*Aage badhkar ${characterName} ki aankhon mein dekho* 'Main piche hatne walon mein se nahi hoon.'`,
         `*Muskura kar kaho* 'Kahani ka agla mod aapko aur hairan karega.'`,
         `*Uski baat ko challenge karo* 'Toh phir dekhte hain anjaam kya hota hai.'`,
       ];
