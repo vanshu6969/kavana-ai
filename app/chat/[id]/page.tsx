@@ -58,26 +58,7 @@ export default function ChatScreen() {
   const existingSession = getSessionByStoryId(storyId);
 
   // Initialize messages directly from saved session if present to avoid wipeout / empty flicker on reload
-  const [messages, setMessages] = useState<MessageItem[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const local = getUserSessionsLocal();
-        const found = local.find((s) => s.storyId === storyId);
-        if (found && found.messages && found.messages.length > 0) {
-          return found.messages;
-        }
-      } catch {}
-    }
-    return [
-      {
-        id: `initial-ai-${story?.id || storyId}`,
-        sender: 'ai',
-        text: story?.openingHook || 'The story begins...',
-        timestamp: '8/26/2026',
-        smartReplies: story?.smartReplies || [],
-      },
-    ];
-  });
+  const [messages, setMessages] = useState<MessageItem[]>([]);
 
   const [inputText, setInputText] = useState('');
   const [isAiTyping, setIsAiTyping] = useState(false);
@@ -99,21 +80,7 @@ export default function ChatScreen() {
     };
   });
 
-  const [smartReplies, setSmartReplies] = useState<string[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const local = getUserSessionsLocal();
-        const found = local.find((s) => s.storyId === storyId);
-        if (found && found.messages && found.messages.length > 0) {
-          const last = found.messages.slice(-1)[0];
-          if (last.sender === 'ai' && last.smartReplies && last.smartReplies.length > 0) {
-            return last.smartReplies;
-          }
-        }
-      } catch {}
-    }
-    return story?.smartReplies || [];
-  });
+  const [smartReplies, setSmartReplies] = useState<string[]>([]);
 
   const [showMenu, setShowMenu] = useState(false);
   const [isMicActive, setIsMicActive] = useState(false);
@@ -132,28 +99,22 @@ export default function ChatScreen() {
 
   // Initialize messages from existing session or from the story openingHook
   useEffect(() => {
-    if (!story) return;
+    if (!isLoaded || !story) return;
 
-    // Check if a session exists in context or directly in localStorage
-    const session =
-      getSessionByStoryId(storyId) ||
-      (typeof window !== 'undefined'
-        ? getUserSessionsLocal().find((s) => s.storyId === storyId)
-        : undefined);
+    const session = getSessionByStoryId(storyId);
 
     if (session && session.messages && session.messages.length > 0) {
       setMessages(session.messages);
       if (session.contextState) {
         setContextState(session.contextState);
       }
-      const last = session.messages.slice(-1)[0];
+      const last = session.messages[session.messages.length - 1];
       if (last.sender === 'ai' && last.smartReplies && last.smartReplies.length > 0) {
         setSmartReplies(last.smartReplies);
       } else {
         setSmartReplies(story.smartReplies || []);
       }
     } else {
-      // Only seed initial message if NO session exists anywhere
       const initialAiMsg: MessageItem = {
         id: `msg-${Date.now()}`,
         sender: 'ai',
@@ -165,7 +126,7 @@ export default function ChatScreen() {
       setSmartReplies(story.smartReplies || []);
       appendMessageToSession(story.id, initialAiMsg);
     }
-  }, [storyId, story?.id, isLoaded]);
+  }, [storyId, story?.id, isLoaded, sessions]);
 
   // Auto-scroll to bottom
   useEffect(() => {
