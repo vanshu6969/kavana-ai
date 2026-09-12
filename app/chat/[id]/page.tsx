@@ -198,11 +198,11 @@ export default function ChatScreen() {
   };
 
   return (
-    <div className="w-full h-screen flex bg-[#050608] text-white overflow-hidden relative">
+    <div className="w-full h-screen h-[100dvh] flex bg-[#050608] text-white overflow-hidden relative">
       {/* 1. OPTIONAL TOGGLEABLE LEFT SIDEBAR: Active Stories Drawer */}
       {showLeftSidebar && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden"
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 lg:hidden"
           onClick={() => setShowLeftSidebar(false)}
         />
       )}
@@ -211,8 +211,8 @@ export default function ChatScreen() {
         className={`${
           showLeftSidebar ? 'translate-x-0' : '-translate-x-full'
         } lg:translate-x-0 ${
-          showLeftSidebar ? 'fixed inset-y-0 left-0 z-50 w-72' : 'hidden lg:hidden'
-        } flex flex-col border-r border-white/[0.08] bg-[#0D0E15] p-4 flex-shrink-0 transition-transform duration-200`}
+          showLeftSidebar ? 'fixed inset-y-0 left-0 z-50 w-72 sm:w-80' : 'hidden lg:hidden'
+        } flex flex-col border-r border-white/[0.08] bg-[#0D0E15] p-4 flex-shrink-0 transition-transform duration-200 shadow-2xl`}
       >
         <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/[0.08]">
           <h3 className="text-xs font-black text-white tracking-wider uppercase flex items-center gap-2">
@@ -221,9 +221,9 @@ export default function ChatScreen() {
           </h3>
           <button
             onClick={() => setShowLeftSidebar(false)}
-            className="p-1 rounded-lg text-slate-400 hover:text-white"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white active:scale-95 transition-transform"
           >
-            <X size={16} />
+            <X size={18} />
           </button>
         </div>
 
@@ -242,7 +242,7 @@ export default function ChatScreen() {
                     : 'bg-[#050608] border-white/[0.08] hover:border-white/20 text-slate-300'
                 }`}
               >
-                <div className="relative w-9 h-9 rounded-full overflow-hidden border border-slate-700 flex-shrink-0">
+                <div className="relative w-10 h-10 rounded-full overflow-hidden border border-slate-700 flex-shrink-0">
                   <img src={sess.avatarUrl} alt={sess.storyTitle} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -262,29 +262,29 @@ export default function ChatScreen() {
         {/* UNIFIED STREAMING HEADER */}
         <header className="h-14 sm:h-16 px-3 sm:px-6 flex items-center justify-between border-b border-white/[0.08] bg-[#050608]/95 backdrop-blur-xl z-30 flex-shrink-0">
           {/* Left: Back / Sidebar Toggle + Character Info */}
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-1">
             {/* Back Button */}
             <Link
               href="/"
-              className="w-8 h-8 rounded-full bg-[#0D0E15] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-white transition-colors flex-shrink-0"
+              className="w-9 h-9 rounded-full bg-[#0D0E15] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-white active:scale-95 transition-all flex-shrink-0"
               title="Back to Home"
             >
-              <ArrowLeft size={16} />
+              <ArrowLeft size={17} />
             </Link>
 
             {/* Sidebar toggle for story switching */}
             <button
               onClick={() => setShowLeftSidebar((prev) => !prev)}
-              className="w-8 h-8 rounded-full bg-[#0D0E15] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-[#FF2E55] transition-colors flex-shrink-0"
+              className="w-9 h-9 rounded-full bg-[#0D0E15] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-[#FF2E55] active:scale-95 transition-all flex-shrink-0"
               title="Toggle Stories Drawer"
             >
-              <PanelLeft size={16} />
+              <PanelLeft size={17} />
             </button>
 
             {/* Story & Character Header Info */}
             <button
               onClick={() => setShowInfoDrawer(true)}
-              className="flex items-center gap-2.5 text-left group min-w-0 hover:opacity-95 transition-opacity"
+              className="flex items-center gap-2 sm:gap-2.5 text-left group min-w-0 hover:opacity-95 transition-opacity flex-1"
               title="Click to view Story Lore & Intel"
             >
               <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border border-rose-500/60 group-hover:border-[#FF2E55] transition-colors flex-shrink-0 shadow-sm">
@@ -296,7 +296,7 @@ export default function ChatScreen() {
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-[#050608]"></span>
               </div>
 
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5">
                   <h3 className="text-xs sm:text-sm md:text-base font-black text-white group-hover:text-[#FF5C7A] transition-colors truncate leading-tight">
                     {story.title}
@@ -305,42 +305,42 @@ export default function ChatScreen() {
                     {story.category}
                   </span>
                 </div>
-                <p className="text-[10px] sm:text-[11px] text-slate-400 truncate flex items-center gap-1.5">
-                  <span className="text-[#FF5C7A] font-semibold">{story.characterName}</span>
+                <p className="text-[10px] sm:text-[11px] text-slate-400 truncate flex items-center gap-1">
+                  <span className="text-[#FF5C7A] font-bold">{story.characterName}</span>
                   <span>•</span>
-                  <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                  <span className="text-emerald-400 font-medium flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online
                   </span>
-                  <span className="hidden md:inline text-slate-600">•</span>
-                  <span className="hidden md:inline text-rose-300/80 truncate">{contextState.location}</span>
+                  <span className="hidden sm:inline text-slate-600">•</span>
+                  <span className="hidden sm:inline text-rose-300/80 truncate">{contextState.location}</span>
                 </p>
               </div>
             </button>
           </div>
 
           {/* Right Header Actions */}
-          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 ml-2">
             {/* Character Lore & Live Status Drawer Toggle */}
             <button
               onClick={() => setShowInfoDrawer((prev) => !prev)}
-              className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors ${
+              className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all active:scale-95 ${
                 showInfoDrawer
                   ? 'bg-rose-500/20 border-[#FF2E55] text-[#FF2E55]'
                   : 'bg-[#0D0E15] border-white/[0.08] text-slate-400 hover:text-[#FF2E55]'
               }`}
               title="View Character Lore & Intel"
             >
-              <Info size={16} />
+              <Info size={17} />
             </button>
 
             {/* Menu Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setShowMenu((prev) => !prev)}
-                className="w-8 h-8 rounded-full bg-[#0D0E15] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-white transition-colors"
+                className="w-9 h-9 rounded-full bg-[#0D0E15] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-white active:scale-95 transition-all"
                 title="Options"
               >
-                <MoreVertical size={16} />
+                <MoreVertical size={17} />
               </button>
 
               {showMenu && (
@@ -414,7 +414,7 @@ export default function ChatScreen() {
         </div>
 
         {/* INPUT AND SUGGESTIONS DOCK */}
-        <footer className="flex-shrink-0 bg-[#050608]/95 backdrop-blur-xl border-t border-white/[0.08] px-3 sm:px-6 py-2.5 sm:py-3 z-20">
+        <footer className="flex-shrink-0 bg-[#050608]/95 backdrop-blur-xl border-t border-white/[0.08] px-2.5 sm:px-6 py-2 sm:py-3 z-20 pb-[max(0.6rem,env(safe-area-inset-bottom))]">
           <div className="max-w-3xl mx-auto w-full">
             {/* Compact Smart Reply Chips Carousel */}
             {!isAiTyping && smartReplies.length > 0 && (
@@ -431,7 +431,7 @@ export default function ChatScreen() {
                 e.preventDefault();
                 handleSendMessage();
               }}
-              className="flex items-center gap-2 sm:gap-3"
+              className="flex items-center gap-1.5 sm:gap-3"
             >
               {/* Text Input Field */}
               <div className="relative flex-1">
@@ -441,32 +441,32 @@ export default function ChatScreen() {
                   onChange={(e) => setInputText(e.target.value)}
                   placeholder={`Reply to ${story.characterName}...`}
                   disabled={isAiTyping}
-                  className="w-full py-2.5 px-4 rounded-xl bg-[#0D0E15] border border-white/[0.08] focus:border-[#FF2E55] text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-rose-500/40 transition-all disabled:opacity-50"
+                  className="w-full py-2.5 sm:py-3 px-3.5 sm:px-4 rounded-xl sm:rounded-2xl bg-[#0D0E15] border border-white/[0.08] focus:border-[#FF2E55] text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-rose-500/40 transition-all disabled:opacity-50"
                 />
               </div>
 
-              {/* Mic / Action Preset */}
+              {/* Action Asterisks Trigger */}
               <button
                 type="button"
                 onClick={handleMicToggle}
-                className={`w-10 h-10 rounded-xl border flex items-center justify-center flex-shrink-0 transition-colors ${
+                className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl border flex items-center justify-center flex-shrink-0 active:scale-95 transition-all ${
                   isMicActive
                     ? 'bg-rose-500/20 border-[#FF2E55] text-[#FF2E55]'
                     : 'bg-[#0D0E15] border-white/[0.08] text-slate-400 hover:text-[#FF2E55]'
                 }`}
                 title="Insert Action Asterisks"
               >
-                <Mic size={17} />
+                <Mic size={18} />
               </button>
 
               {/* Send Button */}
               <button
                 type="submit"
                 disabled={!inputText.trim() || isAiTyping}
-                className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#FF2E55] to-[#E00034] text-white flex items-center justify-center flex-shrink-0 shadow-glow-crimson hover:scale-105 active:scale-95 disabled:opacity-30 disabled:pointer-events-none transition-all"
+                className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#FF2E55] to-[#E00034] text-white flex items-center justify-center flex-shrink-0 shadow-glow-crimson hover:scale-105 active:scale-95 disabled:opacity-30 disabled:pointer-events-none transition-all"
                 title="Send Message"
               >
-                <Send size={16} className="fill-white ml-0.5" />
+                <Send size={17} className="fill-white ml-0.5" />
               </button>
             </form>
           </div>

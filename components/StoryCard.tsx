@@ -100,28 +100,28 @@ export default function StoryCard({ story, layout = 'grid' }: StoryCardProps) {
         </div>
 
         {/* Bottom Title inside Image overlay */}
-        <div className="absolute bottom-2.5 left-3 right-3">
-          <h4 className="text-sm sm:text-base font-black text-white tracking-wide truncate group-hover:text-[#FF5C7A] transition-colors drop-shadow-md">
+        <div className="absolute bottom-2 left-2.5 right-2.5">
+          <h4 className="text-xs sm:text-base font-black text-white tracking-wide truncate group-hover:text-[#FF5C7A] transition-colors drop-shadow-md">
             {story.title}
           </h4>
-          <span className="text-[11px] text-slate-300 line-clamp-1">
+          <span className="text-[10px] sm:text-[11px] text-rose-300/90 font-medium truncate block">
             {story.characterName}
           </span>
         </div>
       </div>
 
       {/* Card Info Footer */}
-      <div className="p-3 sm:p-3.5 flex flex-col justify-between flex-1 gap-2 bg-[#0D0E15]">
-        <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+      <div className="p-2.5 sm:p-3.5 flex flex-col justify-between flex-1 gap-1.5 sm:gap-2 bg-[#0D0E15]">
+        <p className="text-[11px] sm:text-xs text-slate-400 line-clamp-2 leading-relaxed">
           {story.summary}
         </p>
 
-        <div className="flex items-center justify-between pt-2 border-t border-white/[0.06] text-[11px]">
-          <span className="text-slate-400 truncate max-w-[130px] sm:max-w-[170px]">
+        <div className="flex items-center justify-between pt-1.5 sm:pt-2 border-t border-white/[0.06] text-[10px] sm:text-[11px]">
+          <span className="text-slate-400 truncate max-w-[95px] sm:max-w-[170px]">
             You: <strong className="text-slate-200 font-semibold">{story.userRole}</strong>
           </span>
-          <span className="text-amber-400 font-bold flex items-center gap-1 flex-shrink-0">
-            <Star size={11} className="fill-amber-400 text-amber-400" /> {story.rating || '4.9'}
+          <span className="text-amber-400 font-bold flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
+            <Star size={10} className="fill-amber-400 text-amber-400" /> {story.rating || '4.9'}
           </span>
         </div>
       </div>

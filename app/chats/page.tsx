@@ -11,25 +11,25 @@ export default function ChatsPage() {
   return (
     <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-24 space-y-6">
       {/* Top Header Row */}
-      <div className="flex items-center justify-between py-2 border-b border-white/[0.08] pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-1 sm:py-2 border-b border-white/[0.08] pb-3 sm:pb-4">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-wide font-sans flex items-center gap-3">
+          <h2 className="text-xl sm:text-3xl font-extrabold text-white tracking-wide font-sans flex items-center gap-2.5">
             <span>Active Conversations</span>
-            <span className="text-xs px-3 py-1 rounded-full bg-rose-500/20 text-[#FF5C7A] font-black border border-rose-500/40">
-              {sessions.length} Scenarios
+            <span className="text-[10px] sm:text-xs px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-rose-500/20 text-[#FF5C7A] font-black border border-rose-500/40">
+              {sessions.length}
             </span>
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Pick up where you left off in your ongoing interactive narratives (100% Free & Unlimited)
+          <p className="text-[11px] sm:text-sm text-slate-400 mt-0.5 sm:mt-1">
+            Pick up where you left off in your ongoing interactive narratives (100% Free)
           </p>
         </div>
 
         <Link
           href="/"
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#FF2E55] to-[#E00034] hover:from-rose-500 hover:to-rose-700 text-white font-bold text-xs sm:text-sm shadow-glow-crimson transition-all"
+          className="inline-flex items-center justify-center gap-1.5 self-start sm:self-auto px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-[#FF2E55] to-[#E00034] hover:from-rose-500 hover:to-rose-700 text-white font-bold text-xs sm:text-sm shadow-glow-crimson transition-all"
         >
-          <PlusCircle size={16} />
-          <span>Explore More Shows</span>
+          <PlusCircle size={15} />
+          <span>Explore Shows</span>
         </Link>
       </div>
 

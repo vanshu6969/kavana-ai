@@ -35,7 +35,7 @@ export default function HeroCarousel({ featuredStories }: HeroCarouselProps) {
   return (
     <div className="relative w-full overflow-hidden rounded-2xl md:rounded-3xl border border-white/[0.08] shadow-xl bg-[#0D0E15] group">
       {/* Sleek Compact Height (Not oversized) */}
-      <div className="relative w-full h-[220px] sm:h-[260px] md:h-[290px]">
+      <div className="relative w-full h-[230px] sm:h-[260px] md:h-[290px]">
         <img
           src={current.cover}
           alt={current.title}
@@ -47,48 +47,48 @@ export default function HeroCarousel({ featuredStories }: HeroCarouselProps) {
         <div className="absolute inset-0 bg-gradient-to-r from-[#050608] via-[#050608]/80 to-transparent" />
 
         {/* Top Floating Story Badges */}
-        <div className="absolute top-3 sm:top-4 left-4 sm:left-6 right-4 sm:right-6 flex items-center justify-between z-10">
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-black/70 backdrop-blur-md border border-rose-500/40 text-[#FF2E55] text-[11px] font-bold">
+        <div className="absolute top-2.5 sm:top-4 left-3 sm:left-6 right-3 sm:right-6 flex items-center justify-between z-10">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-md bg-black/70 backdrop-blur-md border border-rose-500/40 text-[#FF2E55] text-[10px] sm:text-[11px] font-bold">
               <Sparkles size={11} className="text-[#FF2E55]" />
-              <span>FEATURED STORY</span>
+              <span>FEATURED</span>
             </div>
 
-            <span className="text-[11px] font-semibold text-rose-300 bg-rose-950/70 backdrop-blur-md px-2 py-0.5 rounded border border-rose-500/30">
+            <span className="text-[10px] sm:text-[11px] font-semibold text-rose-300 bg-rose-950/70 backdrop-blur-md px-2 py-0.5 rounded border border-rose-500/30">
               {current.category}
             </span>
           </div>
 
-          <div className="flex items-center gap-1 text-[11px] font-semibold text-slate-300 bg-black/60 px-2.5 py-0.5 rounded-md border border-white/10">
-            <Users size={12} className="text-[#FF2E55]" />
-            <span>{current.viewsCount || '48.9K'} Readers</span>
+          <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-semibold text-slate-300 bg-black/60 px-2 sm:px-2.5 py-0.5 rounded-md border border-white/10">
+            <Users size={11} className="text-[#FF2E55]" />
+            <span>{current.viewsCount || '48.9K'}</span>
           </div>
         </div>
 
         {/* Hero Content Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 z-10 flex flex-col items-start gap-2 max-w-2xl">
+        <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6 z-10 flex flex-col items-start gap-1.5 sm:gap-2 max-w-2xl">
           {/* Title & Character Subtitle */}
           <div>
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-wide font-sans drop-shadow-md">
+            <h2 className="text-lg sm:text-2xl md:text-3xl font-black text-white tracking-wide font-sans drop-shadow-md line-clamp-1">
               {current.title}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 line-clamp-2 mt-0.5 leading-relaxed drop-shadow">
+            <p className="text-[11px] sm:text-sm text-slate-300 line-clamp-2 mt-0.5 leading-relaxed drop-shadow">
               {current.summary}
             </p>
           </div>
 
           {/* Action Row */}
-          <div className="flex items-center gap-3 pt-1">
+          <div className="flex items-center gap-2.5 sm:gap-3 pt-0.5 sm:pt-1 flex-wrap">
             <Link
               href={`/chat/${current.id}`}
-              className="flex items-center justify-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-[#FF2E55] to-[#E00034] hover:from-rose-500 hover:to-rose-700 text-white font-extrabold text-xs sm:text-sm tracking-wider uppercase shadow-glow-crimson hover:scale-105 active:scale-95 transition-all"
+              className="flex items-center justify-center gap-1.5 px-4 sm:px-5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-[#FF2E55] to-[#E00034] hover:from-rose-500 hover:to-rose-700 text-white font-extrabold text-xs sm:text-sm tracking-wider uppercase shadow-glow-crimson hover:scale-105 active:scale-95 transition-all"
             >
-              <Play size={14} className="fill-white" />
+              <Play size={13} className="fill-white" />
               <span>START CHAT</span>
             </Link>
 
-            <span className="text-xs text-slate-400 font-medium">
-              You play as: <strong className="text-slate-200">{current.userRole}</strong>
+            <span className="text-[11px] sm:text-xs text-slate-400 font-medium truncate">
+              Play as: <strong className="text-slate-200">{current.userRole}</strong>
             </span>
           </div>
         </div>

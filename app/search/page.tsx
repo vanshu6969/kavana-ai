@@ -48,50 +48,50 @@ export default function SearchPage() {
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 space-y-8">
       {/* 1. SEARCH BAR & QUICK TAGS CONTAINER */}
-      <div className="max-w-2xl mx-auto flex flex-col items-center gap-4 text-center">
+      <div className="max-w-2xl mx-auto flex flex-col items-center gap-3 sm:gap-4 text-center">
         <div>
-          <h2 className="text-2xl sm:text-4xl font-black text-white tracking-wide flex items-center justify-center gap-2">
-            <Film className="text-[#FF2E55]" />
+          <h2 className="text-xl sm:text-4xl font-black text-white tracking-wide flex items-center justify-center gap-2">
+            <Film className="text-[#FF2E55]" size={22} />
             <span>Search 40+ Interactive Shows</span>
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+          <p className="text-[11px] sm:text-sm text-slate-400 mt-1">
             Pakistani Dramas, Mafia Don, Cold CEOs, Anime Legends & Gothic Sagas
           </p>
         </div>
 
         {/* Top Search Input Field */}
         <div className="relative w-full">
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
-            <Search size={20} />
+          <div className="absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+            <Search size={18} />
           </div>
 
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search characters (Murtasim, Anjali, Gojo, Tommy Shelby, Sharjeena)..."
-            className="w-full pl-12 pr-12 py-3.5 sm:py-4 rounded-2xl bg-[#0D0E15] border border-white/[0.08] focus:border-[#FF2E55] text-white placeholder-slate-500 text-sm sm:text-base font-medium focus:outline-none focus:ring-2 focus:ring-rose-500/20 shadow-xl transition-all"
+            placeholder="Search characters (Murtasim, Anjali, Gojo, Tommy Shelby)..."
+            className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-[#0D0E15] border border-white/[0.08] focus:border-[#FF2E55] text-white placeholder-slate-500 text-xs sm:text-base font-medium focus:outline-none focus:ring-2 focus:ring-rose-500/20 shadow-xl transition-all"
           />
 
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1"
+              className="absolute right-3.5 sm:right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1"
             >
-              <X size={18} />
+              <X size={16} />
             </button>
           )}
         </div>
 
-        {/* Quick Tag Filter Pills */}
-        <div className="flex flex-wrap justify-center items-center gap-2 pt-1">
+        {/* Quick Tag Filter Pills (Horizontally scrollable on small mobile) */}
+        <div className="w-full flex sm:flex-wrap items-center justify-start sm:justify-center gap-1.5 sm:gap-2 pt-1 overflow-x-auto pb-1 scrollbar-none px-1">
           {quickTags.map((tag) => {
             const isSelected = selectedTag === tag;
             return (
               <button
                 key={tag}
                 onClick={() => setSelectedTag(isSelected ? null : tag)}
-                className={`text-xs font-bold px-3.5 py-1.5 rounded-full transition-all ${
+                className={`text-[11px] sm:text-xs font-bold px-3 sm:px-3.5 py-1.5 rounded-full whitespace-nowrap flex-shrink-0 transition-all ${
                   isSelected
                     ? 'bg-gradient-to-r from-[#FF2E55] to-[#E00034] text-white shadow-glow-crimson'
                     : 'bg-[#0D0E15] text-slate-300 border border-white/[0.08] hover:border-white/30 hover:text-white'
