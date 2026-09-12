@@ -180,7 +180,10 @@ ${isAnimeManga ? `
       }
 
       // 2. Corrupted hyphens, stuttering tokens, or obsolete archaic words
-      if (/\b(haharre|dhhai|gesuon|zulf-e|zulfon-e|gesuein|barham|ha-ha-hai|k-k-k)\b/i.test(t)) {
+      if (/\b(haharre|dhhai|gesuon|zulf-e|zulfon-e|gesuein|barham|ha-ha-hai|k-k-k|apBegum|apMehrunnisa)\b/i.test(t)) {
+        return true;
+      }
+      if (/\b(?:e\.\*\s*r\s*chp|chp\s*par)\b/i.test(t)) {
         return true;
       }
 
@@ -210,37 +213,41 @@ ${isAnimeManga ? `
       if (!text) return text;
       let cleaned = text;
 
-      // 1. Decouple fused asterisks and quotes: e.g. hai.*na -> hai.* na
-      cleaned = cleaned.replace(/([a-zA-Z0-9.,?!])\*([a-zA-Z0-9])/g, '$1 * $2');
-      cleaned = cleaned.replace(/([a-zA-Z0-9])(\*|")/g, '$1 $2');
-      cleaned = cleaned.replace(/(\*|")([a-zA-Z0-9])/g, '$1 $2');
+      // 1. Separate fused punctuation glued to words (e.g. "khushi."na" -> "khushi." na", "hai...aur" -> "hai... aur")
+      cleaned = cleaned.replace(/([.?!*"'])([a-zA-Z0-9])/g, '$1 $2');
+      cleaned = cleaned.replace(/([a-zA-Z0-9])([*"])/g, '$1 $2');
+      cleaned = cleaned.replace(/([*"])([a-zA-Z0-9])/g, '$1 $2');
+      cleaned = cleaned.replace(/\.{2,}([a-zA-Z0-9])/g, '... $1');
 
       // 2. Remove broken artifacts like *n, or .*n
       cleaned = cleaned.replace(/([a-zA-Z0-9])\*n,?\s*/g, '$1. ');
       cleaned = cleaned.replace(/\*n\b/g, '');
 
-      // 3. Fix fused words like "Mehrunnisajaati" -> "Mehrunnisa jaati"
+      // 3. Fix fused words like "Mehrunnisajaati" -> "Mehrunnisa jaati", "apBegum" -> "Begum"
       cleaned = cleaned.replace(/([a-z])(jaati|hota|hoti|hote|karti|karte|gaya|gayi|raha|rahi|hain|hai|saath|chhoo)\b/gi, '$1 $2');
+      cleaned = cleaned.replace(/\bap(?:Begum|Mehrunnisa)\b/gi, 'Begum');
+      cleaned = cleaned.replace(/(Mehrunnisa\s*Begum)+/gi, 'Mehrunnisa Begum');
 
-      // 4. Clean phrase repetitions on word boundaries (2 to 8 words repeated)
-      cleaned = cleaned.replace(/\b((?:[a-zA-Z0-9']+\s+){1,7}[a-zA-Z0-9']+)\b(?:\s*[,.?!*"'\\-]*\s*\1\b)+/gi, '$1');
+      // 4. Repeated phrase loop deduplication (matching 10 to 80 char phrases repeated 2+ times)
+      cleaned = cleaned.replace(/(.{10,80}?)(?:[\s*.,?!"'-]*\1)+/gi, '$1');
 
       // 5. Clean single repeated words (e.g. "tumhare tumhare", "ko ko")
       cleaned = cleaned.replace(/\b([a-zA-Z]{2,})\s+\1\b/gi, '$1');
       cleaned = cleaned.replace(/\b([a-zA-Z]{2,})\s+\1\b/gi, '$1');
 
-      // 5. Remove corrupted hyphens/stutters (e.g. "haharre-dhhai")
+      // 6. Remove corrupted hyphens/stutters (e.g. "haharre-dhhai")
       cleaned = cleaned.replace(/\b([a-z]{1,4})-([a-z]{1,6})\b/gi, (match, p1, p2) => {
         if (/dheere-dheere|ahista-ahista|kabhi-kabhi|saath-saath/i.test(match)) return match;
         if (p1.toLowerCase() === p2.toLowerCase()) return p1;
         return '';
       });
 
-      // 6. Clean up known gibberish fragments and awkward commentary
+      // 7. Clean up known gibberish fragments and awkward commentary
       cleaned = cleaned.replace(/\b(haharre|dhhai|gesuon|zulf-e|zulfon-e)\b/gi, '');
       cleaned = cleaned.replace(/\*?\s*uski aawaz bohot hi romani hai\s*\*?/gi, '');
+      cleaned = cleaned.replace(/\b(?:e\.\*\s*r\s*chp|chp\s*par)\b/gi, '');
 
-      // 7. Sentence-level deduplication
+      // 8. Sentence-level deduplication
       const sentences = cleaned.split(/(?<=[.?!*])\s+/);
       const seenSentences = new Set<string>();
       const filteredSentences: string[] = [];
@@ -451,7 +458,7 @@ ${isAnimeManga ? `
 
     // Check if the user is requesting explicit adult / oral / sexual intimacy
     const isExplicitAdult =
-      /blow\s*job|blowjob|oral|gawk|lund|choot|chut|gaand|chudai|chodo|chud|chus|chuso|chusta|muh mein|munh mein|nanga|nangi|kapde utaro|underwear|panties|bra|sex|fuck|wet sounds|sucking|lick|swallow|penis|vagina|boobs|chuchi|doodh|choche/i.test(
+      /blow\s*job|blowjob|oral|gawk|lund|choot|chut|gaand|chudai|chodo|chud|chus|chuso|chusta|muh mein|munh mein|nanga|nangi|kapde|kapda|underwear|panties|bra|sex|fuck|wet sounds|sucking|lick|swallow|penis|vagina|boobs|chuchi|doodh|choche/i.test(
         lastUserMessage + ' ' + messages.slice(-3).map((m) => m.text).join(' ')
       );
 
@@ -460,10 +467,19 @@ ${isAnimeManga ? `
       try {
         const openRouterMessages = [
           { role: 'system', content: systemPrompt },
-          ...messages.slice(-12).map((m) => ({
-            role: m.sender === 'user' ? 'user' : 'assistant',
-            content: m.text,
-          })),
+          ...messages.slice(-8).map((m) => {
+            let content = (m.text || '').trim();
+            if (m.sender === 'ai') {
+              content = cleanRepetitionAndGibberish(content);
+              if (isDegradedOutput(content)) {
+                content = `*${characterName} aapke qareeb aati hain aur madhoshi se aapko dekhti hain.* "Aapke paas aakar mera saara sabr toot jaata hai..."`;
+              }
+            }
+            return {
+              role: m.sender === 'user' ? ('user' as const) : ('assistant' as const),
+              content,
+            };
+          }),
         ];
 
         // Intelligent multilingual and uncensored models (DeepSeek flagship leading)
@@ -489,8 +505,8 @@ ${isAnimeManga ? `
                 messages: openRouterMessages,
                 temperature: 0.7,
                 max_tokens: 600,
-                frequency_penalty: 0.05,
-                presence_penalty: 0.0,
+                frequency_penalty: 0.1,
+                presence_penalty: 0.05,
               }),
             });
 

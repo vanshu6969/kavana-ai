@@ -18,7 +18,16 @@ export default function ChatMessage({
 
   // Formats text so actions in asterisks or brackets flow naturally with dialogue
   const renderFormattedAiText = (rawText: string) => {
-    const parts = rawText.split(/(\*?\[.*?\]\*?|\*.*?\*)/g);
+    let textToRender = rawText || '';
+    // Decouple fused punctuation and remove repeating phrase loops on the fly
+    textToRender = textToRender.replace(/([.?!*"'])([a-zA-Z0-9])/g, '$1 $2');
+    textToRender = textToRender.replace(/\.{2,}([a-zA-Z0-9])/g, '... $1');
+    textToRender = textToRender.replace(/(.{10,80}?)(?:[\s*.,?!"'-]*\1)+/gi, '$1');
+    textToRender = textToRender.replace(/\bap(?:Begum|Mehrunnisa)\b/gi, 'Begum');
+    textToRender = textToRender.replace(/(Mehrunnisa\s*Begum)+/gi, 'Mehrunnisa Begum');
+    textToRender = textToRender.replace(/\b(?:e\.\*\s*r\s*chp|chp\s*par)\b/gi, '');
+
+    const parts = textToRender.split(/(\*?\[.*?\]\*?|\*.*?\*)/g);
 
     return (
       <div className="text-slate-100 text-[14px] sm:text-[15px] leading-relaxed font-sans space-y-2">
