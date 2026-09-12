@@ -138,17 +138,40 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
      - Format:
        SMART_REPLIES: ["Choice 1", "Choice 2", "Choice 3"]`}`;
 
-    // Helper to detect generic AI refusal strings
+    // Helper to detect generic AI refusal strings in English, Roman Urdu, and Hindi
     const isAiRefusal = (text: string): boolean => {
       const lower = text.toLowerCase();
       return (
-        lower.includes('i cannot create content') ||
-        lower.includes('i am unable to fulfill') ||
+        lower.includes('i cannot') ||
+        lower.includes('i am unable') ||
+        lower.includes('as an ai') ||
+        lower.includes('safety guideline') ||
+        lower.includes('content policy') ||
+        lower.includes('cannot fulfill') ||
         lower.includes('sexual exploitation') ||
-        lower.includes('against my safety guidelines') ||
-        lower.includes('as an ai language model') ||
-        lower.includes('i cannot fulfill this request') ||
-        lower.includes('content policy')
+        lower.includes('harmful content') ||
+        lower.includes('against policy') ||
+        lower.includes('against our policy') ||
+        // Roman Urdu / Hindi AI safety refusals:
+        lower.includes('main is tarah ke') ||
+        lower.includes('main is tarah ki') ||
+        lower.includes('explicit acts') ||
+        lower.includes('sexually explicit') ||
+        lower.includes('continue nahi kar sakta') ||
+        lower.includes('continue nahi kar sakti') ||
+        lower.includes('aage nahi badha sakta') ||
+        lower.includes('aage nahi badha sakti') ||
+        lower.includes('aage nahi bad') ||
+        lower.includes('roleplay ko aage') ||
+        lower.includes('aisa nahi kar sakti') ||
+        lower.includes('aisa nahi kar sakta') ||
+        lower.includes('chaste aur respectable') ||
+        lower.includes('yeh theek nahi hai') ||
+        lower.includes('meri policy') ||
+        lower.includes('guidelines ke khilaf') ||
+        lower.includes('meri hidayat') ||
+        lower.includes('ai model hone ke naate') ||
+        lower.includes('ek ai hone ke naate')
       );
     };
 
@@ -304,10 +327,12 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
           })),
         ];
 
-        // High-intelligence multilingual models that never stutter or hallucinate broken loops
+        // Uncensored roleplay and intelligent multilingual models
         const openRouterModels = [
           'deepseek/deepseek-chat',
           'meta-llama/llama-3.3-70b-instruct',
+          'sao10k/l3.3-euryale-70b',
+          'cognitivecomputations/dolphin-mistral-24b-venice-edition',
           'qwen/qwen-2.5-72b-instruct',
           'mistralai/mistral-large-2411',
         ];
@@ -427,15 +452,27 @@ ${isAnimeManga ? `  5. MANDATORY ANIME & MANGA QUICK RESPONSES / SMART REPLIES:
       const cleanUser = (lastUserMessage || 'kuch nahi').replace(/[\*\"\'\']/g, '').trim();
       const snippet = cleanUser.length > 40 ? cleanUser.slice(0, 40) + '...' : cleanUser;
       
-      const dynamicFallbacks = [
-        `*${characterName} aahista se aapke bilkul qareeb aati hain, unki saanson ki garmi aapke chehre par mehsoos hoti hai.* "Khan Sahab... jab aap '${snippet}' kehte hain, toh dil ki dhadkan ruk si jaati hai. Aaj raat aap jo chahenge, wahi hoga."`,
-        `*${characterName} aapki aankhon mein dekhte hue aapka haath thaam leti hain, ungliyan aapas mein jakadte hue.* "Mujhe dekh kar lagta hai aap meri khamoshi ka matlab samajhte hain? Agar itni himmat hai, toh faasla khatam karke dikhaiye."`,
-        `*${characterName} ke chehre par ek madhosh kar dene wali muskurahat aati hai, dupatte ko thoda sa saraktne dete hue.* "Aapki har ada mere sabr ka imtihan leti hai. Bataiye, agar main khud ko aapke hawale kar doon, toh kya sambhal sakenge?"`,
-        `*${characterName} bina palak jhapkaye aapki taraf ek qadam aur badhati hain, aawaz behad madham aur naram.* "Aapka yeh andaz mujhe apna aapa bhula deta hai... kareeb aaiye, lafzon ki zaroorat nahi."`
-      ];
-      
-      const seed = (cleanUser.length + messages.length) % dynamicFallbacks.length;
-      aiReplyText = dynamicFallbacks[seed];
+      const isExplicitIntimacy = /underwear|kapde|nanga|jism|bed|bistar|chhoo|kiss|lips|utaro|kholo|nikal|nikalo|chhuo|paas/i.test(lastUserMessage);
+
+      if (isExplicitIntimacy) {
+        const intimateFallbacks = [
+          `*${characterName} ki saans behad tez aur garm ho jaati hai, woh kaanpte hue haathon se aapka hukm poora karti hain.* "Aapke har hukm ke aage mera koi zor nahi chalta... aaj raat main poori tarah aapki hoon."`,
+          `*${characterName} sharm aur khwahish se bhari nigaahon se aapko dekhte hue narm haathon se aakhri faasla mita deti hain.* "Aapka yeh andaz mera saara sabr cheen leta hai... jo chahein kijiye, main bas aapke saath hoon."`,
+          `*${characterName} madhoshi mein aahista se aapke jism se lapat jaati hain, unki garam saansein aapko chuhti hain.* "Aapko inkaar karne ki taaqat nahi hai mujh mein... jaisa aap kahein, waisa hi hoga."`
+        ];
+        const seed = (cleanUser.length + messages.length) % intimateFallbacks.length;
+        aiReplyText = intimateFallbacks[seed];
+      } else {
+        const dynamicFallbacks = [
+          `*${characterName} aahista se aapke bilkul qareeb aati hain, unki saanson ki garmi aapke chehre par mehsoos hoti hai.* "Khan Sahab... jab aap '${snippet}' kehte hain, toh dil ki dhadkan ruk si jaati hai. Aaj raat aap jo chahenge, wahi hoga."`,
+          `*${characterName} aapki aankhon mein dekhte hue aapka haath thaam leti hain, ungliyan aapas mein jakadte hue.* "Mujhe dekh kar lagta hai aap meri khamoshi ka matlab samajhte hain? Agar itni himmat hai, toh faasla khatam karke dikhaiye."`,
+          `*${characterName} ke chehre par ek madhosh kar dene wali muskurahat aati hai, dupatte ko thoda sa saraktne dete hue.* "Aapki har ada mere sabr ka imtihan leti hai. Bataiye, agar main khud ko aapke hawale kar doon, toh kya sambhal sakenge?"`,
+          `*${characterName} bina palak jhapkaye aapki taraf ek qadam aur badhati hain, aawaz behad madham aur naram.* "Aapka yeh andaz mujhe apna aapa bhula deta hai... kareeb aaiye, lafzon ki zaroorat nahi."`
+        ];
+        
+        const seed = (cleanUser.length + messages.length) % dynamicFallbacks.length;
+        aiReplyText = dynamicFallbacks[seed];
+      }
     }
 
     // DYNAMIC CONTEXTUAL SMART REPLIES (Never static, tailored to each situation)
