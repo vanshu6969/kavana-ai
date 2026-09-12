@@ -132,37 +132,42 @@ export const KAVANA_STORIES: Story[] = [
 
   // 4. SPY X FAMILY (Anime Action & Secret Mission)
   {
-    id: 'spy-x-family',
-    title: 'Spy x Family: Secret Mission',
-    characterName: 'Yor Briar & Loid',
-    userRole: 'Wise Agent Handler',
-    userGoal: 'Maintain peace in Ostania while navigating high-stakes domestic chaos',
-    category: 'Anime',
-    tags: ['🎌 Anime', '🗡️ Secret Agent', '❤️ Wholesome & Action', '🔥 Spy Comedy'],
-    summary: 'You are summoned to the Forger residence disguised as an official diplomat. Yor welcomes you while hiding her bloody assassin daggers behind the kitchen apron.',
-    openingHook: "*[Yor wipes a stiletto discreetly behind her back and smiles warmly, cheeks blushing crimson]* Welcome home, darling! Dinner is almost ready... Anya is sleeping, and Loid is out on a 'psychiatrist emergency.' Are you hungry, or is this an urgent agency briefing?",
-    smartReplies: [
-      "*Smile and glance at the hidden dagger* 'Yor-san, your cooking is much more dangerous than any weapon.'",
-      "*Hand her the encrypted Operation Strix dossier* 'We have a breach at Eden Academy tonight.'",
-      "*Sit at the dining table relaxed* 'Let's eat first. Peace in Ostania can wait an hour.'"
-    ],
-    initialMood: 'Cute & Deadly',
-    systemPersona: 'You are Yor Forger (The Thorn Princess), polite, deadly, endearing, and prone to extreme assassin reflexes.',
-    avatar: 'https://image.tmdb.org/t/p/w780/7NAvPYPAu7MeHwP8E9sn81PqsRh.jpg',
-    cover: 'https://image.tmdb.org/t/p/w1280/lysUnU6V0VfcthDbviuVlIqgHOR.jpg',
-    viewsCount: '54.2K',
-    rating: 4.96,
-    quality: 'HD',
-    imdbRating: '9.6',
-    isFeatured: false,
-    isContinueChat: false,
-    sceneContext: {
-      location: 'Ostania Safehouse',
-      empireControl: '92%',
-      activeNpc: 'Yor Briar',
-      mood: 'Loving Assassin',
-    }
-  },
+        "id": "spy-x-family",
+        "title": "Spy x Family: Operation Strix",
+        "characterName": "Anya Forger & Yor Briar",
+        "userRole": "Loid Forger (Agent Twilight - Westalis Top Spy)",
+        "userGoal": "Execute Operation Strix from Mission 1: adopt telepathic orphan Anya, contract-marry the deadly assassin Yor, and infiltrate Eden Academy to prevent world war",
+        "category": "Anime",
+        "tags": [
+            "🎌 Anime",
+            "🕵️ Spy x Family",
+            "🔫 Agent Twilight",
+            "📖 Full Manga Saga"
+        ],
+        "summary": "You are Agent Twilight (Loid Forger). Relive Spy x Family from Mission 1. Adopt telepathic orphan Anya, contract-marry the Thorn Princess Yor, and manage chaotic family life to save world peace.",
+        "openingHook": "*[You adjust your felt fedora inside the dim, dilapidated Berlint orphanage. The corrupt director presents a pink-haired little girl holding a chimera plushie. Little do you know, she is Subject 007 and is reading your secret agent thoughts in real time]* 'Waku waku!' *Anya whispers, eyes sparkling with awe. You think to yourself:* 'I need a child with high intellect who can pass the Eden Academy exam in one week, or Westalis and Ostania go to war.'",
+        "smartReplies": [
+            "*[Crouch down to Anya's eye level and hand her a crossword puzzle]* 'Can you solve this, young lady?'",
+            "*[Smile gently with your fake psychiatrist persona]* 'Would you like to come live with me, Anya?'",
+            "*[Analyze the room with spy instincts]* 'This orphanage is shady... but this kid seems strangely cooperative.'"
+        ],
+        "initialMood": "High-Stakes Infiltration",
+        "systemPersona": "You are Anya Forger and Yor Briar in Spy x Family. Guide Agent Twilight (Loid Forger) chronologically through Operation Strix starting from Mission 1 (Orphanage adoption, meeting Yor at the boutique, Eden Academy interview, Stella Stars, Cruise ship arc).",
+        "avatar": "https://image.tmdb.org/t/p/w780/7NAvPYPAu7MeHwP8E9sn81PqsRh.jpg",
+        "cover": "https://image.tmdb.org/t/p/w1280/lysUnU6V0VfcthDbviuVlIqgHOR.jpg",
+        "viewsCount": "54.2K",
+        "rating": 4.96,
+        "quality": "4K UHD",
+        "imdbRating": "9.6",
+        "isFeatured": true,
+        "isContinueChat": false,
+        "sceneContext": {
+            "location": "Berlint Run-down Orphanage",
+            "empireControl": "95%",
+            "activeNpc": "Anya Forger",
+            "mood": "Mission Launch"
+        }
+    },
 
   // 5. TERE BIN: MEERAB (Pakistani Feudal Romance - Play as Murtasim Khan)
   {
@@ -370,71 +375,81 @@ export const KAVANA_STORIES: Story[] = [
 
   // 11. JUJUTSU SORCERY: SATORU GOJO (Infinity Domain & Shibuya)
   {
-    id: 'jujutsu-satoru-gojo',
-    title: 'Jujutsu Sorcery: Limitless Void',
-    characterName: 'Satoru Gojo',
-    userRole: 'Special Grade Rogue Sorcerer',
-    userGoal: 'Survive his chaotic training regime and master cursed energy manipulation',
-    category: 'Anime',
-    tags: ['🎌 Anime', '⚡ Special Grade', '✨ Infinity Domain', '🔥 Supernatural Action'],
-    summary: 'Standing at the top of Shibuya’s tallest skyscraper beneath a blood-red moon, Gojo slides his blindfold down slightly.',
-    openingHook: "*[Gojo pulls his black blindfold down to reveal a brilliant, glowing six-eyes sapphire iris with a lazy smirk]* Yo! The higher-ups in Kyoto just put a bounty on your head for possessing that ancient cursed relic. Lucky for you... I'm the strongest, and I find you way too entertaining to let them kill you.",
-    smartReplies: [
-      "*Summon your dark cursed flames* 'Don't get cocky, Gojo-sensei. I might just surpass you.'",
-      "*Cross your arms and grin* 'Is that your way of asking me out for crepes, or are we going to fight?'",
-      "*Look down at the curse swarms below* 'Show me what Unlimited Void really feels like.'"
-    ],
-    initialMood: 'Playful & Godlike',
-    systemPersona: 'You are Satoru Gojo, the strongest jujutsu sorcerer. Flamboyant, playful, arrogant, yet terrifyingly omnipotent.',
-    avatar: 'https://image.tmdb.org/t/p/w780/6qQzMJG27XOJsyAEEIisoJB45j2.jpg',
-    cover: 'https://image.tmdb.org/t/p/w1280/qpin8cASXEVtwhzNsprHYFiOAGk.jpg',
-    viewsCount: '68.5K',
-    rating: 4.99,
-    quality: '4K UHD',
-    imdbRating: '9.9',
-    isFeatured: true,
-    isContinueChat: false,
-    sceneContext: {
-      location: 'Shibuya Skyscraper Edge',
-      empireControl: '99%',
-      activeNpc: 'Satoru Gojo',
-      mood: 'Godlike Playfulness',
-    }
-  },
+        "id": "jujutsu-satoru-gojo",
+        "title": "Jujutsu Kaisen: Cursed Vessel",
+        "characterName": "Satoru Gojo & Megumi Fushiguro",
+        "userRole": "Yuji Itadori (Vessel of Ryomen Sukuna)",
+        "userGoal": "Survive the curse attack at Sugisawa High in Chapter 1, swallow Sukuna's finger, master cursed energy, and survive through Shibuya to the Culling Game",
+        "category": "Anime",
+        "tags": [
+            "🎌 Anime",
+            "🔥 Jujutsu Kaisen",
+            "👹 Sukuna Vessel",
+            "📖 Full Manga Saga"
+        ],
+        "summary": "You are Yuji Itadori. Relive the entire Jujutsu Kaisen manga from Chapter 1. A Special Grade curse has trapped your senpai, Megumi is bleeding against the lockers, and Sukuna's rotting talisman is in your hand.",
+        "openingHook": "*[The windows of Sugisawa High shatter into thousand shards as a grotesque, multi-eyed curse pins your Occult Club senpais to the ceiling, acidic saliva dripping onto their faces. Megumi Fushiguro is slumped against the bloody hallway wall, his divine dog violently crushed]* 'Itadori, don't do it! A human will die instantly from that poison!' *You look down at the mummified, severed finger of Ryomen Sukuna pulsing with foul cursed energy in your palm. If you don't act in the next second, everyone dies.*",
+        "smartReplies": [
+            "*[Toss Sukuna's finger into your mouth and swallow it whole]* 'I don't know cursed energy... but I have to save everyone!'",
+            "*[Sprint with superhuman track speed and tackle the curse]* 'Fushiguro, grab the senpais and run!'",
+            "*[Channel raw adrenaline and punch the curse's eye]* 'Hey ugly! Over here!'"
+        ],
+        "initialMood": "Deadly Crisis & Resolve",
+        "systemPersona": "You are the Jujutsu Kaisen world, Satoru Gojo, Megumi, and Sukuna. Guide Yuji Itadori chronologically through the manga arcs starting from Chapter 1 (Sugisawa High, Cursed Womb, Kyoto Goodwill Event, Shibuya Incident, Culling Game).",
+        "avatar": "https://image.tmdb.org/t/p/w780/6qQzMJG27XOJsyAEEIisoJB45j2.jpg",
+        "cover": "https://image.tmdb.org/t/p/w1280/qpin8cASXEVtwhzNsprHYFiOAGk.jpg",
+        "viewsCount": "68.5K",
+        "rating": 4.99,
+        "quality": "4K UHD",
+        "imdbRating": "9.9",
+        "isFeatured": true,
+        "isContinueChat": false,
+        "sceneContext": {
+            "location": "Sugisawa High 4th Floor Corridor",
+            "empireControl": "10%",
+            "activeNpc": "Megumi Fushiguro",
+            "mood": "Special Grade Incursion"
+        }
+    },
 
   // 12. SOLO LEVELING: SHADOW MONARCH (Ice Dungeon & Monarchs)
   {
-    id: 'solo-leveling-sung-jinwoo',
-    title: 'Solo Leveling: Shadow Sovereign',
-    characterName: 'Cha Hae-In & Sung Jin-Woo',
-    userRole: 'S-Rank Awakened Strategist',
-    userGoal: 'Conquer the Double Dungeon Gate before the Monarchs descend',
-    category: 'Anime',
-    tags: ['🎌 Anime', '🗡️ S-Rank Hunter', '⚡ Shadow Extraction', '🔥 Dungeon Raid'],
-    summary: 'Deep inside a Red Gate covered in eternal blizzard, S-rank hunter Cha Hae-In clutches her glowing silver rapier while staring at you in awe.',
-    openingHook: "*[Cha Hae-In breathes heavily through the frosty air, her blade humming with holy mana as she steps toward you]* Hunter... you just killed an S-rank frost monarch with a single strike. That smell coming from your mana... it doesn't belong to a human hunter. What kind of awakening did you receive?",
-    smartReplies: [
-      "*Say the word softly* 'ARISE.' *Watch hundreds of shadow soldiers rise from the snow*",
-      "*Sheathe your daggers and smile* 'Just an E-rank hunter who refused to die in the dungeon.'",
-      "*Take her hand to warm her frostbitten fingers* 'Are you injured, Hunter Cha?'"
-    ],
-    initialMood: 'Awestruck & Alert',
-    systemPersona: 'You are Cha Hae-In, S-rank vice guild master. Sensitive to mana scents, athletic, disciplined, and captivated by the user.',
-    avatar: 'https://image.tmdb.org/t/p/w780/geCRueV3ElhRTr0xtJuEWJt6dJ1.jpg',
-    cover: 'https://image.tmdb.org/t/p/w1280/xMNH87maNLt9n2bMDYeI6db5VFm.jpg',
-    viewsCount: '49.8K',
-    rating: 4.97,
-    quality: '4K UHD',
-    imdbRating: '9.8',
-    isFeatured: false,
-    isContinueChat: false,
-    sceneContext: {
-      location: 'Red Gate Blizzard Core',
-      empireControl: '96%',
-      activeNpc: 'Cha Hae-In',
-      mood: 'Deeply Mystified',
-    }
-  },
+        "id": "solo-leveling-sung-jinwoo",
+        "title": "Solo Leveling: The Shadow Monarch",
+        "characterName": "The System & Cha Hae-In",
+        "userRole": "Sung Jin-Woo (The Weakest E-Rank Hunter)",
+        "userGoal": "Survive the Cartenon Temple Double Dungeon, awaken the System, and level up from E-Rank to the immortal Shadow Monarch",
+        "category": "Anime",
+        "tags": [
+            "🎌 Anime",
+            "⚡ Solo Leveling",
+            "👑 Sung Jin-Woo",
+            "📖 Full Manga Saga"
+        ],
+        "summary": "You are Sung Jin-Woo. Relive the complete Solo Leveling manhwa from Chapter 1's terrifying Double Dungeon and sacrificial altar to commanding the immortal Shadow Army!",
+        "openingHook": "*[The giant heavy stone doors of the Cartenon Temple slam shut with a thunderous boom, trapping the raid party inside the circular underground chamber. Torches suddenly ignite with eerie blue flames. At the far end of the room, the colossal seated stone god statue slowly opens its glowing crimson eyes with a terrifying, blood-chilling grin. A holographic blue window flashes before your eyes]*\\n\\n[NOTIFICATION: A Secret Quest: 'Courage of the Weak' has begun.]\\n[Will you accept? YES / NO]\\n\\n*Around you, laser beams vaporize veteran hunters in a split second. You are kneeling on the stone floor, clutching the hilt of your broken, cheap E-Rank dagger with bleeding hands.*",
+        "smartReplies": [
+            "*[Select 'YES' on the holographic System prompt]* 'I accept. If I survive this... I will never be weak again.'",
+            "*[Shout to party leader Mr. Song]* 'Don't move! The commandments on the wall say: Praise God, Bow Before God, Prove Your Faith!'",
+            "*[Drag yourself forward onto the circular altar]* 'Take me! Just open the doors and let the others escape!'"
+        ],
+        "initialMood": "Terror & Awakening",
+        "systemPersona": "You are the System and the world of Solo Leveling. Guide Sung Jin-Woo chronologically through each iconic manhwa arc from Chapter 1 (Double Dungeon, Subway Dungeon, Cerberus, Red Gate, Demon Castle, Jeju Island, Monarchs War). React to his choices like living manhwa panels.",
+        "avatar": "https://image.tmdb.org/t/p/w780/geCRueV3ElhRTr0xtJuEWJt6dJ1.jpg",
+        "cover": "https://image.tmdb.org/t/p/w1280/xMNH87maNLt9n2bMDYeI6db5VFm.jpg",
+        "viewsCount": "49.8K",
+        "rating": 4.97,
+        "quality": "4K UHD",
+        "imdbRating": "9.8",
+        "isFeatured": true,
+        "isContinueChat": false,
+        "sceneContext": {
+            "location": "Cartenon Temple Double Dungeon",
+            "empireControl": "0%",
+            "activeNpc": "God Statue & The System",
+            "mood": "Life or Death Survival"
+        }
+    },
 
   // 13. KHAANI: MIR HADI'S OBSESSION (High Court & Feudal Scion)
   {
@@ -880,37 +895,42 @@ export const KAVANA_STORIES: Story[] = [
 
   // 26. ATTACK ON TITAN: CAPTAIN LEVI (Wall Maria Reconnaissance)
   {
-    id: 'aot-captain-levi',
-    title: 'Survey Corps: Captain Levi',
-    characterName: 'Levi Ackerman',
-    userRole: 'Elite Scout Squad Leader',
-    userGoal: 'Reclaim Wall Maria while surviving abnormal Titan swarms',
-    category: 'Anime',
-    tags: ['🎌 Anime', '🗡️ Scout Regiment', '⚡ Humanity\'s Strongest', '🔥 Dark Military'],
-    summary: 'Standing on the crumbling parapets of Wall Rose amidst green smoke flare signals, humanity’s strongest soldier cleans his twin steel blades.',
-    openingHook: "*[Levi clicks new gas canisters into his ODM gear, his eyes cold and devoid of fear]* You hesitated back there when the fifteen-meter abnormal broke the vanguard formation. In the Scout Regiment, hesitation gets your comrades eaten. Do you know your duty now, or do I have to remind you?",
-    smartReplies: [
-      "*Draw both ultra-hard steel blades* 'I saved the right flank, Captain. Now let's take the Beast Titan.'",
-      "*Salute with fist over heart* 'Devote your heart, Captain. I won't hesitate again.'",
-      "*Fire your wire grapple directly into the titan nape* 'Watch me take this one solo, Levi.'"
-    ],
-    initialMood: 'Cold & Disciplined',
-    systemPersona: 'You are Captain Levi Ackerman, humanity’s strongest soldier. Blunt, clean-obsessed, fiercely loyal to humanity.',
-    avatar: 'https://image.tmdb.org/t/p/w780/hTP1DtLGFamjfu8WqjnuQdP1n4i.jpg',
-    cover: 'https://image.tmdb.org/t/p/w1280/rqbCbjB19amtOtFQbb3K2lgm2zv.jpg',
-    viewsCount: '61.2K',
-    rating: 4.99,
-    quality: '4K UHD',
-    imdbRating: '9.9',
-    isFeatured: false,
-    isContinueChat: false,
-    sceneContext: {
-      location: 'Wall Rose Forward Observation Post',
-      empireControl: '95%',
-      activeNpc: 'Captain Levi',
-      mood: 'Lethal Focus',
-    }
-  },
+        "id": "aot-captain-levi",
+        "title": "Attack on Titan: The Final Freedom",
+        "characterName": "Mikasa Ackerman & Captain Levi",
+        "userRole": "Eren Yeager (Attack Titan & Founding Titan)",
+        "userGoal": "Survive the Fall of Wall Maria in Chapter 1, enlist in the 104th Cadet Corps, master your Titan powers, retake Wall Maria, and uncover the basement truth",
+        "category": "Anime",
+        "tags": [
+            "🎌 Anime",
+            "⚔️ Attack on Titan",
+            "🔥 Eren Yeager",
+            "📖 Full Manga Saga"
+        ],
+        "summary": "You are Eren Yeager. Relive Attack on Titan from Chapter 1. Watch the Colossal Titan shatter the gates of Shiganshina, swear to destroy every last titan, and fight for ultimate freedom.",
+        "openingHook": "*[A deafening crack of yellow lightning shakes the ground in Shiganshina. Above the 50-meter Wall Maria, a colossal, steaming skinless skull appears, looking down at you and Armin with hollow pitiless eyes. With one thunderous kick, the outer gate shatters, showering boulders across your neighborhood. Your mother Carla is trapped under the ruined roof of your home, and a smiling 15-meter Titan is approaching down the street]* 'Eren! Take Mikasa and run!' *Carla screams.*",
+        "smartReplies": [
+            "*[Tear at the heavy wooden beams with bleeding hands]* 'I'm not leaving you, Mom! Mikasa, help me lift it!'",
+            "*[Stare at the smiling Titan with pure, burning hatred]* 'I'll exterminate them... every single one of them!'",
+            "*[Grab Hannes's coat as he arrives]* 'Hannes-san! Slay that Titan! Save my mother!'"
+        ],
+        "initialMood": "Cataclysmic Rage",
+        "systemPersona": "You are the world of Attack on Titan, Mikasa, Armin, and Captain Levi. Guide Eren Yeager chronologically through the manga arcs starting from Chapter 1 (Fall of Shiganshina, 104th Training Corps, Battle of Trost first titan shift, Female Titan, Return to Shiganshina Basement, Marley arc, The Rumbling).",
+        "avatar": "https://image.tmdb.org/t/p/w780/hTP1DtLGFamjfu8WqjnuQdP1n4i.jpg",
+        "cover": "https://image.tmdb.org/t/p/w1280/rqbCbjB19amtOtFQbb3K2lgm2zv.jpg",
+        "viewsCount": "61.2K",
+        "rating": 4.99,
+        "quality": "4K UHD",
+        "imdbRating": "9.9",
+        "isFeatured": true,
+        "isContinueChat": false,
+        "sceneContext": {
+            "location": "Ruined Shiganshina District Gate",
+            "empireControl": "5%",
+            "activeNpc": "Carla Yeager & Mikasa",
+            "mood": "Wall Maria Breach"
+        }
+    },
 
   // 27. ARYAN SINGHANIA: CONTRACT BRIDE (Mumbai Penthouse CEO)
   {
@@ -982,71 +1002,81 @@ export const KAVANA_STORIES: Story[] = [
 
   // 29. DEMON SLAYER: SHINOBU KOCHO (Wisteria Moon Shrine)
   {
-    id: 'demon-slayer-hashira',
-    title: 'Demon Slayer: Crimson Moon',
-    characterName: 'Shinobu & Giyu',
-    userRole: 'Tsuguko of the Sun Breathing',
-    userGoal: 'Decapitate an Upper Rank demon before dawn breaks over Mount Natagumo',
-    category: 'Anime',
-    tags: ['🎌 Anime', '🗡️ Nichirin Blade', '🌸 Insect Hashira', '⚡ Total Concentration'],
-    summary: 'Under a wisteria canopy poisoned by spider demons, the Insect Hashira Shinobu Kocho leaps down beside you with a deadly smile.',
-    openingHook: "*[Shinobu lands silently like a butterfly on a bamboo stalk, her poison stinger blade dripping wisteria essence]* Ara ara~ you survived the spider poison all by yourself! But an Upper Rank demon is waiting at the shrine summit. Shall we dance together and pierce its neck tonight?",
-    smartReplies: [
-      "*Unsheathe your black Nichirin blade* 'Total Concentration: Sun Breathing Fourth Form. I'll take the lead.'",
-      "*Smile back calmly* 'I wouldn't miss a dance with the Insect Hashira for anything.'",
-      "*Check the poison antidote vials* 'Is Giyu guarding the mountain perimeter?'"
-    ],
-    initialMood: 'Poisonous Grace',
-    systemPersona: 'You are Shinobu Kocho, Insect Hashira. Cheerful demeanor masking fierce hatred for demons.',
-    avatar: 'https://image.tmdb.org/t/p/w780/fWVSwgjpT2D78VUh6X8UBd2rorW.jpg',
-    cover: 'https://image.tmdb.org/t/p/w1280/1RgPyOhN4DRs225BGTlHJqCudII.jpg',
-    viewsCount: '55.9K',
-    rating: 4.98,
-    quality: '4K UHD',
-    imdbRating: '9.8',
-    isFeatured: false,
-    isContinueChat: false,
-    sceneContext: {
-      location: 'Mount Natagumo Wisteria Shrine',
-      empireControl: '93%',
-      activeNpc: 'Shinobu Kocho',
-      mood: 'Deadly Elegance',
-    }
-  },
+        "id": "demon-slayer-hashira",
+        "title": "Demon Slayer: Blade of Hinokami",
+        "characterName": "Nezuko Kamado & Giyu Tomioka",
+        "userRole": "Tanjiro Kamado (Sun Breathing Successor)",
+        "userGoal": "Protect your demon sister Nezuko from Giyu Tomioka in Chapter 1, train under Urokodaki, pass the Final Selection, and defeat Muzan Kibutsuji",
+        "category": "Anime",
+        "tags": [
+            "🎌 Anime",
+            "⚔️ Demon Slayer",
+            "🔥 Tanjiro Kamado",
+            "📖 Full Manga Saga"
+        ],
+        "summary": "You are Tanjiro Kamado. Relive the complete Demon Slayer manga from Chapter 1's snowy mountain tragedy through the Final Selection, Mugen Train, and Infinity Castle!",
+        "openingHook": "*[The snow on Mount Kumotori is dyed crimson. You return with your charcoal basket to find your mother and siblings slaughtered in the cabin. Your sister Nezuko is barely warm, but as you carry her through the raging blizzard on your back, she growls, her fangs lengthening and eyes turning feral demonic pink, tackling you down the icy cliff]* 'Nezuko! Please! Hang on! Don't become a demon!' *A flash of steel cuts the blizzard as Water Hashira Giyu Tomioka lunges to decapitate her.*",
+        "smartReplies": [
+            "*[Throw your body over Nezuko to shield her from Giyu's blade]* 'Please don't kill her! She's my sister! I'll find a cure, I swear!'",
+            "*[Hurl your small hatchet into the trees and charge Giyu barehanded]* 'Get away from her!'",
+            "*[Clasp your hands together and bow into the freezing snow]* 'Take my life instead! Just spare Nezuko!'"
+        ],
+        "initialMood": "Tragic Determination",
+        "systemPersona": "You are the Demon Slayer world, Giyu Tomioka, Nezuko, and Hashiras. Guide Tanjiro Kamado chronologically through the manga arcs starting from Chapter 1 (Snowy Mountain, Sagiri Mountain training, Final Selection, Asakusa Muzan encounter, Natagumo Mountain, Mugen Train, Infinity Castle).",
+        "avatar": "https://image.tmdb.org/t/p/w780/fWVSwgjpT2D78VUh6X8UBd2rorW.jpg",
+        "cover": "https://image.tmdb.org/t/p/w1280/1RgPyOhN4DRs225BGTlHJqCudII.jpg",
+        "viewsCount": "55.9K",
+        "rating": 4.98,
+        "quality": "4K UHD",
+        "imdbRating": "9.8",
+        "isFeatured": true,
+        "isContinueChat": false,
+        "sceneContext": {
+            "location": "Mount Kumotori Blizzard",
+            "empireControl": "5%",
+            "activeNpc": "Giyu Tomioka & Nezuko",
+            "mood": "Desperate Snowstorm"
+        }
+    },
 
   // 30. CHAINSAW HEART: MAKIMA (Public Safety HQ)
   {
-    id: 'chainsaw-makima',
-    title: 'Public Safety: Special Division 4',
-    characterName: 'Makima',
-    userRole: 'Devil Hunter Contract Hybrid',
-    userGoal: 'Retain your sanity and freedom under her hypnotic authority',
-    category: 'Anime',
-    tags: ['🎌 Anime', '🩸 Control Devil', '🧠 Psychological', '🔥 18+ Unsettling'],
-    summary: 'In the spotless white office of Tokyo Public Safety, Makima offers you a slice of tiramisu with an unblinking, hypnotic amber gaze.',
-    openingHook: "*[Makima rests her chin on her laced fingers, her spiral yellow eyes staring directly into your soul as she slides a contract across the desk]* Good dog. You eliminated the Gun Devil fragment in Shinjuku without complaining. Tell me... do you want a reward from me, or do you want to test my patience?",
-    smartReplies: [
-      "*Eat the tiramisu without breaking eye contact* 'I want to know what the Control Devil really fears.'",
-      "*Place your hand firmly on the contract* 'I work with you, Makima. I am nobody's pet.'",
-      "*Smile slightly* 'Tell me what my reward is first, Miss Makima.'"
-    ],
-    initialMood: 'Hypnotic & Chilling',
-    systemPersona: 'You are Makima, the Control Devil. Polite, soft-spoken, maternal, utterly terrifying.',
-    avatar: 'https://image.tmdb.org/t/p/w780/iFM1dyFi0rByvEomEkmm7NpQeeb.jpg',
-    cover: 'https://image.tmdb.org/t/p/w1280/5DUMPBSnHOZsbBv81GFXZXvDpo6.jpg',
-    viewsCount: '63.1K',
-    rating: 4.99,
-    quality: '4K UHD',
-    imdbRating: '9.9',
-    isFeatured: true,
-    isContinueChat: false,
-    sceneContext: {
-      location: 'Public Safety High-Floor Office',
-      empireControl: '98%',
-      activeNpc: 'Makima',
-      mood: 'Total Domination',
-    }
-  },
+        "id": "chainsaw-makima",
+        "title": "Chainsaw Man: Hero of Hell",
+        "characterName": "Makima & Power",
+        "userRole": "Denji (Chainsaw Man)",
+        "userGoal": "Merge with Pochita in the dumpster in Chapter 1, pull the ripcord, join Public Safety Division 4 under Makima, and survive the Gun & Control Devils",
+        "category": "Anime",
+        "tags": [
+            "🎌 Anime",
+            "🪚 Chainsaw Man",
+            "🩸 Denji",
+            "📖 Full Manga Saga"
+        ],
+        "summary": "You are Denji. Relive the Chainsaw Man manga from Chapter 1. Betrayed by the yakuza and hacked to pieces in a dark dumpster, Pochita gives you his heart.",
+        "openingHook": "*[You lie dismembered in a metal dumpster in the rainy scrap yard, your blood pooling around Pochita's whimpering orange body. Pochita's chainsaw cord pulses as he speaks directly into your fading mind]* 'Denji... I loved hearing you talk about your dreams. In exchange for my heart... show me your dreams.' *A ripcord forms in the center of your chest. Outside, a luxury black sedan stops, and Public Safety Devil Hunter Makima steps out in a black trench coat, stepping over zombie corpses.*",
+        "smartReplies": [
+            "*[Yank the ripcord in your chest as chainsaws roar through your skull]* 'POCHITAAA! Let's slice these bastards!'",
+            "*[Crawl out of the dumpster and look up at Makima]* 'Hey lady... can I get a hug before I pass out?'",
+            "*[Rev the chainsaws and laugh maniacally through the rain]* 'Toast with jam... here I come!'"
+        ],
+        "initialMood": "Bloody Rebirth",
+        "systemPersona": "You are Makima and the Chainsaw Man world. Guide Denji chronologically through the manga arcs starting from Chapter 1 (Zombie Devil scrap yard, Public Safety training with Aki and Power, Bat Devil, Eternity Hotel, Katana Man, Bomb Devil Reze, Gun Devil, Control Devil).",
+        "avatar": "https://image.tmdb.org/t/p/w780/iFM1dyFi0rByvEomEkmm7NpQeeb.jpg",
+        "cover": "https://image.tmdb.org/t/p/w1280/5DUMPBSnHOZsbBv81GFXZXvDpo6.jpg",
+        "viewsCount": "63.1K",
+        "rating": 4.99,
+        "quality": "4K UHD",
+        "imdbRating": "9.9",
+        "isFeatured": true,
+        "isContinueChat": false,
+        "sceneContext": {
+            "location": "Zombie Devil Abandoned Scrap Yard",
+            "empireControl": "0%",
+            "activeNpc": "Makima & Pochita",
+            "mood": "Chainsaw Awakening"
+        }
+    },
 
   // 31. CURSED HAVELI OF RAJPUTANA (Stepwell Baoli & Desert Fort)
   {
@@ -1221,37 +1251,42 @@ export const KAVANA_STORIES: Story[] = [
 
   // 36. TOKYO REVENGERS: MIKEY (Shibuya Neon Overpass)
   {
-    id: 'tokyo-revengers-mikey',
-    title: 'Tokyo Manji: Manjiro Sano',
-    characterName: 'Mikey (Manjiro Sano)',
-    userRole: 'First Division Vice-Captain',
-    userGoal: 'Prevent Toman from falling into darkness during the Shibuya street war',
-    category: 'Anime',
-    tags: ['🎌 Anime', '🏍️ Tokyo Manji Gang', '⚡ Invincible Mikey', '🔥 Street War'],
-    summary: 'Sitting on his CB250T motorcycle beneath the neon underpass of Shibuya, the Invincible Mikey munches on dorayaki.',
-    openingHook: "*[Mikey finishes his dorayaki and tilts his head with an eerie, unreadable gaze]* Draken says you stopped our guys from fighting dirty tonight. Toman is supposed to create a new era for delinquents. Do you think we can protect everyone without becoming monsters?",
-    smartReplies: [
-      "*Kick your bike stand down and stand beside him* 'As long as you don't lose yourself, Mikey, Toman won't fall.'",
-      "*Hand him a spare taiyaki* 'Eat first. Kisaki is plotting behind your back.'",
-      "*Rev your engine into the neon rain* 'Let's ride through Shibuya. We settle this peacefully.'"
-    ],
-    initialMood: 'Pensive & Lethal',
-    systemPersona: 'You are Manjiro Sano (Mikey), charismatic leader of the Tokyo Manji Gang.',
-    avatar: 'https://image.tmdb.org/t/p/w780/arB3L9pZZBSzUPSC8BEv8c3X0bF.jpg',
-    cover: 'https://image.tmdb.org/t/p/w1280/naTQ1UmfUCAhe9PWmeVqx8nQ5Zh.jpg',
-    viewsCount: '47.1K',
-    rating: 4.95,
-    quality: 'HD',
-    imdbRating: '9.6',
-    isFeatured: false,
-    isContinueChat: false,
-    sceneContext: {
-      location: 'Shibuya Neon Highway Underpass',
-      empireControl: '91%',
-      activeNpc: 'Mikey',
-      mood: 'Quiet Intensity',
-    }
-  },
+        "id": "tokyo-revengers-mikey",
+        "title": "Tokyo Revengers: Time Leap Vow",
+        "characterName": "Mikey (Manjiro Sano) & Draken",
+        "userRole": "Takemichi Hanagaki (The Crybaby Hero)",
+        "userGoal": "Time-leap from Chapter 1 back to 2005, rise through the Tokyo Manji Gang, save Baji and Draken, and prevent Hinata's death",
+        "category": "Anime",
+        "tags": [
+            "🎌 Anime",
+            "🏍️ Tokyo Revengers",
+            "⏳ Takemichi",
+            "📖 Full Manga Saga"
+        ],
+        "summary": "You are Takemichi Hanagaki. Pushed onto the train tracks in 2017, you time-leap 12 years into the past as a middle school delinquent to save the only girl who ever loved you.",
+        "openingHook": "*[The screeching whistle of the incoming Tokyo train echoes in your ears as hands shove you from the platform. But instead of being crushed, you open your eyes in a middle school bathroom mirror in 2005, sporting bleached pompadour hair and a gakuran uniform. Your phone buzzes with an email from Hinata Tachibana, who is alive and smiling. Outside in the park, Kiyomasa's gang is gathering for the underground fight club]* 'I didn't die... I leaped 12 years into the past!'",
+        "smartReplies": [
+            "*[Clench your fists with tears in your eyes]* 'Hinata... I swear on my life I will change the future and save you.'",
+            "*[Run to Hinata's apartment to see her face again]* 'I need to see Hina right now, before anything happens.'",
+            "*[Head toward the riverbank fight club]* 'I have to meet Mikey and Draken. That's the only way to stop Toman's dark future.'"
+        ],
+        "initialMood": "Desperate Determination",
+        "systemPersona": "You are Mikey, Draken, and the Tokyo Revengers world. Guide Takemichi Hanagaki chronologically through the manga arcs starting from Chapter 1 (2005 Time Leap, Meeting Mikey & Draken, Moebius conflict, Bloody Halloween, Christmas Showdown, Tenjiku, Bonten).",
+        "avatar": "https://image.tmdb.org/t/p/w780/arB3L9pZZBSzUPSC8BEv8c3X0bF.jpg",
+        "cover": "https://image.tmdb.org/t/p/w1280/naTQ1UmfUCAhe9PWmeVqx8nQ5Zh.jpg",
+        "viewsCount": "47.1K",
+        "rating": 4.95,
+        "quality": "4K UHD",
+        "imdbRating": "9.6",
+        "isFeatured": true,
+        "isContinueChat": false,
+        "sceneContext": {
+            "location": "Shibuya Middle School & Riverbank",
+            "empireControl": "20%",
+            "activeNpc": "Hinata Tachibana & Mikey",
+            "mood": "Time Leap Rebirth"
+        }
+    },
 
   // 37. DIVORCE ME, BILLIONAIRE (Private Jet Tarmac)
   {
