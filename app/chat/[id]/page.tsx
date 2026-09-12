@@ -65,6 +65,7 @@ export default function ChatScreen() {
   const [showInfoDrawer, setShowInfoDrawer] = useState(false);
   const [showLeftSidebar, setShowLeftSidebar] = useState(false);
   const [showMissionBanner, setShowMissionBanner] = useState(false);
+  const [showSceneModal, setShowSceneModal] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -437,9 +438,9 @@ export default function ChatScreen() {
               {/* Media Button */}
               <button
                 type="button"
-                onClick={() => alert('Cinematic scene visualizer active')}
+                onClick={() => setShowSceneModal(true)}
                 className="w-10 h-10 rounded-xl bg-[#0D0E15] border border-white/[0.08] text-slate-400 hover:text-[#FF2E55] hover:border-rose-500/40 flex items-center justify-center flex-shrink-0 transition-colors"
-                title="Cinematic Scene"
+                title="Cinematic Scene Visualizer"
               >
                 <ImageIcon size={18} />
               </button>
@@ -586,6 +587,95 @@ export default function ChatScreen() {
           </div>
         </div>
       </aside>
+
+      {/* 4. CINEMATIC SCENE VISUALIZER MODAL */}
+      {showSceneModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in"
+          onClick={() => setShowSceneModal(false)}
+        >
+          <div
+            className="relative w-full max-w-lg rounded-3xl bg-[#0D0E15] border border-white/[0.12] p-5 sm:p-6 shadow-2xl overflow-hidden space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-rose-500/20 text-[#FF2E55] flex items-center justify-center">
+                  <ImageIcon size={16} />
+                </div>
+                <div>
+                  <h4 className="text-sm sm:text-base font-black text-white leading-tight">
+                    {story.title}
+                  </h4>
+                  <p className="text-[11px] text-[#FF5C7A] font-semibold">
+                    Cinematic Scene Visualizer
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowSceneModal(false)}
+                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
+                title="Close Visualizer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Visual Media Poster / Backdrop */}
+            <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/10 bg-black shadow-inner">
+              <img
+                src={story.cover || story.avatar}
+                alt={story.title}
+                className="w-full h-full object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/30" />
+
+              {/* Badges on the Image */}
+              <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-white px-2.5 py-0.5 rounded-full bg-black/70 backdrop-blur-md border border-white/10">
+                  {story.category}
+                </span>
+                <span className="text-[10px] font-bold text-rose-300 px-2 py-0.5 rounded-full bg-rose-950/80 backdrop-blur-md border border-rose-500/30">
+                  {story.characterName}
+                </span>
+              </div>
+
+              {/* Bottom Scene Meta */}
+              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs">
+                <span className="font-bold text-white flex items-center gap-1.5 drop-shadow">
+                  <MapPin size={13} className="text-[#FF2E55]" />
+                  {contextState.location}
+                </span>
+                <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-[#FF2E55] text-white shadow-glow-crimson">
+                  {contextState.mood}
+                </span>
+              </div>
+            </div>
+
+            {/* Scene Information */}
+            <div className="p-3.5 rounded-xl bg-[#050608] border border-white/[0.06] text-xs text-slate-300 leading-relaxed space-y-1">
+              <div className="flex items-center justify-between text-[11px] text-slate-400">
+                <span>Active Location: <strong className="text-white">{contextState.location}</strong></span>
+                <span>Power: <strong className="text-[#FF2E55]">{contextState.empireControl}</strong></span>
+              </div>
+              <p className="text-[11px] text-slate-300 pt-1">
+                You are currently roleplaying as <strong className="text-white">{story.userRole}</strong>. The story progresses dynamically based on what you say.
+              </p>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex items-center justify-end gap-2 pt-1">
+              <button
+                onClick={() => setShowSceneModal(false)}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FF2E55] to-[#E00034] hover:from-rose-500 hover:to-rose-700 text-white text-xs font-bold shadow-glow-crimson transition-all"
+              >
+                Return to Dialogue
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
