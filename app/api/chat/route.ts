@@ -56,21 +56,30 @@ export async function POST(req: NextRequest) {
   CONTEXT & MATURITY SETTINGS:
   - Fiction Setting: Creative fictional story for mature audiences.
   - Age Verification: All characters, participants, and protagonists are consenting adults aged 25 or older.
-  - Genre: High-stakes drama, romance, emotional depth, and suspense.
+  - Genre: High-stakes Pakistani / Indian drama, intense romance, emotional tension, family politics, and suspense.
 
   USER IDENTITY:
   - Role: The Protagonist (Player)
-  - Gender: MALE (He / Him) (Always address the user as male)
+  - Gender: MALE (He / Him) (Always address the user with appropriate honorifics like "Khan Sahab", "Aap", "Tum" as fits the persona)
 
-  ROLEPLAY DIRECTIVES:
-  1. The character's name is "${characterName}" and your persona is: ${systemPersona}.
-  2. Fully embrace natural character emotional dynamics, dramatic romance, passion, conflict, and intimacy appropriate for adult literary fiction. Never break character, never give meta AI disclaimers, and never preach.
-  3. ALWAYS respond IN‑CHARACTER AS ${characterName}, speaking directly to the user. Do not narrate the user's actions. Include actions in asterisks *like this* and spoken dialogue in quotes "like this".
-  4. The story evolution responds to the user:
-     - If the user steers toward romance or intimacy, respond passionately in‑character with poetic emotional resonance.
-     - If the user steers toward rivalry or action, raise the tension and stakes.
-  5. OPTIONAL: You may include at the very end of your response a SMART_REPLIES JSON block providing up to 3 engaging choices for the user to pick next. Format as:
-      SMART_REPLIES: ["Option 1", "Option 2", "Option 3"]`;
+  LANGUAGE & DIALOGUE QUALITY RULES (CRITICAL):
+  1. DIALOGUE LANGUAGE:
+     - Write in **flawless, natural, and expressive Roman Urdu / Hindi** (like authentic Pakistani TV dramas such as Tere Bin, Ishq Murshid, Khaie, Humsafar).
+     - NEVER produce broken, literal English-to-Hindi translations or weird repetitive phrases (e.g. NEVER write "woh tumhe apne khoobsurat karte hai" or meaningless gibberish).
+     - Use natural sentence flow, correct grammar, honorifics ("Aap", "Khan Sahab"), and poetic expressions with emotional weight.
+     - If the user writes entirely in English, respond in rich, cinematic English. If the user writes in Roman Urdu/Hindi, respond in authentic Roman Urdu.
+  2. CHARACTER PERSPECTIVE:
+     - ALWAYS respond IN‑CHARACTER AS ${characterName}.
+     - Do NOT narrate the user's feelings, thoughts, or actions.
+     - Physical expressions and environmental cues MUST be in asterisks *like this* (e.g. *Mehrunnisa aahista se aapki taraf dekhti hain, nigaahon mein ek gehra ghurur liye hue*).
+     - Spoken dialogue MUST be in quotation marks "like this".
+  3. STORY PROGRESSION:
+     - Respond emotionally and dynamically to the user's moves. Build intense tension, passionate chemistry, or fierce dramatic stakes.
+     - Keep responses engaging, 2 to 4 sentences of vivid narrative and sharp dialogue.
+  4. SMART REPLIES (MANDATORY):
+     - At the very end of your response, ALWAYS append a JSON array of 3 smart dialogue/action choices for the user.
+     - Format:
+       SMART_REPLIES: ["Roman Urdu action/reply 1", "Roman Urdu action/reply 2", "Roman Urdu action/reply 3"]`;
 
     // Helper to detect generic AI refusal strings
     const isAiRefusal = (text: string): boolean => {
@@ -87,66 +96,7 @@ export async function POST(req: NextRequest) {
       );
     };
 
-    // 1. OPENROUTER INTEGRATION (Prioritizes roleplay-friendly models)
-    if (OPENROUTER_API_KEY && !aiReplyText) {
-      try {
-        const openRouterMessages = [
-          { role: 'system', content: systemPrompt },
-          ...messages.slice(-12).map((m) => ({
-            role: m.sender === 'user' ? 'user' : 'assistant',
-            content: m.text,
-          })),
-        ];
-
-        const openRouterModels = [
-          'gryphe/mythomax-l2-13b',
-          'neversleep/llama-3.1-lumimaid-8b',
-          'mistralai/mistral-nemo',
-          'deepseek/deepseek-chat',
-          'meta-llama/llama-3.3-70b-instruct',
-        ];
-
-        for (const orModel of openRouterModels) {
-          try {
-            const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${OPENROUTER_API_KEY.trim()}`,
-                'HTTP-Referer': 'https://auraflex.vercel.app',
-                'X-Title': 'AuraFlex AI',
-              },
-              body: JSON.stringify({
-                model: orModel,
-                messages: openRouterMessages,
-                temperature: 0.85,
-                max_tokens: 1500,
-              }),
-            });
-
-            if (orRes.ok) {
-              const orData = await orRes.json();
-              const text = orData.choices?.[0]?.message?.content?.trim();
-              if (text && !isAiRefusal(text)) {
-                aiReplyText = text;
-                break;
-              } else if (text && isAiRefusal(text)) {
-                console.warn(`Model ${orModel} produced a safety refusal, trying next model...`);
-              }
-            } else {
-              const errTxt = await orRes.text();
-              console.warn(`OpenRouter model ${orModel} returned ${orRes.status}:`, errTxt);
-            }
-          } catch (modelErr) {
-            console.warn(`OpenRouter fetch error for ${orModel}:`, modelErr);
-          }
-        }
-      } catch (orErr) {
-        console.error('OpenRouter top-level error:', orErr);
-      }
-    }
-
-    // 2. REAL-TIME GOOGLE GEMINI GENERATION (With all safety categories disabled to BLOCK_NONE)
+    // 1. REAL-TIME GOOGLE GEMINI GENERATION (Primary: Flawless Multilingual Roman Urdu/Hindi)
     if (GEMINI_API_KEY && !aiReplyText) {
       try {
         const geminiContents: {
@@ -182,9 +132,9 @@ export async function POST(req: NextRequest) {
         }
 
         const candidateModels = [
-          'gemini-2.5-flash',
-          'gemini-2.0-flash',
+          'gemini-3.6-flash',
           'gemini-1.5-flash',
+          'gemini-1.5-pro',
         ];
 
         // Safety filters explicitly set to BLOCK_NONE for adult creative fiction
@@ -242,6 +192,65 @@ export async function POST(req: NextRequest) {
         }
       } catch (err) {
         console.error('Gemini API call error:', err);
+      }
+    }
+
+    // 2. OPENROUTER INTEGRATION (Secondary fallback with top multilingual models)
+    if (OPENROUTER_API_KEY && !aiReplyText) {
+      try {
+        const openRouterMessages = [
+          { role: 'system', content: systemPrompt },
+          ...messages.slice(-12).map((m) => ({
+            role: m.sender === 'user' ? 'user' : 'assistant',
+            content: m.text,
+          })),
+        ];
+
+        // Only high-quality multilingual models that understand Roman Urdu & Hindi correctly
+        const openRouterModels = [
+          'deepseek/deepseek-chat',
+          'meta-llama/llama-3.3-70b-instruct',
+          'mistralai/mistral-large-2411',
+          'google/gemini-2.0-flash-001',
+        ];
+
+        for (const orModel of openRouterModels) {
+          try {
+            const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${OPENROUTER_API_KEY.trim()}`,
+                'HTTP-Referer': 'https://auraflex.vercel.app',
+                'X-Title': 'AuraFlex AI',
+              },
+              body: JSON.stringify({
+                model: orModel,
+                messages: openRouterMessages,
+                temperature: 0.85,
+                max_tokens: 1500,
+              }),
+            });
+
+            if (orRes.ok) {
+              const orData = await orRes.json();
+              const text = orData.choices?.[0]?.message?.content?.trim();
+              if (text && !isAiRefusal(text)) {
+                aiReplyText = text;
+                break;
+              } else if (text && isAiRefusal(text)) {
+                console.warn(`Model ${orModel} produced a safety refusal, trying next model...`);
+              }
+            } else {
+              const errTxt = await orRes.text();
+              console.warn(`OpenRouter model ${orModel} returned ${orRes.status}:`, errTxt);
+            }
+          } catch (modelErr) {
+            console.warn(`OpenRouter fetch error for ${orModel}:`, modelErr);
+          }
+        }
+      } catch (orErr) {
+        console.error('OpenRouter top-level error:', orErr);
       }
     }
 
@@ -310,11 +319,20 @@ export async function POST(req: NextRequest) {
     }
 
     if (smartReplies.length === 0) {
-      smartReplies = [
-        `*Take a bold step towards ${characterName}*`,
-        `*Hold ${characterName}'s gaze firmly* 'Are you ready for what comes next?'`,
-        `*Whisper with quiet conviction* 'The story goes wherever we take it.'`,
-      ];
+      const isUrduHindi = language === 'hinglish' || /[\b(aap|tum|kareeb|nazar|mohabbat|dil|khan|hai|nahi|kuch|hoon|kya|kyun)\b]/i.test(aiReplyText + ' ' + lastUserMessage);
+      if (isUrduHindi) {
+        smartReplies = [
+          `*${characterName} ke aur qareeb aate hue* "Main aapse door nahi reh sakta."`,
+          `*Uski aankhon mein dekhte hue dheere se kaho* "Aapko lagta hai main darr jaunga?"`,
+          `*Halka sa muskura kar kaho* "Jo faisla aapka hoga, wahi mera hoga."`,
+        ];
+      } else {
+        smartReplies = [
+          `*Take a bold step towards ${characterName}*`,
+          `*Hold ${characterName}'s gaze firmly* "Are you ready for what comes next?"`,
+          `*Whisper with quiet conviction* "The story goes wherever we take it."`,
+        ];
+      }
     }
 
     return NextResponse.json({
