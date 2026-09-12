@@ -8,6 +8,7 @@ interface SmartReplyChipsProps {
   onSelectReply: (reply: string) => void;
   disabled?: boolean;
   isAnime?: boolean;
+  onClose?: () => void;
 }
 
 export default function SmartReplyChips({
@@ -15,12 +16,20 @@ export default function SmartReplyChips({
   onSelectReply,
   disabled = false,
   isAnime = false,
+  onClose,
 }: SmartReplyChipsProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   if (!replies || replies.length === 0 || isDismissed) return null;
+
+  const handleClose = () => {
+    setIsDismissed(true);
+    if (onClose) {
+      onClose();
+    }
+  };
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -117,9 +126,9 @@ export default function SmartReplyChips({
 
         <button
           type="button"
-          onClick={() => setIsDismissed(true)}
-          className="text-slate-500 hover:text-slate-300 p-1 rounded-full transition-colors"
-          title="Dismiss suggestions"
+          onClick={handleClose}
+          className="text-slate-500 hover:text-slate-300 p-1 rounded-full transition-colors cursor-pointer"
+          title="Close quick choices"
         >
           <X size={13} />
         </button>
