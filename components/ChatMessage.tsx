@@ -20,6 +20,34 @@ export default function ChatMessage({
   const renderFormattedAiText = (rawText: string) => {
     let textToRender = rawText || '';
 
+    // Check corruption / repetition on raw incoming text immediately
+    const isRawDegraded =
+      /(.{5,}?)(?:[\s*.,?!"'-]*\1){2,}/i.test(textToRender) ||
+      /(?:dhadkan\s+badhati\s+hoon.*?){2,}/i.test(textToRender) ||
+      /(?:intezaar\s+karti\s+hoon.*?){2,}/i.test(textToRender) ||
+      /(?:chhodti\s+hoon.*?){2,}/i.test(textToRender) ||
+      /(?:samajh\s+mein\s+nahi.*?){2,}/i.test(textToRender) ||
+      /nd\s+ko\s+tumhari|spono|gamajh|unglle|gudda\s+ungliyan/i.test(textToRender);
+
+    if (isRawDegraded) {
+      textToRender = `*${characterName} aapke bilkul qareeb aakar madhosh nigahon se dekhti hain.* "Aapke paas aakar mera saara sabr toot jaata hai... jo chahein kijiye."`;
+      const parts = textToRender.split(/(\*?\[.*?\]\*?|\*.*?\*)/g);
+      return (
+        <div className="text-slate-100 text-[14px] sm:text-[15px] leading-relaxed font-sans space-y-2">
+          <p>
+            {parts.map((part, index) => {
+              if (!part) return null;
+              const isAction = (part.startsWith('*') && part.endsWith('*'));
+              if (isAction) {
+                return <span key={index} className="text-rose-300 italic font-medium tracking-wide mx-0.5">*{part.slice(1, -1).trim()}*</span>;
+              }
+              return <span key={index} className="text-slate-100">{part}</span>;
+            })}
+          </p>
+        </div>
+      );
+    }
+
     // 1. Separate fused punctuation
     textToRender = textToRender.replace(/([.?!*"'])([a-zA-Z0-9])/g, '$1 $2');
     textToRender = textToRender.replace(/([a-zA-Z0-9])([*"])/g, '$1 $2');
@@ -48,15 +76,7 @@ export default function ChatMessage({
     textToRender = textToRender.replace(/(Mehrunnisa\s*Begum)+/gi, 'Mehrunnisa Begum');
     textToRender = textToRender.replace(/\s{2,}/g, ' ').replace(/\s+([,.?!])/g, '$1').trim();
 
-    // 4. If still degraded or contains broken repetition fragments, replace with clean dialogue
-    const hasCorruptLoops =
-      /(.{5,}?)(?:[\s*.,?!"'-]*\1){2,}/i.test(textToRender) ||
-      /(?:dhadkan\s+badhati\s+hoon.*?){2,}/i.test(textToRender) ||
-      /(?:intezaar\s+karti\s+hoon.*?){2,}/i.test(textToRender) ||
-      /(?:samajh\s+mein\s+nahi.*?){2,}/i.test(textToRender) ||
-      /spono|gamajh|unglle|gudda\s+ungliyan/i.test(textToRender);
-
-    if (hasCorruptLoops || (textToRender.length < 15 && !textToRender.includes('"'))) {
+    if (textToRender.length < 15 && !textToRender.includes('"')) {
       textToRender = `*${characterName} aapke bilkul qareeb aakar madhosh nigahon se dekhti hain.* "Aapke paas aakar mera saara sabr toot jaata hai... jo chahein kijiye."`;
     }
 

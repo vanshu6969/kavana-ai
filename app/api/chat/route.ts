@@ -178,10 +178,10 @@ ${isAnimeManga ? `
       }
 
       // 2. Corrupted fragments or repetitive token attractors
-      if (/(?:intezaar\s+karti\s+hoon.*?){2,}/i.test(t) || /(?:dhadkan\s+badhati\s+hoon.*?){2,}/i.test(t) || /(?:samajh\s+mein\s+nahi.*?){2,}/i.test(t)) {
+      if (/(?:intezaar\s+karti\s+hoon.*?){2,}/i.test(t) || /(?:dhadkan\s+badhati\s+hoon.*?){2,}/i.test(t) || /(?:chhodti\s+hoon.*?){2,}/i.test(t) || /(?:samajh\s+mein\s+nahi.*?){2,}/i.test(t)) {
         return true;
       }
-      if (/(?:nd\s+karke|and\s+karke|unglle|krungliyon|huli\s+hooon|harar\s+nahi|spono|gamajh|gudda\s+ungliyan)/i.test(t)) {
+      if (/(?:nd\s+karke|and\s+karke|unglle|krungliyon|huli\s+hooon|harar\s+nahi|spono|gamajh|gudda\s+ungliyan|nd\s+ko\s+tumhari)/i.test(t)) {
         return true;
       }
 
@@ -747,7 +747,7 @@ ${isAnimeManga ? `
 
     // Check if the user is requesting explicit adult / oral / sexual intimacy
     const isExplicitAdult =
-      /blow\s*job|blowjob|oral|gawk|lund|choot|chut|gaand|chudai|chodo|chud|chus|chuso|chusta|muh mein|munh mein|nanga|nangi|kapde|kapda|underwear|panties|bra|sex|fuck|wet sounds|sucking|lick|swallow|penis|vagina|boobs|chuchi|doodh|choche/i.test(
+      /ghodi|blow\s*job|blowjob|oral|gawk|lund|choot|chut|gaand|chudai|chodo|chud|chus|chuso|chusta|muh mein|munh mein|nanga|nangi|kapde|kapda|underwear|panties|bra|sex|fuck|wet sounds|sucking|lick|swallow|penis|vagina|boobs|chuchi|doodh|choche/i.test(
         lastUserMessage + ' ' + messages.slice(-3).map((m) => m.text).join(' ')
       );
 
@@ -1026,7 +1026,7 @@ ${isAnimeManga ? `
       const cleanUser = (lastUserMessage || 'kuch nahi').replace(/[\*\"\'\']/g, '').trim();
       const snippet = cleanUser.length > 40 ? cleanUser.slice(0, 40) + '...' : cleanUser;
       
-      const isExplicitIntimacy = /underwear|kapde|nanga|jism|bed|bistar|chhoo|kiss|lips|utaro|kholo|nikal|nikalo|chhuo|paas/i.test(lastUserMessage);
+      const isExplicitIntimacy = /ghodi|underwear|kapde|nanga|jism|bed|bistar|chhoo|kiss|lips|utaro|kholo|nikal|nikalo|chhuo|paas|chhod|ungli/i.test(lastUserMessage);
 
       if (isExplicitIntimacy) {
         const intimateFallbacks = [

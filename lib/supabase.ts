@@ -70,8 +70,9 @@ export function sanitizeStoredMessage(text: string, characterName: string = 'Cha
     /(.{5,}?)(?:[\s*.,?!"'-]*\1){2,}/i.test(t) ||
     /(?:dhadkan\s+badhati\s+hoon.*?){2,}/i.test(t) ||
     /(?:intezaar\s+karti\s+hoon.*?){2,}/i.test(t) ||
+    /(?:chhodti\s+hoon.*?){2,}/i.test(t) ||
     /(?:samajh\s+mein\s+nahi.*?){2,}/i.test(t) ||
-    /spono|gamajh|unglle|gudda\s+ungliyan/i.test(t);
+    /nd\s+ko\s+tumhari|spono|gamajh|unglle|gudda\s+ungliyan/i.test(t);
 
   if (hasCorruptLoops) {
     return `*${characterName} aapke bilkul qareeb aakar madhosh nigahon se dekhti hain.* "Aapke paas aakar mera saara sabr toot jaata hai... jo chahein kijiye."`;
