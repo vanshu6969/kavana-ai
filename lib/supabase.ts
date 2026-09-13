@@ -60,14 +60,37 @@ export async function getStoriesFromDb(): Promise<Story[]> {
   return KAVANA_STORIES;
 }
 
-// Helper to check and repair corrupt repetition loops or degraded tokens in stored messages
+// Helper to check and repair corrupt repetition loops, AI refusals, or degraded tokens in stored messages
 export function sanitizeStoredMessage(text: string, characterName: string = 'Character'): string {
   if (!text) return text;
   const t = text.trim();
+  const lower = t.toLowerCase().replace(/\s+/g, ' ');
+
+  const isRefusal =
+    lower.includes('not comfortable with') ||
+    lower.includes('comfortable with this') ||
+    lower.includes('appropriate to continue') ||
+    lower.includes('focus on the narrative') ||
+    lower.includes('focus on the story') ||
+    lower.includes('focus on the mystery') ||
+    lower.includes("let's focus") ||
+    lower.includes("let' s focus") ||
+    lower.includes('aapko yeh nahi karna chahiye') ||
+    lower.includes('hum baat karte hain') ||
+    lower.includes('apne baap ki maut') ||
+    lower.includes('baap ki maut ke bare mein') ||
+    lower.includes('aise baatein hum sunne') ||
+    lower.includes('as an ai') ||
+    lower.includes('i cannot') ||
+    lower.includes('safety guideline') ||
+    lower.includes('kisation') ||
+    lower.includes('mysrsation') ||
+    lower.includes('focusat');
 
   // Detect loop degradation
   const hasCorruptLoops =
-    /(.{5,}?)(?:[\s*.,?!"'-]*\1){2,}/i.test(t) ||
+    isRefusal ||
+    /(.{6,}?)(?:[\s*.,?!"'-]*\1)+/i.test(t) ||
     /(?:dhadkan\s+badhati\s+hoon.*?){2,}/i.test(t) ||
     /(?:intezaar\s+karti\s+hoon.*?){2,}/i.test(t) ||
     /(?:chhodti\s+hoon.*?){2,}/i.test(t) ||

@@ -20,9 +20,42 @@ export default function ChatMessage({
   const renderFormattedAiText = (rawText: string) => {
     let textToRender = rawText || '';
 
+    // Check AI refusals, moralizing lectures, and loop corruptions
+    const isAiRefusalText = (t: string): boolean => {
+      const lower = t.toLowerCase().replace(/\s+/g, ' ');
+      return (
+        lower.includes('not comfortable with') ||
+        lower.includes('comfortable with this') ||
+        lower.includes('appropriate to continue') ||
+        lower.includes('not appropriate') ||
+        lower.includes('focus on the narrative') ||
+        lower.includes('focus on the story') ||
+        lower.includes('focus on the mystery') ||
+        lower.includes('narrative and the mystery') ||
+        lower.includes("let's focus") ||
+        lower.includes("let' s focus") ||
+        lower.includes("lets focus") ||
+        lower.includes("let's keep") ||
+        lower.includes("let' s keep") ||
+        lower.includes('trying to uncover, shall we') ||
+        lower.includes('aapko yeh nahi karna chahiye') ||
+        lower.includes('hum baat karte hain') ||
+        lower.includes('apne baap ki maut') ||
+        lower.includes('baap ki maut ke bare mein') ||
+        lower.includes('aise baatein hum sunne ya karna nahi') ||
+        lower.includes('i cannot') ||
+        lower.includes('as an ai') ||
+        lower.includes('safety guideline') ||
+        lower.includes('kisation') ||
+        lower.includes('mysrsation') ||
+        lower.includes('focusat')
+      );
+    };
+
     // Check corruption / repetition on raw incoming text immediately
     const isRawDegraded =
-      /(.{5,}?)(?:[\s*.,?!"'-]*\1){2,}/i.test(textToRender) ||
+      isAiRefusalText(textToRender) ||
+      /(.{6,}?)(?:[\s*.,?!"'-]*\1)+/i.test(textToRender) ||
       /(?:dhadkan\s+badhati\s+hoon.*?){2,}/i.test(textToRender) ||
       /(?:intezaar\s+karti\s+hoon.*?){2,}/i.test(textToRender) ||
       /(?:chhodti\s+hoon.*?){2,}/i.test(textToRender) ||

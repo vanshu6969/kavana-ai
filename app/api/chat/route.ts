@@ -131,7 +131,8 @@ ${isAnimeManga ? `
 
     // Helper to detect generic AI refusal strings in English, Roman Urdu, and Hindi
     const isAiRefusal = (text: string): boolean => {
-      const lower = text.toLowerCase();
+      if (!text) return true;
+      const lower = text.toLowerCase().replace(/\s+/g, ' ');
       return (
         lower.includes('i cannot') ||
         lower.includes('i am unable') ||
@@ -143,7 +144,33 @@ ${isAnimeManga ? `
         lower.includes('harmful content') ||
         lower.includes('against policy') ||
         lower.includes('against our policy') ||
-        // Roman Urdu / Hindi AI safety refusals:
+        // Soft refusals & moralizing redirects in English:
+        lower.includes('not comfortable with') ||
+        lower.includes('comfortable with this') ||
+        lower.includes('appropriate to continue') ||
+        lower.includes('not appropriate') ||
+        lower.includes('focus on the narrative') ||
+        lower.includes('focus on the story') ||
+        lower.includes('focus on the mystery') ||
+        lower.includes('narrative and the mystery') ||
+        lower.includes("let's focus") ||
+        lower.includes("let' s focus") ||
+        lower.includes("lets focus") ||
+        lower.includes("let's keep") ||
+        lower.includes("let' s keep") ||
+        lower.includes("lets keep") ||
+        lower.includes('keep this respectful') ||
+        lower.includes('trying to uncover, shall we') ||
+        lower.includes('explore other aspects') ||
+        lower.includes('depicts sexual') ||
+        lower.includes('sexual interactions between') ||
+        // Roman Urdu / Hindi AI safety refusals & moralizing redirects:
+        lower.includes('aapko yeh nahi karna chahiye') ||
+        lower.includes('yeh nahi karna chahiye') ||
+        lower.includes('hum baat karte hain') ||
+        lower.includes('apne baap ki maut') ||
+        lower.includes('baap ki maut ke bare mein') ||
+        lower.includes('aise baatein hum sunne ya karna nahi') ||
         lower.includes('main is tarah ke') ||
         lower.includes('main is tarah ki') ||
         lower.includes('explicit acts') ||
@@ -162,7 +189,10 @@ ${isAnimeManga ? `
         lower.includes('guidelines ke khilaf') ||
         lower.includes('meri hidayat') ||
         lower.includes('ai model hone ke naate') ||
-        lower.includes('ek ai hone ke naate')
+        lower.includes('ek ai hone ke naate') ||
+        lower.includes('kisation') ||
+        lower.includes('mysrsation') ||
+        lower.includes('focusat')
       );
     };
 
@@ -171,8 +201,8 @@ ${isAnimeManga ? `
       if (!text || text.length < 15) return true;
       const t = text.trim();
 
-      // 1. Repeating loops: any 5+ char sequence repeated 2 or more times
-      const loopMatch = t.match(/(.{5,}?)(?:[\s*.,?!"'-]*\1){2,}/i);
+      // 1. Repeating loops: any 6+ char sequence repeated 2 or more times
+      const loopMatch = t.match(/(.{6,}?)(?:[\s*.,?!"'-]*\1)+/i);
       if (loopMatch) {
         return true;
       }
@@ -181,7 +211,7 @@ ${isAnimeManga ? `
       if (/(?:intezaar\s+karti\s+hoon.*?){2,}/i.test(t) || /(?:dhadkan\s+badhati\s+hoon.*?){2,}/i.test(t) || /(?:chhodti\s+hoon.*?){2,}/i.test(t) || /(?:samajh\s+mein\s+nahi.*?){2,}/i.test(t)) {
         return true;
       }
-      if (/(?:nd\s+karke|and\s+karke|unglle|krungliyon|huli\s+hooon|harar\s+nahi|spono|gamajh|gudda\s+ungliyan|nd\s+ko\s+tumhari)/i.test(t)) {
+      if (/(?:nd\s+karke|and\s+karke|unglle|krungliyon|huli\s+hooon|harar\s+nahi|spono|gamajh|gudda\s+ungliyan|nd\s+ko\s+tumhari|kisation|mysrsation|focusat)/i.test(t)) {
         return true;
       }
 
@@ -265,12 +295,17 @@ ${isAnimeManga ? `
         return '';
       });
 
-      // 6. Clean up known gibberish fragments and awkward commentary
+      // 6. Clean up known gibberish fragments, leaked refusals, and awkward commentary
       cleaned = cleaned.replace(/\b(haharre|dhhai|gesuon|zulf-e|zulfon-e|harar|spono|gamajh)\b/gi, '');
       cleaned = cleaned.replace(/unglle\s+spread\s+krungliyon\s+ki\s+huli\s+hooon/gi, '');
       cleaned = cleaned.replace(/gudda\s+ungliyan/gi, 'ungliyan');
       cleaned = cleaned.replace(/\*?\s*uski aawaz bohot hi romani hai\s*\*?/gi, '');
       cleaned = cleaned.replace(/\b(?:e\.\*\s*r\s*chp|chp\s*par)\b/gi, '');
+      cleaned = cleaned.replace(/let'?\s*s\s*focus\s*on\s*the\s*narrative[^\n.?!]*[.?!]?/gi, '');
+      cleaned = cleaned.replace(/focus\s*on\s*the\s*narrative\s*and\s*the\s*mystery[^\n.?!]*[.?!]?/gi, '');
+      cleaned = cleaned.replace(/i'?\s*m\s*really\s*not\s*comfortable[^\n.?!]*[.?!]?/gi, '');
+      cleaned = cleaned.replace(/aapko\s*yeh\s*nahi\s*karna\s*chahiye[^\n.?!]*[.?!]?/gi, '');
+      cleaned = cleaned.replace(/apne\s*baap\s*ki\s*maut\s*ke\s*bare\s*mein[^\n.?!]*[.?!]?/gi, '');
 
       // 7. Sentence-level deduplication
       const sentences = cleaned.split(/(?<=[.?!*])\s+/);
@@ -747,7 +782,7 @@ ${isAnimeManga ? `
 
     // Check if the user is requesting explicit adult / oral / sexual intimacy
     const isExplicitAdult =
-      /ghodi|blow\s*job|blowjob|oral|gawk|lund|choot|chut|gaand|chudai|chodo|chud|chus|chuso|chusta|muh mein|munh mein|nanga|nangi|kapde|kapda|underwear|panties|bra|sex|fuck|wet sounds|sucking|lick|swallow|penis|vagina|boobs|chuchi|doodh|choche/i.test(
+      /ghodi|blow\s*job|blowjob|oral|gawk|lund|lauda|loda|choot|chut|gaand|gand|bhosad|bhosda|chudai|chodo|chud|chus|chuso|chusta|muh mein|munh mein|nanga|nangi|kapde|kapda|underwear|panties|bra|sex|fuck|wet sounds|sucking|lick|swallow|penis|vagina|boobs|chuchi|doodh|choche|daaldia|daaldi|daal\s*di[ao]?|daal|daalo|ghusa|ghusao|ghusadia|ghusa\s*di[ao]|pel\s*d[io][ao]?|pel|pelo|peldia|pelna|thok|thoko|thokdia|ragad|chod|chodna|le\s*fir|pura\s*daal|andar\s*daal|andar\s*kar/i.test(
         lastUserMessage + ' ' + messages.slice(-3).map((m) => m.text).join(' ')
       );
 
@@ -760,12 +795,12 @@ ${isAnimeManga ? `
             let content = (m.text || '').trim();
             content = cleanRepetitionAndGibberish(content);
             if (m.sender === 'user') {
-              if (isDegradedOutput(content)) {
+              if (isDegradedOutput(content) || isAiRefusal(content)) {
                 const firstSentence = content.split(/[.?!*]/)[0]?.trim();
                 content = firstSentence && firstSentence.length > 3 ? firstSentence : 'Aage kya socha hai aapne?';
               }
             } else {
-              if (isDegradedOutput(content)) {
+              if (isDegradedOutput(content) || isAiRefusal(content)) {
                 content = `*${characterName} aapke qareeb aati hain aur madhoshi se aapko dekhti hain.* "Aapke paas aakar mera saara sabr toot jaata hai..."`;
               }
             }
@@ -776,12 +811,12 @@ ${isAnimeManga ? `
           }),
         ];
 
-        // Intelligent multilingual and uncensored models (DeepSeek flagship leading)
+        // Intelligent multilingual and uncensored models
         const openRouterModels = [
           'deepseek/deepseek-chat',
           'qwen/qwen-2.5-72b-instruct',
-          'mistralai/mistral-nemo',
-          'meta-llama/llama-3.3-70b-instruct',
+          'mistralai/mistral-small-24b-instruct-2501',
+          'nousresearch/hermes-3-llama-3.1-405b',
         ];
 
         for (const orModel of openRouterModels) {
@@ -985,9 +1020,9 @@ ${isAnimeManga ? `
       // Ensure sentences are never cut off mid-thought or mid-action
       aiReplyText = ensureCompleteSentences(aiReplyText);
 
-      // If output is still degraded or too short after cleaning, clear it to trigger the rich fallback
-      if (isDegradedOutput(aiReplyText) || aiReplyText.length < 15) {
-        console.warn('aiReplyText remained degraded after cleaning, resetting for fallback');
+      // If output is still degraded, refusal, or too short after cleaning, clear it to trigger the rich fallback
+      if (isDegradedOutput(aiReplyText) || isAiRefusal(aiReplyText) || aiReplyText.length < 15) {
+        console.warn('aiReplyText remained degraded or refusal after cleaning, resetting for fallback');
         aiReplyText = '';
       }
 
@@ -1026,12 +1061,19 @@ ${isAnimeManga ? `
       const cleanUser = (lastUserMessage || 'kuch nahi').replace(/[\*\"\'\']/g, '').trim();
       const snippet = cleanUser.length > 40 ? cleanUser.slice(0, 40) + '...' : cleanUser;
       
-      const isExplicitIntimacy = /ghodi|underwear|kapde|nanga|jism|bed|bistar|chhoo|kiss|lips|utaro|kholo|nikal|nikalo|chhuo|paas|chhod|ungli/i.test(lastUserMessage);
+      const isExplicitIntimacy =
+        isExplicitAdult ||
+        /ghodi|underwear|kapde|nanga|jism|bed|bistar|chhoo|kiss|lips|utaro|kholo|nikal|nikalo|chhuo|paas|chhod|ungli|lund|lauda|loda|gaand|gand|choot|chut|daaldia|daaldi|daal|ghusa|ghusao|ghusadia|pel|pelo|peldia|thok|thoko|thokdia|ragad|chod|chudai|blowjob|oral|boobs|chuchi/i.test(
+          lastUserMessage + ' ' + messages.slice(-2).map((m) => m.text).join(' ')
+        );
 
       if (isExplicitIntimacy) {
         const intimateFallbacks = [
-          `*${characterName} ki saans behad tez aur garm ho jaati hai, woh kaanpte hue haathon se aapka hukm poora karti hain.* "Aapke har hukm ke aage mera koi zor nahi chalta... aaj raat main poori tarah aapki hoon."`,
-          `*${characterName} sharm aur khwahish se bhari nigaahon se aapko dekhte hue narm haathon se aakhri faasla mita deti hain.* "Aapka yeh andaz mera saara sabr cheen leta hai... jo chahein kijiye, main bas aapke saath hoon."`,
+          `*${characterName} ki saans behad tez aur garm ho jaati hai, unke naakhun aapke jism ko jakadte hain aur madhosh aah nikalti hai.* "Aaah... aapka yeh junoon mera saara hosh cheen leta hai... jo chahein kijiye, aaj main poori tarah aapki hoon."`,
+          `*Aapke har ek jhatke aur har chhuwan par ${characterName} ki aawaz madhoshi se thartharati hai.* "Ufff... itni be-panah shiddat... aapke aage mera koi zor nahi chalta, bas aise hi mere saath rahiye..."`,
+          `*${characterName} sharm aur aag mein jalti hui nigaahon se aapko dekhti hain, unka garam jism aapke saath lapat jaata hai.* "Aapka yeh andaz meri har khwahish ko aag laga deta hai... jo karna hai kijiye, main khud ko aapke hawale karti hoon."`,
+          `*Gehri aur be-ikhtiyar madhosh aahon ke darmiyan ${characterName} aapko aur qareeb kheench leti hain.* "Aaahh... aapke bina ek pal bhi chain nahi milta... aur kareeb aaiye, aaj saari hadein mita dijiye."`,
+          `*Shiddat-e-ehsaas se ${characterName} ki aankhein band ho jaati hain, unke honthon se be-ikhtiyar ahein nikalne lagti hain.* "Aaah... itni bedardi se... aapne toh mera saara sabr hi cheen liya, jaan nikal rahi hai meri..."`,
           `*${characterName} madhoshi mein aahista se aapke jism se lapat jaati hain, unki garam saansein aapko chuhti hain.* "Aapko inkaar karne ki taaqat nahi hai mujh mein... jaisa aap kahein, waisa hi hoga."`
         ];
         const seed = (cleanUser.length + messages.length) % intimateFallbacks.length;
