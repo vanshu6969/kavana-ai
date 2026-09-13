@@ -19,13 +19,42 @@ export default function ChatMessage({
   // Formats text so actions in asterisks or brackets flow naturally with dialogue
   const renderFormattedAiText = (rawText: string) => {
     let textToRender = rawText || '';
-    // Decouple fused punctuation and remove repeating phrase loops on the fly
+
+    // 1. Separate fused punctuation
     textToRender = textToRender.replace(/([.?!*"'])([a-zA-Z0-9])/g, '$1 $2');
+    textToRender = textToRender.replace(/([a-zA-Z0-9])([*"])/g, '$1 $2');
+    textToRender = textToRender.replace(/([*"])([a-zA-Z0-9])/g, '$1 $2');
     textToRender = textToRender.replace(/\.{2,}([a-zA-Z0-9])/g, '... $1');
-    textToRender = textToRender.replace(/(.{10,80}?)(?:[\s*.,?!"'-]*\1)+/gi, '$1');
-    textToRender = textToRender.replace(/\bap(?:Begum|Mehrunnisa)\b/gi, 'Begum');
+
+    // 2. Remove broken artifacts and stutters
+    textToRender = textToRender.replace(/\b[a-zA-Z]{1,3}\.{2,}\s*/g, '');
+    textToRender = textToRender.replace(/([a-zA-Z0-9])\*n,?\s*/g, '$1. ');
+    textToRender = textToRender.replace(/\*n\b/g, '');
+    textToRender = textToRender.replace(/\b(?:e\.\*\s*r\s*chp|chp\s*par|apBegum|apMehrunnisa)\b/gi, '');
+    textToRender = textToRender.replace(/\b(haharre|dhhai|gesuon|zulf-e|zulfon-e|gesuein|barham|ha-ha-hai|k-k-k|harar)\b/gi, '');
+    textToRender = textToRender.replace(/unglle\s+spread\s+krungliyon\s+ki\s+huli\s+hooon/gi, '');
+    textToRender = textToRender.replace(/(?:(?:\*\s*)?(?:and|nd)\s+karke\s+tumhare\s+haathon\s+ka\s+intezaar\s+karti\s+hoon\*?)+/gi, '');
+
+    // 3. Multi-pass loop deduplication (catches recurring phrases, clauses, and n-grams)
+    let prev = '';
+    let passes = 0;
+    while (prev !== textToRender && passes < 10) {
+      prev = textToRender;
+      passes++;
+      textToRender = textToRender.replace(/(.{6,100}?)(?:[\s*.,?!"'\\-]*\1)+/gi, '$1');
+      textToRender = textToRender.replace(/\b([a-zA-Z0-9']{2,})\b(?:\s+\1\b)+/gi, '$1');
+    }
+
     textToRender = textToRender.replace(/(Mehrunnisa\s*Begum)+/gi, 'Mehrunnisa Begum');
-    textToRender = textToRender.replace(/\b(?:e\.\*\s*r\s*chp|chp\s*par)\b/gi, '');
+    textToRender = textToRender.replace(/\s{2,}/g, ' ').replace(/\s+([,.?!])/g, '$1').trim();
+
+    // 4. If still degraded or contains broken repetition fragments, replace with clean dialogue
+    const hasCorruptLoops = /(?:intezaar\s+karti\s+hoon.*?){2,}/i.test(textToRender) ||
+      /(.{8,}?)(?:[\s*.,?!"'-]*\1){2,}/i.test(textToRender);
+
+    if (hasCorruptLoops || (textToRender.length < 15 && !textToRender.includes('"'))) {
+      textToRender = `*${characterName} aapke bilkul qareeb aakar madhosh nigahon se dekhti hain.* "Aapke paas aakar mera saara sabr toot jaata hai... jo chahein kijiye."`;
+    }
 
     const parts = textToRender.split(/(\*?\[.*?\]\*?|\*.*?\*)/g);
 

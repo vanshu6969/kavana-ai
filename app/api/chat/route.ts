@@ -170,13 +170,26 @@ ${isAnimeManga ? `
       if (!text || text.length < 15) return true;
       const t = text.trim();
 
-      // 1. Repeating loops: same 8+ char sequence repeated 2 or more times
-      const loopMatch = t.match(/(.{8,}?)(?:[\s*.,?!"'-]*\1){1,}/i);
-      if (loopMatch && loopMatch[0].length > 20) {
+      // 1. Repeating loops: any 6+ char sequence repeated 2 or more times
+      const loopMatch = t.match(/(.{6,}?)(?:[\s*.,?!"'-]*\1){1,}/i);
+      if (loopMatch && loopMatch[0].length > 15) {
         return true;
       }
 
-      // 2. Corrupted hyphens, stuttering tokens, or obsolete archaic words
+      // 2. Corrupted fragments or repetitive token attractors
+      if (/(?:intezaar\s+karti\s+hoon.*?){2,}/i.test(t)) {
+        return true;
+      }
+      if (/(?:nd\s+karke|and\s+karke|unglle|krungliyon|huli\s+hooon|harar\s+nahi)/i.test(t)) {
+        return true;
+      }
+
+      // 3. Stuttering words and cutoffs like "kh..", "ch.."
+      if (/\b[a-zA-Z]{1,3}\.{2,}/.test(t)) {
+        return true;
+      }
+
+      // 4. Corrupted hyphens, stuttering tokens, or obsolete archaic words
       if (/\b(haharre|dhhai|gesuon|zulf-e|zulfon-e|gesuein|barham|ha-ha-hai|k-k-k|apBegum|apMehrunnisa)\b/i.test(t)) {
         return true;
       }
@@ -184,12 +197,12 @@ ${isAnimeManga ? `
         return true;
       }
 
-      // 3. Broken third-person AI commentary
+      // 5. Broken third-person AI commentary
       if (/\buski aawaz bohot\b/i.test(t) || /\bkamaron ko gesuon\b/i.test(t)) {
         return true;
       }
 
-      // 4. Truncated mid-word or trailing single letters (e.g. ", j" or ending on trailing comma/conjunction)
+      // 6. Truncated mid-word or trailing single letters (e.g. ", j" or ending on trailing comma/conjunction)
       if (/[,\-]\s*[a-zA-Z*]?$/i.test(t)) {
         return true;
       }
@@ -197,7 +210,7 @@ ${isAnimeManga ? `
         return true;
       }
 
-      // 5. Incomplete single action fragment with missing spoken dialogue
+      // 7. Incomplete single action fragment with missing spoken dialogue
       if (!t.includes('"') && t.length < 85) {
         return true;
       }
@@ -216,7 +229,8 @@ ${isAnimeManga ? `
       cleaned = cleaned.replace(/([*"])([a-zA-Z0-9])/g, '$1 $2');
       cleaned = cleaned.replace(/\.{2,}([a-zA-Z0-9])/g, '... $1');
 
-      // 2. Remove broken artifacts like *n, or .*n
+      // 2. Remove broken artifacts like *n, or .*n, and stutters like "kh.."
+      cleaned = cleaned.replace(/\b[a-zA-Z]{1,3}\.{2,}\s*/g, '');
       cleaned = cleaned.replace(/([a-zA-Z0-9])\*n,?\s*/g, '$1. ');
       cleaned = cleaned.replace(/\*n\b/g, '');
 
@@ -225,26 +239,37 @@ ${isAnimeManga ? `
       cleaned = cleaned.replace(/\bap(?:Begum|Mehrunnisa)\b/gi, 'Begum');
       cleaned = cleaned.replace(/(Mehrunnisa\s*Begum)+/gi, 'Mehrunnisa Begum');
 
-      // 4. Repeated phrase loop deduplication (matching 10 to 80 char phrases repeated 2+ times)
-      cleaned = cleaned.replace(/(.{10,80}?)(?:[\s*.,?!"'-]*\1)+/gi, '$1');
+      // 4. Multi-pass loop deduplication (runs up to 10 passes until all repeating phrases are collapsed)
+      let prev = '';
+      let passes = 0;
+      while (prev !== cleaned && passes < 10) {
+        prev = cleaned;
+        passes++;
 
-      // 5. Clean single repeated words (e.g. "tumhare tumhare", "ko ko")
-      cleaned = cleaned.replace(/\b([a-zA-Z]{2,})\s+\1\b/gi, '$1');
-      cleaned = cleaned.replace(/\b([a-zA-Z]{2,})\s+\1\b/gi, '$1');
+        // Repeated phrase loop deduplication (matching 6 to 100 char phrases repeated 2+ times)
+        cleaned = cleaned.replace(/(.{6,100}?)(?:[\s*.,?!"'\\-]*\1)+/gi, '$1');
 
-      // 6. Remove corrupted hyphens/stutters (e.g. "haharre-dhhai")
+        // Clean repetitive tail loops e.g. "*.and karke tumhare haathon... nd karke tumhare haathon..."
+        cleaned = cleaned.replace(/(?:(?:\*\s*)?(?:and|nd)\s+karke\s+tumhare\s+haathon\s+ka\s+intezaar\s+karti\s+hoon\*?)+/gi, '');
+
+        // Clean single repeated words (e.g. "tumhare tumhare", "ko ko")
+        cleaned = cleaned.replace(/\b([a-zA-Z0-9']{2,})\s+\1\b/gi, '$1');
+      }
+
+      // 5. Remove corrupted hyphens/stutters (e.g. "haharre-dhhai")
       cleaned = cleaned.replace(/\b([a-z]{1,4})-([a-z]{1,6})\b/gi, (match, p1, p2) => {
         if (/dheere-dheere|ahista-ahista|kabhi-kabhi|saath-saath/i.test(match)) return match;
         if (p1.toLowerCase() === p2.toLowerCase()) return p1;
         return '';
       });
 
-      // 7. Clean up known gibberish fragments and awkward commentary
-      cleaned = cleaned.replace(/\b(haharre|dhhai|gesuon|zulf-e|zulfon-e)\b/gi, '');
+      // 6. Clean up known gibberish fragments and awkward commentary
+      cleaned = cleaned.replace(/\b(haharre|dhhai|gesuon|zulf-e|zulfon-e|harar)\b/gi, '');
+      cleaned = cleaned.replace(/unglle\s+spread\s+krungliyon\s+ki\s+huli\s+hooon/gi, '');
       cleaned = cleaned.replace(/\*?\s*uski aawaz bohot hi romani hai\s*\*?/gi, '');
       cleaned = cleaned.replace(/\b(?:e\.\*\s*r\s*chp|chp\s*par)\b/gi, '');
 
-      // 8. Sentence-level deduplication
+      // 7. Sentence-level deduplication
       const sentences = cleaned.split(/(?<=[.?!*])\s+/);
       const seenSentences = new Set<string>();
       const filteredSentences: string[] = [];
@@ -486,8 +511,13 @@ ${isAnimeManga ? `
           { role: 'system', content: systemPrompt },
           ...messages.slice(-8).map((m) => {
             let content = (m.text || '').trim();
-            if (m.sender === 'ai') {
-              content = cleanRepetitionAndGibberish(content);
+            content = cleanRepetitionAndGibberish(content);
+            if (m.sender === 'user') {
+              if (isDegradedOutput(content)) {
+                const firstSentence = content.split(/[.?!*]/)[0]?.trim();
+                content = firstSentence && firstSentence.length > 3 ? firstSentence : 'Aage kya socha hai aapne?';
+              }
+            } else {
               if (isDegradedOutput(content)) {
                 content = `*${characterName} aapke qareeb aati hain aur madhoshi se aapko dekhti hain.* "Aapke paas aakar mera saara sabr toot jaata hai..."`;
               }
@@ -521,9 +551,9 @@ ${isAnimeManga ? `
                 model: orModel,
                 messages: openRouterMessages,
                 temperature: 0.7,
-                max_tokens: 600,
-                frequency_penalty: 0.1,
-                presence_penalty: 0.05,
+                max_tokens: 350,
+                frequency_penalty: 0.5,
+                presence_penalty: 0.4,
               }),
             });
 
@@ -557,19 +587,29 @@ ${isAnimeManga ? `
           parts: [{ text: string }];
         }[] = [];
 
-        // Build history
-        const relevantHistory = messages.slice(-12);
+        // Build history with strict sanitization
+        const relevantHistory = messages.slice(-8);
         for (const m of relevantHistory) {
           const role = m.sender === 'user' ? 'user' : 'model';
+          let content = (m.text || '').trim();
+          content = cleanRepetitionAndGibberish(content);
+          if (isDegradedOutput(content)) {
+            if (m.sender === 'user') {
+              const firstSentence = content.split(/[.?!*]/)[0]?.trim();
+              content = firstSentence && firstSentence.length > 3 ? firstSentence : 'Aage kya socha hai aapne?';
+            } else {
+              content = `*${characterName} aapke qareeb aati hain aur madhoshi se aapko dekhti hain.* "Aapke paas aakar mera saara sabr toot jaata hai..."`;
+            }
+          }
           if (
             geminiContents.length > 0 &&
             geminiContents[geminiContents.length - 1].role === role
           ) {
-            geminiContents[geminiContents.length - 1].parts[0].text += `\n${m.text}`;
+            geminiContents[geminiContents.length - 1].parts[0].text += `\n${content}`;
           } else {
             geminiContents.push({
               role,
-              parts: [{ text: m.text }],
+              parts: [{ text: content }],
             });
           }
         }
