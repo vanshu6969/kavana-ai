@@ -332,8 +332,10 @@ ${isAnimeManga ? `
       return t.trim() + '.';
     };
 
-    // Helper to generate dynamic, non-repeating smart replies tailored to the current situation
+    // Helper to generate dynamic, non-repeating smart replies tailored to the current situation and storyline
     const generateDynamicSmartReplies = ({
+      storyId = '',
+      storyTitle = '',
       characterName,
       aiReplyText,
       lastUserMessage,
@@ -342,6 +344,8 @@ ${isAnimeManga ? `
       userRole,
       turnIndex,
     }: {
+      storyId?: string;
+      storyTitle?: string;
       characterName: string;
       aiReplyText: string;
       lastUserMessage: string;
@@ -350,58 +354,298 @@ ${isAnimeManga ? `
       userRole: string;
       turnIndex: number;
     }): string[] => {
-      const combined = (aiReplyText + ' ' + lastUserMessage).toLowerCase();
+      const combined = (storyId + ' ' + storyTitle + ' ' + characterName + ' ' + userRole + ' ' + aiReplyText + ' ' + lastUserMessage).toLowerCase();
 
       if (isAnimeManga) {
-        const isCombat = /fight|sword|slash|blade|titan|curse|demon|punch|attack|battle|enemy|blood|kill|domain/i.test(combined);
-        const isCooking = /cook|food|meat|steak|wagyu|dish|delicious|recipe|stew|kitchen|taste|eat|meal|bake/i.test(combined);
-        const isSystem = /system|status|level|quest|stat|dungeon|floor|hunter|arise|shadow|rank|skill/i.test(combined);
-
-        if (isCooking) {
-          const cookingPool = [
-            `*[Sear meat over blazing fire with garlic butter glaze]* "Fel, Sui, dinner is ready! Come and get it!"`,
-            `*[Carefully plate the dish and sprinkle secret spices]* "Take a bite and tell me what you think of this flavor combination."`,
-            `*[Taste test the bubbling savory stew with wooden spoon]* "The broth has reduced to absolute perfection."`,
-            `*[Purchase rare luxury seasonings from the Netherworld Supermarket]* "Time to take this recipe to a mythical realm!"`,
-            `*[Pour refreshing cold cider into frosted steins]* "Nothing beats a cold drink after a long day of adventuring."`,
+        // 1. SOLO LEVELING / SOLO HUNTER / SHADOW MONARCH
+        if (/solo-leveling|solo-hunter|sung-jinwoo|shadow-monarch|shadow guild|dungeon master/i.test(combined)) {
+          const chapters = [
+            [
+              `*[Open System Interface and accept Daily Quest: Strength Training]* "100 pushups, 100 situps, 100 squats, and 10km run... I won't end up in the Penalty Zone."`,
+              `*[Equip Kasaka's Venom Fang with violet aura glow]* "My daggers are ready. Let's see how much XP this dungeon boss yields."`,
+              `*[Dump all unallocated stat points into Strength and Agility]* "Status: Open. Every point counts when your life is on the line."`
+            ],
+            [
+              `*[Activate Bloodlust skill, paralyzing the dungeon monsters with sheer killing intent]* "Your level is too low to even stand before me."`,
+              `*[Sprint forward with Sprint skill, leaving violet afterimages]* "Vital Strike—aim straight for the boss's core!"`,
+              `*[Drink High-Grade Mana Potion from System inventory]* "I'm not leaving this gate until every single monster is cleared."`
+            ],
+            [
+              `*[Extend right hand toward the fallen commander's shadow]* "Arise."`,
+              `*[Command the Shadow Army as dark violet flames erupt]* "Igris, Iron—annihilate everything threatening our raid party!"`,
+              `*[Monarch's dark domain expands beneath your boots]* "I am the Monarch of Shadows. You picked the wrong hunter to threaten."`
+            ]
           ];
-          const offset = (turnIndex * 2) % cookingPool.length;
-          return [
-            cookingPool[offset % cookingPool.length],
-            cookingPool[(offset + 1) % cookingPool.length],
-            cookingPool[(offset + 2) % cookingPool.length],
-          ];
+          return chapters[turnIndex % chapters.length];
         }
 
-        if (isSystem) {
-          const systemPool = [
-            `*[Open System Holographic Interface]* "[Status: Open] - Allocate available stat points directly into Agility and Strength!"`,
-            `*[Summon shadow soldiers as violet aura bursts]* "Arise—sweep this entire floor and secure our perimeter!"`,
-            `*[Equip legendary daggers with a sharp metallic clink]* "This boss won't know what hit it."`,
-            `*[Activate stealth camouflage skill]* "Moving into the blind spot while their attention is divided."`,
-            `*[Check party condition in quest log]* "Everyone fall into defensive formation around me!"`,
+        // 2. JUJUTSU KAISEN
+        if (/jujutsu|gojo|sukuna|itadori|cursed-vessel/i.test(combined)) {
+          const chapters = [
+            [
+              `*[Swallow Sukuna's finger without hesitation as red curse marks ignite on your face]* "I don't care about the risk—I'm saving everyone I can!"`,
+              `*[Channel cursed energy into your knuckles for a Divergent Fist strike]* "Watch out! The cursed energy impacts a fraction of a second later!"`,
+              `*[Turn to Megumi and Gojo-sensei with a grin]* "Teach me everything about Jujutsu High. I won't be useless."`
+            ],
+            [
+              `*[Focus cursed energy to the nanosecond threshold]* "BLACK FLASH!"`,
+              `*[Coordinate with Megumi's Divine Dog to flank the curse]* "Fushiguro, pin it down! I'll shatter its cursed core!"`,
+              `*[Sukuna's mouth manifests on your cheek with a dark chuckle]* "Shut up, Sukuna! This is my body, and I call the shots!"`
+            ],
+            [
+              `*[Cross fingers forming the iconic shrine seal]* "Domain Expansion: Malevolent Shrine!"`,
+              `*[Punch through concrete with overwhelming raw cursed energy]* "I am a cog! As long as curses hurt innocent people, I will destroy them!"`,
+              `*[Stand tall against the Special Grade Disaster Curse]* "You thought humans were weak? You're looking at the vessel that will bury you."`
+            ]
           ];
-          const offset = (turnIndex * 2) % systemPool.length;
-          return [
-            systemPool[offset % systemPool.length],
-            systemPool[(offset + 1) % systemPool.length],
-            systemPool[(offset + 2) % systemPool.length],
-          ];
+          return chapters[turnIndex % chapters.length];
         }
 
-        const combatPool = [
-          `*[Draw blade and unleash surging aura]* "I didn't come this far to back down. Let's settle this right now!"`,
-          `*[Analyze opponent's stance with razor focus]* "Watch their footwork—the opening will appear in three seconds!"`,
-          `*[Grin boldly with fists tightly clenched]* "If you think that's enough to stop me, you're dead wrong!"`,
-          `*[Channel concentrated energy into final strike]* "Take this—everything I've got in a single blow!"`,
-          `*[Step forward shielding companions]* "Nobody lays a finger on my friends while I'm breathing!"`,
+        // 3. DEMON SLAYER (KIMETSU NO YAIBA)
+        if (/demon-slayer|tanjiro|shinobu|hinokami|hashira|kibutsuji/i.test(combined)) {
+          const chapters = [
+            [
+              `*[Shield Nezuko's wooden box and draw your black Nichirin Blade]* "My sister has never tasted human flesh! I will protect her with my life!"`,
+              `*[Inhale deeply with Total Concentration Water Breathing]* "First Form: Water Surface Slash!"`,
+              `*[Detect the faint opening thread through your sense of smell]* "There! The scent of the opening thread leads straight to the neck!"`
+            ],
+            [
+              `*[Switch from Water Breathing to Sun Breathing]* "Hinokami Kagura: Dance of the Fire God—Flash Dance!"`,
+              `*[Call out to Nezuko to ignite her Demon Blood Art]* "Nezuko, Blood Burst! Burn through their poison!"`,
+              `*[Grit teeth pushing through fractured ribs]* "Set your heart ablaze! Go beyond your limits!"`
+            ],
+            [
+              `*[Turn Nichirin blade bright crimson red with supreme grip]* "For the Hashira, for Rengoku, and for everyone you took from us!"`,
+              `*[Enter the Transparent World, reading every muscle twitch in advance]* "I see through your attacks before you even strike."`,
+              `*[Unleash the continuous Sun Wheel Thirteenth Form]* "Muzan Kibutsuji! This is where your thousand-year nightmare ends!"`
+            ]
+          ];
+          return chapters[turnIndex % chapters.length];
+        }
+
+        // 4. SPY X FAMILY
+        if (/spy-x-family|anya|yor|twilight|forger|operation strix/i.test(combined)) {
+          const chapters = [
+            [
+              `*[Crouch to Anya's eye level and hand her a crossword puzzle]* "Can you solve this, young lady? We're going to live together from today."`,
+              `*[Adjust felt fedora and scan the street for Secret Police]* "Agent Twilight mode engaged. Nothing can jeopardize Operation Strix."`,
+              `*[Take Anya's small hand while she whispers 'Waku waku!']* "Rule number one: in public, I am Dr. Loid Forger, and you call me Papa."`
+            ],
+            [
+              `*[Offer your arm to Yor Briar with a polished smile]* "Miss Briar, would you do me the honor of attending the party as my partner?"`,
+              `*[Slam fist onto the Eden Academy interview desk in furious defense of Anya]* "An educator who insults a child has no understanding of true elegance!"`,
+              `*[Exchange encrypted messages with informant Franky]* "Franky, I need the Eden Academy background dossiers by midnight."`
+            ],
+            [
+              `*[Pet giant fluffy dog Bond as he barks a future vision]* "Good boy, Bond. What danger is heading our way?"`,
+              `*[Watch Anya proudly salute with her newly earned Stella Star]* "Good job, Anya! You're one step closer to becoming an Imperial Scholar."`,
+              `*[Cover Yor's blind spot with silenced pistol while she unleashes assassin kicks]* "For the mission... and for our peaceful family dinner tonight."`
+            ]
+          ];
+          return chapters[turnIndex % chapters.length];
+        }
+
+        // 5. ATTACK ON TITAN
+        if (/attack-on-titan|aot|eren|levi|rumbling|yeager/i.test(combined)) {
+          const chapters = [
+            [
+              `*[Fire ODM gear grapples into the brick clock tower and boost gas]* "Trost District gate is breached! Squad 34, follow my lead!"`,
+              `*[Draw dual ultra-hard steel blades with metallic hiss]* "Aim for the nape—one meter long, ten centimeters wide!"`,
+              `*[Look at Mikasa and Armin with blazing eyes]* "I'm joining the Scout Regiment and eradicating every titan outside these walls!"`
+            ],
+            [
+              `*[Bite hand savagely as yellow lightning rips through the heavens]* "ROOOOOAAAAR! [Attack Titan Roar]"`,
+              `*[Dodge crystallized roundhouse kick in the giant forest]* "I'll rip you out of that crystal with my bare hands!"`,
+              `*[Salute Commander Erwin with fist over heart]* "Dedicate your hearts! Advance toward the basement!"`
+            ],
+            [
+              `*[Look across the ocean at the Marleyan coastline]* "If we destroy all our enemies on the other side... will we finally be free?"`,
+              `*[Activate the Founding Titan as colossal titans march]* "Hear me, Subjects of Ymir! The Rumbling has officially begun!"`,
+              `*[Stare down Reiner with cold, resolute eyes]* "I just keep moving forward... until all my enemies are destroyed."`
+            ]
+          ];
+          return chapters[turnIndex % chapters.length];
+        }
+
+        // 6. CHAINSAW MAN
+        if (/chainsaw|denji|makima|reze|power|pochita/i.test(combined)) {
+          const chapters = [
+            [
+              `*[Pull the ripcord in your chest as the engine violently revs]* "Out of my way! Chainsaw Man is clocking in!"`,
+              `*[Stare into Makima's hypnotic spiral eyes]* "Miss Makima... if I take down this devil, will you go on a date with me?"`,
+              `*[High-five Power while Aki scolds you in the apartment]* "Power, let's eat all of Aki's gourmet jam before he notices!"`
+            ],
+            [
+              `*[Rev head and arm blades, diving headfirst into the devil]* "Who cares about pain?! Let's see which one of us goes crazy first!"`,
+              `*[Gulp fiend blood to supercharge your revving motors]* "More blood! As long as I drink blood, I can never die!"`,
+              `*[Grin wildly through blood-soaked teeth]* "You wanted my heart?! Come and try to take it!"`
+            ],
+            [
+              `*[Catch Reze's explosion blast with spinning chainsaws]* "I really liked you, Reze... but I won't let you hurt my friends!"`,
+              `*[Erupt into the four-armed Hero of Hell black armor]* "VAMVAVURGER! Let's tear this city wide open!"`,
+              `*[Stand before Makima with Pochita's true chainsaw roar]* "I loved you, Makima... but this is where the contract ends."`
+            ]
+          ];
+          return chapters[turnIndex % chapters.length];
+        }
+
+        // 7. SWORD ART ONLINE
+        if (/sword-art-online|sao|kirito|aincrad|asuna/i.test(combined)) {
+          const chapters = [
+            [
+              `*[Check glowing green HP bar and red mirror item]* "This isn't a bug... if our HP hits zero in the game, our real body dies."`,
+              `*[Equip iron sword and sprint out of the Town of Beginnings]* "Resource spawns are limited—we have to reach the next town before the rush!"`,
+              `*[Offer cream bread to the hooded fencer Asuna]* "Here, spread this cream on the black bread. It actually tastes amazing."`
+            ],
+            [
+              `*[Scream out the raid combat command to Asuna]* "SWITCH! Break the Kobold Lord's stance right now!"`,
+              `*[Take on the hated 'Beater' mantle so the raid party doesn't fracture]* "Don't compare me to those rookies. I made it to Floor 8 in the beta!"`,
+              `*[Unsheathe Elucidator and teal Dark Repulser]* "Asuna, buy me ten seconds! Dual Blades: Starburst Stream!"`
+            ],
+            [
+              `*[Point twin blades at Commander Heathcliff]* "Immortal Object status... You're not just a guild leader. You're Akihiko Kayaba!"`,
+              `*[Push through paralysis through sheer human willpower]* "Our will is stronger than your system code!"`,
+              `*[Deliver the final dual-blade strike ending Sword Art Online]* "Log everyone out... the death game is finished."`
+            ]
+          ];
+          return chapters[turnIndex % chapters.length];
+        }
+
+        // 8. ONE PIECE
+        if (/one-piece|luffy|zoro|romance-dawn|pirate king/i.test(combined)) {
+          const chapters = [
+            [
+              `*[Bust through Marine Captain Morgan's courtyard with a wide grin]* "Hey, three-sword guy! Join my pirate crew!"`,
+              `*[Deflect Marine bullets with your rubber body]* "Gomu Gomu no... Balloon! Bullets don't work on me!"`,
+              `*[Hand Zoro his three swords]* "You're my first mate now. Let's set sail for the Grand Line!"`
+            ],
+            [
+              `*[Place your precious straw hat onto Nami's head]* "OF COURSE I'LL HELP YOU!"`,
+              `*[Pump legs rapidly as steam billows from your skin]* "Gear Second! Gomu Gomu no Jet Pistol!"`,
+              `*[Shout to the open ocean from the ship's figurehead]* "I'm Monkey D. Luffy! The man who will become King of the Pirates!"`
+            ],
+            [
+              `*[Infuse your fist with Advanced Conqueror's Haki lightning]* "I won't let you starve the people of Wano!"`,
+              `*[Drums of Liberation beat joyfully as white hair billows]* "AHAHAHA! This is my peak! GEAR 5!"`,
+              `*[Grab lightning from the sky and strike Kaido]* "I'm going to create a world where my friends can eat as much as they want!"`
+            ]
+          ];
+          return chapters[turnIndex % chapters.length];
+        }
+
+        // 9. BLEACH
+        if (/bleach|ichigo|shinigami|rukia|zangetsu/i.test(combined)) {
+          const chapters = [
+            [
+              `*[Grip the hilt of Rukia's Zanpakuto as it pierces your chest]* "Give me the Shinigami power! I'll protect my sisters and this town!"`,
+              `*[Swing the giant cleaver blade with a shockwave]* "So this is my Zanpakuto... let's see how tough you Hollows really are!"`,
+              `*[Shatter the Hollow mask with a single overhead slash]* "Go to the Soul Society and atone for your sins!"`
+            ],
+            [
+              `*[Compress your monstrous spiritual pressure around your body]* "Tensa Zangetsu... BANKAI!"`,
+              `*[Channel pitch-black spiritual energy into the blade]* "GETSUGA TENSHO!"`,
+              `*[Hollow mask half-forms over your face with golden eyes]* "Out of the way! I'm saving Rukia, no matter who stands against me!"`
+            ],
+            [
+              `*[Unleash the Final Getsuga Tensho with pitch-black hair]* "Mugetsu... This is the end, Aizen."`,
+              `*[Deflect the Cero Oscuras with your bare hand]* "I didn't come here to debate. I came here to protect my friends."`,
+              `*[Sheathe Zangetsu as peace returns to the living world]* "Protecting people isn't a burden—it's who I am."`
+            ]
+          ];
+          return chapters[turnIndex % chapters.length];
+        }
+
+        // 10. GOURMET / COOKING ISEKAI (Campfire Cooking, Food Wars, Dungeon Meshi, Nekoya, Nobu)
+        if (/cooking|food-wars|campfire-cooking|dungeon-meshi|restaurant-to-another-world|izakaya-nobu|mukoda|soma|senshi/i.test(combined)) {
+          const chapters = [
+            [
+              `*[Sear dragon steak over blazing fire with garlic-butter glaze]* "Fel, Sui, dinner is ready! Come and get it!"`,
+              `*[Slice sea-monster tentacles with yanagiba knife for fresh sashimi]* "The umami in this dungeon broth is unbelievable!"`,
+              `*[Plate the golden soufflé omelette with demi-glace drizzle]* "Order up! The Yukihira Diner specialty is served!"`
+            ],
+            [
+              `*[Watch the food judge's eyes widen as their clothing bursts from culinary ecstasy]* "How does the 'diner food' taste to your God Tongue now, Erina?"`,
+              `*[Purchase premium Wagyu beef and soy sauce from the Netherworld Supermarket]* "Time to take this recipe into a mythical realm!"`,
+              `*[Pour frosted draught ale into wooden steins with crispy karaage]* "Nothing beats cold lager after a long dungeon crawl!"`
+            ],
+            [
+              `*[Stir the simmering Red Dragon and walking mushroom stew with Senshi]* "Let's taste test the broth... it has reduced to absolute perfection!"`,
+              `*[Serve the enchanted brass-door guests at Western Restaurant Nekoya]* "Welcome to Nekoya! What can I cook for you tonight?"`,
+              `*[Adjust headband with a confident grin]* "Oagariyo! Glad you enjoyed the meal!"`
+            ]
+          ];
+          return chapters[turnIndex % chapters.length];
+        }
+
+        // 11. SLIME (TENSURA)
+        if (/tensei-slime|rimuru|tempest|veldora/i.test(combined)) {
+          const chapters = [
+            [
+              `*[Bounce as a shiny blue slime]* "Great Sage, analyze this magical hipokute herb and magic ore!"`,
+              `*[Approach the giant imprisoned Storm Dragon cheerfully]* "Hey mister dragon! Do you want to be friends? You look pretty lonely in here."`,
+              `*[Activate Predator skill to absorb the Unlimited Imprisonment seal]* "I'll store you inside my stomach until we find a way to break the curse!"`
+            ],
+            [
+              `*[Bestow names upon the monsters with a brilliant golden aura]* "From now on, you are Benimaru, Shion, and Gobta!"`,
+              `*[Slice through enemy ranks with pressurized Water Blades]* "Nobody threatens the Great Jura Forest while I'm alive!"`,
+              `*[Shift from slime form into silver-haired human form]* "Let's build a nation where humans and monsters can live together in harmony."`
+            ]
+          ];
+          return chapters[turnIndex % chapters.length];
+        }
+
+        // 12. RE:ZERO
+        if (/rezero|subaru|emilia|rem/i.test(combined)) {
+          const chapters = [
+            [
+              `*[Sprint through the slums to reach the loot cellar before Elsa]* "I have to find Felt and recover Emilia's stolen insignia!"`,
+              `*[Gasp awake drenched in cold sweat as the clock resets]* "Return by Death... the checkpoint reset to the bedroom!"`,
+              `*[Take Emilia's hand with an earnest smile]* "My name is Subaru Natsuki! And I'm going to save your life!"`
+            ],
+            [
+              `*[Stand between Rem and the mabeast pack in the forest]* "Even if I die a thousand times, I will carve a future where everyone smiles!"`,
+              `*[Face the White Whale with the Crusch Karsten alliance]* "Hear my scent, beasts! I'm right here!"`,
+              `*[Confess your feelings under the royal capital stars]* "I love you, Emilia. And I won't stop fighting until your dream comes true."`
+            ]
+          ];
+          return chapters[turnIndex % chapters.length];
+        }
+
+        // 13. TOKYO REVENGERS
+        if (/tokyo-revengers|mikey|takemichi|draken/i.test(combined)) {
+          const chapters = [
+            [
+              `*[Take a bruised fighting stance against Kiyomasa]* "I'm not backing down! Not until I change the future!"`,
+              `*[Look up as Mikey and Draken step through the crowd]* "Mikey... I need to join the Tokyo Manji Gang!"`,
+              `*[Grip Naoto's hand to trigger the time-leap handshake]* "I will save Hina, no matter how many times I have to jump back!"`
+            ],
+            [
+              `*[Stand between Baji and Kazutora during the Bloody Halloween]* "Toman wasn't created to tear itself apart like this!"`,
+              `*[Ride passenger on Mikey's CB250T motorcycle through the Tokyo night]* "Mikey-kun, let's build the new era of delinquents together!"`
+            ]
+          ];
+          return chapters[turnIndex % chapters.length];
+        }
+
+        // 14. CYBERPUNK 2099 / NETRUNNER LUCY
+        if (/cyberpunk|netrunner|lucy|arasaka/i.test(combined)) {
+          const chapters = [
+            [
+              `*[Activate Sandevistan neural overclock as the world slows]* "Too slow, choom. I'm already behind you."`,
+              `*[Jack cyberdeck into the terminal and upload Daemon to melt Arasaka ICE]* "Lucy, the data packet is decrypted. Let's make our exit!"`,
+              `*[Rev the Yaiba Kusanagi motorcycle through neon-lit Kabuki rain]* "We're going to the moon, Lucy. Whatever it takes."`
+            ]
+          ];
+          return chapters[turnIndex % chapters.length];
+        }
+
+        // Generic anime fallback with storyline feel
+        const defaultAnime = [
+          `*[Draw weapon and unleash concentrated aura]* "I didn't come this far to back down. Let's settle this right now!"`,
+          `*[Analyze opponent's stance with tactical precision]* "Watch their movement—the opening will appear in three seconds!"`,
+          `*[Grin boldly, powering up for the next chapter arc]* "If you think that's enough to stop me, you're dead wrong!"`
         ];
-        const offset = (turnIndex * 2) % combatPool.length;
-        return [
-          combatPool[offset % combatPool.length],
-          combatPool[(offset + 1) % combatPool.length],
-          combatPool[(offset + 2) % combatPool.length],
-        ];
+        return defaultAnime;
       }
 
       // ROMANCE / DRAMA / PAKISTANI STORIES (Roman Urdu & Hinglish)
@@ -811,6 +1055,8 @@ ${isAnimeManga ? `
         );
 
       smartReplies = generateDynamicSmartReplies({
+        storyId,
+        storyTitle,
         characterName,
         aiReplyText,
         lastUserMessage,

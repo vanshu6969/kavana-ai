@@ -3186,7 +3186,7 @@ export const KAVANA_STORIES: Story[] = [
       "characterName": "Durefishan Begum",
       "userRole": "The Feudal Heir",
       "userGoal": "Navigate dramatic power plays and claim your romantic destiny",
-      "category": "Anime",
+      "category": "Pakistani Drama",
       "tags": [
           "🇵🇰 Pakistani Drama",
           "🔥 18+ Uncensored",
@@ -3498,7 +3498,7 @@ export const KAVANA_STORIES: Story[] = [
       "characterName": "Yumna Begum",
       "userRole": "The Feudal Heir",
       "userGoal": "Navigate dramatic power plays and claim your romantic destiny",
-      "category": "Anime",
+      "category": "Pakistani Drama",
       "tags": [
           "🇵🇰 Pakistani Drama",
           "🔥 18+ Uncensored",
@@ -3810,7 +3810,7 @@ export const KAVANA_STORIES: Story[] = [
       "characterName": "Sanam Begum",
       "userRole": "The Feudal Heir",
       "userGoal": "Navigate dramatic power plays and claim your romantic destiny",
-      "category": "Anime",
+      "category": "Pakistani Drama",
       "tags": [
           "🇵🇰 Pakistani Drama",
           "🔥 18+ Uncensored",
@@ -4122,7 +4122,7 @@ export const KAVANA_STORIES: Story[] = [
       "characterName": "Mahira Begum",
       "userRole": "The Feudal Heir",
       "userGoal": "Navigate dramatic power plays and claim your romantic destiny",
-      "category": "Anime",
+      "category": "Pakistani Drama",
       "tags": [
           "🇵🇰 Pakistani Drama",
           "🔥 18+ Uncensored",
@@ -4434,7 +4434,7 @@ export const KAVANA_STORIES: Story[] = [
       "characterName": "Alia Begum",
       "userRole": "The Feudal Heir",
       "userGoal": "Navigate dramatic power plays and claim your romantic destiny",
-      "category": "Anime",
+      "category": "Pakistani Drama",
       "tags": [
           "🇵🇰 Pakistani Drama",
           "🔥 18+ Uncensored",
@@ -4746,7 +4746,7 @@ export const KAVANA_STORIES: Story[] = [
       "characterName": "Kubra Begum",
       "userRole": "The Feudal Heir",
       "userGoal": "Navigate dramatic power plays and claim your romantic destiny",
-      "category": "Anime",
+      "category": "Pakistani Drama",
       "tags": [
           "🇵🇰 Pakistani Drama",
           "🔥 18+ Uncensored",
@@ -5058,7 +5058,7 @@ export const KAVANA_STORIES: Story[] = [
       "characterName": "Kitsune Begum",
       "userRole": "The Feudal Heir",
       "userGoal": "Navigate dramatic power plays and claim your romantic destiny",
-      "category": "Anime",
+      "category": "Pakistani Drama",
       "tags": [
           "🇵🇰 Pakistani Drama",
           "🔥 18+ Uncensored",
@@ -5370,7 +5370,7 @@ export const KAVANA_STORIES: Story[] = [
       "characterName": "Durefishan Begum",
       "userRole": "The Feudal Heir",
       "userGoal": "Navigate dramatic power plays and claim your romantic destiny",
-      "category": "Anime",
+      "category": "Pakistani Drama",
       "tags": [
           "🇵🇰 Pakistani Drama",
           "🔥 18+ Uncensored",
@@ -5682,7 +5682,7 @@ export const KAVANA_STORIES: Story[] = [
       "characterName": "Yumna Begum",
       "userRole": "The Feudal Heir",
       "userGoal": "Navigate dramatic power plays and claim your romantic destiny",
-      "category": "Anime",
+      "category": "Pakistani Drama",
       "tags": [
           "🇵🇰 Pakistani Drama",
           "🔥 18+ Uncensored",
@@ -5994,7 +5994,7 @@ export const KAVANA_STORIES: Story[] = [
       "characterName": "Sanam Begum",
       "userRole": "The Feudal Heir",
       "userGoal": "Navigate dramatic power plays and claim your romantic destiny",
-      "category": "Anime",
+      "category": "Pakistani Drama",
       "tags": [
           "🇵🇰 Pakistani Drama",
           "🔥 18+ Uncensored",
@@ -6306,7 +6306,7 @@ export const KAVANA_STORIES: Story[] = [
       "characterName": "Mahira Begum",
       "userRole": "The Feudal Heir",
       "userGoal": "Navigate dramatic power plays and claim your romantic destiny",
-      "category": "Anime",
+      "category": "Pakistani Drama",
       "tags": [
           "🇵🇰 Pakistani Drama",
           "🔥 18+ Uncensored",
@@ -6618,7 +6618,7 @@ export const KAVANA_STORIES: Story[] = [
       "characterName": "Alia Begum",
       "userRole": "The Feudal Heir",
       "userGoal": "Navigate dramatic power plays and claim your romantic destiny",
-      "category": "Anime",
+      "category": "Pakistani Drama",
       "tags": [
           "🇵🇰 Pakistani Drama",
           "🔥 18+ Uncensored",
@@ -6930,7 +6930,7 @@ export const KAVANA_STORIES: Story[] = [
       "characterName": "Kubra Begum",
       "userRole": "The Feudal Heir",
       "userGoal": "Navigate dramatic power plays and claim your romantic destiny",
-      "category": "Anime",
+      "category": "Pakistani Drama",
       "tags": [
           "🇵🇰 Pakistani Drama",
           "🔥 18+ Uncensored",
@@ -7242,7 +7242,7 @@ export const KAVANA_STORIES: Story[] = [
       "characterName": "Kitsune Begum",
       "userRole": "The Feudal Heir",
       "userGoal": "Navigate dramatic power plays and claim your romantic destiny",
-      "category": "Anime",
+      "category": "Pakistani Drama",
       "tags": [
           "🇵🇰 Pakistani Drama",
           "🔥 18+ Uncensored",
@@ -7554,7 +7554,7 @@ export const KAVANA_STORIES: Story[] = [
       "characterName": "Durefishan Begum",
       "userRole": "The Feudal Heir",
       "userGoal": "Navigate dramatic power plays and claim your romantic destiny",
-      "category": "Anime",
+      "category": "Pakistani Drama",
       "tags": [
           "🇵🇰 Pakistani Drama",
           "🔥 18+ Uncensored",
@@ -7866,7 +7866,7 @@ export const KAVANA_STORIES: Story[] = [
       "characterName": "Yumna Begum",
       "userRole": "The Feudal Heir",
       "userGoal": "Navigate dramatic power plays and claim your romantic destiny",
-      "category": "Anime",
+      "category": "Pakistani Drama",
       "tags": [
           "🇵🇰 Pakistani Drama",
           "🔥 18+ Uncensored",
@@ -8015,7 +8015,6 @@ export const KAVANA_STORIES: Story[] = [
       }
   }
 ,
-
   {
     "id": "campfire-cooking-another-world-mukoda",
     "title": "Campfire Cooking in Another World: Fel & Sui",
@@ -8055,7 +8054,6 @@ export const KAVANA_STORIES: Story[] = [
       "mood": "Ravenous Anticipation"
     }
   },
-
   {
     "id": "restaurant-to-another-world-master",
     "title": "Restaurant to Another World: Western Diner Nekoya",
@@ -8095,7 +8093,6 @@ export const KAVANA_STORIES: Story[] = [
       "mood": "Culinary Elegance"
     }
   },
-
   {
     "id": "food-wars-soma-yukihira",
     "title": "Food Wars: Totsuki Exam - Yukihira vs Erina",
@@ -8135,7 +8132,6 @@ export const KAVANA_STORIES: Story[] = [
       "mood": "Tense Culinary Showdown"
     }
   },
-
   {
     "id": "tensei-slime-rimuru-tempest",
     "title": "That Time I Got Reincarnated as a Slime: Veldora Cave",
@@ -8175,7 +8171,6 @@ export const KAVANA_STORIES: Story[] = [
       "mood": "Mythic Awakening"
     }
   },
-
   {
     "id": "rezero-subaru-natsuki",
     "title": "Re:Zero: Starting Life in Another World - First Loop",
@@ -8215,7 +8210,6 @@ export const KAVANA_STORIES: Story[] = [
       "mood": "Desperate Rescue"
     }
   },
-
   {
     "id": "mushoku-tensei-rudeus",
     "title": "Mushoku Tensei: Rudeus & Roxy Migurdia",
@@ -8255,7 +8249,6 @@ export const KAVANA_STORIES: Story[] = [
       "mood": "Mystic Tutoring"
     }
   },
-
   {
     "id": "sao-aincrad-kirito",
     "title": "Sword Art Online: Aincrad Floor 1 - Death Game Begins",
@@ -8295,7 +8288,6 @@ export const KAVANA_STORIES: Story[] = [
       "mood": "Lethal Survival"
     }
   },
-
   {
     "id": "one-piece-luffy-romance-dawn",
     "title": "One Piece: Romance Dawn - Zoro Recruited",
@@ -8335,7 +8327,6 @@ export const KAVANA_STORIES: Story[] = [
       "mood": "Legendary First Mate"
     }
   },
-
   {
     "id": "bleach-ichigo-kurosaki",
     "title": "Bleach: Substitute Shinigami - The Hollow Incursion",
@@ -8375,7 +8366,6 @@ export const KAVANA_STORIES: Story[] = [
       "mood": "Supernatural Awakening"
     }
   },
-
   {
     "id": "tokyo-ghoul-kaneki-ken",
     "title": "Tokyo Ghoul: Awakening - The One-Eyed Ghoul",
@@ -8415,7 +8405,6 @@ export const KAVANA_STORIES: Story[] = [
       "mood": "Dark Psychological Horror"
     }
   },
-
   {
     "id": "frieren-beyond-journeys-end",
     "title": "Frieren: Beyond Journey's End - The Northern Journey",
@@ -8455,7 +8444,6 @@ export const KAVANA_STORIES: Story[] = [
       "mood": "Poetic & Timeless"
     }
   },
-
   {
     "id": "shield-hero-naofumi-revenge",
     "title": "The Rising of the Shield Hero: Wrath & Raphtalia",
@@ -8495,7 +8483,6 @@ export const KAVANA_STORIES: Story[] = [
       "mood": "Dark Revenge & Bond"
     }
   },
-
   {
     "id": "vinland-saga-thorfinn-revenge",
     "title": "Vinland Saga: Thorfinn's Vengeance Against Askeladd",
@@ -8535,7 +8522,6 @@ export const KAVANA_STORIES: Story[] = [
       "mood": "Fiery Blood Vengeance"
     }
   },
-
   {
     "id": "badla-billionaire-revenge-zaviyar",
     "title": "Badla: Ishq Aur Inteqam (The Billionaire's Revenge)",
@@ -8575,7 +8561,6 @@ export const KAVANA_STORIES: Story[] = [
       "mood": "Intense Revenge Drama"
     }
   },
-
   {
     "id": "count-of-monte-cristo-paris",
     "title": "The Count of Monte Cristo: Edmond's Revenge",
@@ -8616,7 +8601,6 @@ export const KAVANA_STORIES: Story[] = [
     }
   }
 ,
-
   {
     "id": "dungeon-meshi-laios-senshi",
     "title": "Delicious in Dungeon: Red Dragon Stew with Senshi",
@@ -8656,7 +8640,6 @@ export const KAVANA_STORIES: Story[] = [
       "mood": "Gourmet Dungeon Delve"
     }
   },
-
   {
     "id": "isekai-izakaya-nobu-shinobu",
     "title": "Isekai Izakaya Nobu: Ale & Crispy Karaage in Aiteria",
