@@ -37,17 +37,32 @@ export default function SmartReplyChips({
   };
 
   const getActionBadge = (action: string) => {
+    if (isAnime) {
+      const l = action.toLowerCase();
+      if (l.includes('cook') || l.includes('sizzle') || l.includes('plate') || l.includes('stew') || l.includes('meat') || l.includes('beef') || l.includes('broth')) {
+        return { icon: '🍖', label: 'Gourmet Feat', color: 'bg-amber-500/20 text-amber-300 border-amber-500/40' };
+      }
+      if (l.includes('system') || l.includes('status') || l.includes('quest') || l.includes('level') || l.includes('stat') || l.includes('shadow')) {
+        return { icon: '⚡', label: 'System Skill', color: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' };
+      }
+      if (l.includes('blade') || l.includes('sword') || l.includes('slash') || l.includes('fist') || l.includes('attack') || l.includes('draw') || l.includes('breathing')) {
+        return { icon: '⚔️', label: 'Combat Action', color: 'bg-rose-500/20 text-rose-300 border-rose-500/40' };
+      }
+      return { icon: '✨', label: 'Anime Choice', color: 'bg-purple-500/20 text-purple-300 border-purple-500/40' };
+    }
+
+    // Standard Drama / Romance / Thriller badges:
     const l = action.toLowerCase();
-    if (l.includes('cook') || l.includes('sizzle') || l.includes('plate') || l.includes('stew') || l.includes('fry') || l.includes('soup') || l.includes('spice') || l.includes('meat') || l.includes('beef') || l.includes('broth') || l.includes('rice') || l.includes('serve')) {
-      return { icon: '🍖', label: 'Gourmet Action', color: 'bg-amber-500/20 text-amber-300 border-amber-500/40' };
+    if (l.includes('chhoo') || l.includes('touch') || l.includes('kiss') || l.includes('hont') || l.includes('kamar') || l.includes('kareeb') || l.includes('qareeb') || l.includes('lap') || l.includes('baahon') || l.includes('jism') || l.includes('embrace') || l.includes('kapde') || l.includes('parda') || l.includes('dupatta')) {
+      return { icon: '🔥', label: 'Intimate Touch', color: 'bg-rose-500/20 text-rose-300 border-rose-500/40' };
     }
-    if (l.includes('system') || l.includes('status') || l.includes('quest') || l.includes('level') || l.includes('stat') || l.includes('trap') || l.includes('gate') || l.includes('shadow') || l.includes('supermarket')) {
-      return { icon: '⚡', label: 'System Skill', color: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' };
+    if (l.includes('muskura') || l.includes('smile') || l.includes('tease') || l.includes('shokhi') || l.includes('dekh') || l.includes('aankh') || l.includes('libaas') || l.includes('rang')) {
+      return { icon: '❤️', label: 'Romantic Chemistry', color: 'bg-pink-500/20 text-pink-300 border-pink-500/40' };
     }
-    if (l.includes('blade') || l.includes('sword') || l.includes('slash') || l.includes('fist') || l.includes('punch') || l.includes('attack') || l.includes('draw') || l.includes('ripcord') || l.includes('magic') || l.includes('spell') || l.includes('breathing') || l.includes('katana') || l.includes('sandevistan') || l.includes('curse') || l.includes('aura')) {
-      return { icon: '⚔️', label: 'Combat Action', color: 'bg-rose-500/20 text-rose-300 border-rose-500/40' };
+    if (l.includes('darwaza') || l.includes('haveli') || l.includes('haath') || l.includes('step') || l.includes('rok') || l.includes('deewar') || l.includes('pistol') || l.includes('chacha')) {
+      return { icon: '⚡', label: 'Dramatic Action', color: 'bg-amber-500/20 text-amber-300 border-amber-500/40' };
     }
-    return { icon: '✨', label: 'Manga Action', color: 'bg-purple-500/20 text-purple-300 border-purple-500/40' };
+    return { icon: '✨', label: 'Next Move', color: 'bg-rose-500/15 text-rose-300 border-rose-500/30' };
   };
 
   // Helper to cleanly separate and format *[Action]* from 'Spoken Dialogue'

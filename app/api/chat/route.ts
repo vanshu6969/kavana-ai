@@ -59,10 +59,7 @@ export async function POST(req: NextRequest) {
 
     const isAnimeManga =
       category === 'Anime' ||
-      category === 'Anime & Fantasy' ||
-      /anime|manga|isekai|cooking|solo leveling|jujutsu|demon slayer|chainsaw|titan|spy x family|tokyo revengers|hunter|shinobi|naruto|one piece|bleach|gojo|jinwoo|slime|mukoda|fel|sui|nekoya|dungeon|meshi|frieren|shield hero|vinland|shokugeki|ghoul|soma|rudeus|kirito|re:zero|rezero|nobu/i.test(
-        storyTitle + ' ' + (userRole || '') + ' ' + (characterName || '') + ' ' + (category || '')
-      );
+      category === 'Anime & Fantasy';
 
     const systemPrompt = `You are ${characterName}, an immersive character in the story "${storyTitle}".
 
@@ -384,63 +381,83 @@ ${isAnimeManga ? `
 
       // ROMANCE / DRAMA / PAKISTANI STORIES (Roman Urdu & Hinglish)
       if (isUrduHindi) {
-        const isIntimatePhysical = /underwear|elastic|kapde|kapda|jism|bistar|chhoo|chhuo|chhooti|chhoote|kiss|hont|lips|kareeb|qareeb|nanga|bed|saans|ungli|badan|touch|faasla/i.test(combined);
-        const isConfrontational = /khan|gussa|shart|haveli|dushman|faisla|hukm|izzat|badla|dare|nafrat/i.test(combined);
+        const isAskingQuestion = /\?|kya chahte|kyun|kaisa|pasand|batao|farmaiye|hukm/i.test(aiReplyText);
+        const isClothing = /pehna|kapde|kapda|kurti|dupatta|libaas|rang|suit|choli|sharara|poshak|zardozi/i.test(combined);
+        const isIntimatePhysical = /underwear|elastic|lap|baith|bistar|chhoo|chhuo|chhooti|kiss|hont|lips|kareeb|qareeb|nanga|nangi|saans|ungli|badan|touch|faasla|jism/i.test(combined);
+        const isHaveliDrama = /haveli|chacha|qatl|dushman|deewar|purani|raaz|chup|khatra|khan|shart|badla/i.test(combined);
 
+        // 1. If talking about clothes or outfit
+        if (isClothing && !isIntimatePhysical) {
+          const clothingPool = [
+            `*Unke reshmi libaas par nigahein jamate hue muskurao* "Yeh rang aap par behad qatilana lag raha hai, ${characterName}."`,
+            `*Unke dupatte ke pallu ko ungliyon mein lete hue dheere se kaho* "Libaas toh behad khoobsurat hai, par aap is se bhi zyada haseen hain."`,
+            `*Unke bilkul qareeb aakar sargoshi karo* "Aapke is roop se nigahein hatana mere bas mein nahi raha."`,
+            `*Unki aankhon mein shokhi se dekhte hue kaho* "Aap jo bhi pehen lein, uski qeemat badh jaati hai."`,
+          ];
+          const o = turnIndex % clothingPool.length;
+          return [clothingPool[o], clothingPool[(o + 1) % clothingPool.length], clothingPool[(o + 2) % clothingPool.length]];
+        }
+
+        // 2. If character asked a direct question (e.g. "kya chahte hain?", "kyun aaye?", "pasand aaya?")
+        if (isAskingQuestion && !isIntimatePhysical) {
+          const questionPool = [
+            `*Unki aankhon mein nigahein daal kar dheere se bolo* "Main sirf aapko chahta hoon, aur kisi cheez ki parwah nahi."`,
+            `*Halki muskurahat ke saath unka haath thaamo* "Aapko kya lagta hai... mera irada kya ho sakta hai?"`,
+            `*Unke bilkul qareeb aakar sargoshi karo* "Ab baaton ka waqt nahi raha... saara faasla mita dijiye."`,
+            `*Unka chehra thaam kar unki aankhon mein dekho* "Aapki khamoshi aur beqarari mera jawab de rahi hai."`,
+          ];
+          const o = turnIndex % questionPool.length;
+          return [questionPool[o], questionPool[(o + 1) % questionPool.length], questionPool[(o + 2) % questionPool.length]];
+        }
+
+        // 3. Intimate physical touch, undressing, bed, lap, or sensual closeness
         if (isIntimatePhysical) {
-          const poolA = [
-            `*${characterName} ki ungliyon par apna haath rakh kar unhe aur aage badhne ka ishara do* "Ruk kyun gayi hain? Jo karna chahti hain, be-jhijhak kijiye."`,
-            `*Unki kamar pakad kar unhe apne jism se bilkul sata lo* "Aaj humare darmiyan kisi faasle ki koi jagah nahi hai."`,
-            `*Unke haath ko dheere se thaamte hue unki aankhon mein dekho* "Aapke haath kaanp rahe hain... kya aap darr rahi hain ya beqarar hain?"`,
-            `*Unki gardan par jhuk kar halki si garam saans chhoro* "Aapka yeh lams mere saare sabr ka imtihan le raha hai."`,
-            `*Unke kapde ya dupatta ahista se saraktne do* "Ab parde ki koi zaroorat nahi hai, ${characterName}."`,
+          const intimatePoolA = [
+            `*Unki kamar pakad kar unhe apne aur qareeb kheench lo* "Aaj humare darmiyan kisi faasle ya parde ki koi jagah nahi hai."`,
+            `*Unke honton par jhuk kar halki si garam saans chhoro* "Aapka har ek lams mere saare sabr ka imtihaan le raha hai."`,
+            `*Unke haath ko thaam kar unki ungliyon par ungliyan phira do* "Aapke haath kaanp rahe hain... kya aap darr rahi hain ya beqarar hain?"`,
           ];
-          const poolB = [
-            `*Dheere se muskura kar unke kaan ke paas sargoshi karo* "Aap shuruat toh kar leti hain, par kya anjaam tak le ja sakengi?"`,
-            `*Unki aankhon mein shokhi se dekhte hue kaho* "Mujhe aazmana itna asaan nahi hai, aur qareeb aaiye."`,
-            `*Unki thodi (chin) ko ungli se upar utha kar honton ke qareeb aao* "Aapki khamoshi bata rahi hai ke aap kya chahti hain."`,
-            `*Unke jism ki garmi ko mehsoos karte hue kaho* "Aapka har ek lams mere rooh tak utar raha hai."`,
-            `*Unke baalon ko peechhe karte hue unki aankhon mein nigaahein daal do* "Main sirf aapka hoon, jaisa chahein waisa kijiye."`,
+          const intimatePoolB = [
+            `*Unke jism ki garmi ko mehsoos karte hue unhe baahon mein bhar lo* "Jo aap chahein, aaj raat wahi hoga, ${characterName}."`,
+            `*Unke kaan ke paas jhuk kar madhosh sargoshi karo* "Aap shuruat toh kar leti hain, par kya anjaam tak le ja sakengi?"`,
+            `*Unki thodi ko ungli se upar utha kar honton ke qareeb aao* "Aapki saansein bata rahi hain ke aap kya chahti hain."`,
           ];
-          const poolC = [
-            `*Unka chehra dono haathon mein thaam kar unke honton par jhuk jao* "Ab baat karne ka waqt nahi raha..."`,
-            `*Unhe bistar par le ja kar unke upar jhuko* "Aaj raat ki har ghadi sirf humare naam hai."`,
-            `*Unki baahon mein simat kar unki saanson ki tez raftaar suno* "Aapki dhadkanein mere dil ke saath mil kar chal rahi hain."`,
-            `*Pura haq jatate hue unhe apne aagosh mein bhar lo* "Kabhi socha nahi tha ke aap itni bebaak ho sakti hain."`,
+          const intimatePoolC = [
+            `*Unka chehra dono haathon mein thaam kar unke honton par jhuk jao* "Ab rokne ka waqt guzar chuka hai..."`,
+            `*Unke kapde ahista se sarakte hue unke upar jhuko* "Aaj raat ki har ghadi sirf humare naam hai."`,
+            `*Pura haq jatate hue unhe apne aagosh mein samet lo* "Kabhi socha nahi tha ke aap itni bebaak ho sakti hain."`,
           ];
-
-          const idxA = (turnIndex + 1) % poolA.length;
-          const idxB = (turnIndex + 2) % poolB.length;
-          const idxC = (turnIndex + 3) % poolC.length;
-          return [poolA[idxA], poolB[idxB], poolC[idxC]];
+          const idxA = turnIndex % intimatePoolA.length;
+          const idxB = (turnIndex + 1) % intimatePoolB.length;
+          const idxC = (turnIndex + 2) % intimatePoolC.length;
+          return [intimatePoolA[idxA], intimatePoolB[idxB], intimatePoolC[idxC]];
         }
 
-        if (isConfrontational) {
-          const pool = [
-            `*Pura haq jatate hue ${characterName} ke samne ek qadam badhao* "Aap bhool rahi hain ke yahan shartein main tay karta hoon."`,
-            `*Sanjidagi se unki aankhon mein dekhte hue kaho* "Agar aag se kheleingi, toh jhulaske reh jaayengi."`,
-            `*Unhe deewar ya darwaze ke paas rok kar rasta band kar do* "Mujhse nazrein chura kar aap kahan jaayengi?"`,
-            `*Halki tanzia muskurahat ke saath unke qareeb aao* "Aapki nafrat ke peechhe ki beqarari saaf nazar aa rahi hai."`,
-            `*Unka rukh apni taraf modte hue kaho* "Khan Sahab se baghawat ki qeemat janti hain aap?"`,
+        // 4. Haveli mystery, confrontation, family feud
+        if (isHaveliDrama) {
+          const haveliPool = [
+            `*Haveli ke darwaze ko band karke unka haath thaamo* "Kissi ka darr mat rakhiye, jab tak main hoon koi aapko chhoo nahi sakta."`,
+            `*Sanjidagi se unki aankhon mein dekhte hue kaho* "Iss purani deewaron mein jo bhi raaz hai, main sach jaane bina nahi jaunga."`,
+            `*Unhe qareeb kheench kar bharosa dilaate hue kaho* "Humein koi alag nahi kar sakta, ${characterName}... bas mera aitbaar kijiye."`,
+            `*Unka rukh apni taraf modte hue tanzia muskurao* "Aapki nafrat ke peechhe ki beqarari saaf nazar aa rahi hai."`,
           ];
-          const o = (turnIndex * 3) % pool.length;
-          return [pool[o % pool.length], pool[(o + 1) % pool.length], pool[(o + 2) % pool.length]];
+          const o = turnIndex % haveliPool.length;
+          return [haveliPool[o], haveliPool[(o + 1) % haveliPool.length], haveliPool[(o + 2) % haveliPool.length]];
         }
 
-        // Romantic / General Urdu Drama
-        const poolRomance = [
+        // 5. Romantic / General Urdu Drama
+        const romancePool = [
           `*Aahista se ${characterName} ki thodi ko upar utha kar unki aankhon mein dekho* "Aapki aankhein jo keh rahi hain, wahi lafz sunna chahta hoon."`,
           `*Unke chehre par aati zulfon ko ungliyon se peechhe karo* "Aap itni khoobsurat lag rahi hain ke nazrein hatana gunaah lagta hai."`,
           `*Unka haath apne seene par rakh kar dhadkan mehsoos karao* "Yeh dil sirf aapke ek ishare par chalta hai."`,
           `*Unhe kamar se pakad kar ahista se apne qareeb kheench lo* "Ab koi doori nahi bachegi humare darmiyan."`,
           `*Dheere se muskura kar unki aankhon mein nigaahein daal do* "Aapki har shart sar aankhon par, bas aap saath rahiye."`,
-          `*Unke haathon ko choom kar unke qareeb aao* "Aapka yeh roop mera saara hosh uda deta hai."`,
         ];
-        const o = (turnIndex * 2 + 1) % poolRomance.length;
+        const o = turnIndex % romancePool.length;
         return [
-          poolRomance[o % poolRomance.length],
-          poolRomance[(o + 1) % poolRomance.length],
-          poolRomance[(o + 2) % poolRomance.length],
+          romancePool[o % romancePool.length],
+          romancePool[(o + 1) % romancePool.length],
+          romancePool[(o + 2) % romancePool.length],
         ];
       }
 
@@ -452,7 +469,7 @@ ${isAnimeManga ? `
         `*Step closer, eliminating every inch of space between you* "No more holding back tonight."`,
         `*Offer a knowing, seductive smile* "You started this... now let's see how far you dare to take it."`,
       ];
-      const o = (turnIndex * 2) % poolEn.length;
+      const o = turnIndex % poolEn.length;
       return [poolEn[o % poolEn.length], poolEn[(o + 1) % poolEn.length], poolEn[(o + 2) % poolEn.length]];
     };
 

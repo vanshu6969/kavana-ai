@@ -535,13 +535,7 @@ export default function ChatScreen() {
                 onSelectReply={(reply) => handleSendMessage(reply)}
                 onClose={handleDismissSmartReplies}
                 disabled={isAiTyping}
-                isAnime={
-                  story.category === 'Anime' ||
-                  story.category === 'Anime & Fantasy' ||
-                  /anime|manga|isekai|cooking|solo leveling|jujutsu|demon slayer|chainsaw|titan|spy x family|tokyo revengers|hunter|shinobi|naruto|one piece|bleach|gojo|jinwoo|slime|mukoda|fel|sui|nekoya|dungeon|meshi|frieren|shield hero|vinland|shokugeki|ghoul|soma|rudeus|kirito|re:zero|nobu/i.test(
-                    story.title + ' ' + story.userRole + ' ' + story.category + ' ' + (story.tags ? story.tags.join(' ') : '')
-                  )
-                }
+                isAnime={story.category === 'Anime' || story.category === 'Anime & Fantasy'}
               />
             )}
 
