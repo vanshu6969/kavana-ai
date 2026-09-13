@@ -49,8 +49,12 @@ export default function ChatMessage({
     textToRender = textToRender.replace(/\s{2,}/g, ' ').replace(/\s+([,.?!])/g, '$1').trim();
 
     // 4. If still degraded or contains broken repetition fragments, replace with clean dialogue
-    const hasCorruptLoops = /(?:intezaar\s+karti\s+hoon.*?){2,}/i.test(textToRender) ||
-      /(.{8,}?)(?:[\s*.,?!"'-]*\1){2,}/i.test(textToRender);
+    const hasCorruptLoops =
+      /(.{5,}?)(?:[\s*.,?!"'-]*\1){2,}/i.test(textToRender) ||
+      /(?:dhadkan\s+badhati\s+hoon.*?){2,}/i.test(textToRender) ||
+      /(?:intezaar\s+karti\s+hoon.*?){2,}/i.test(textToRender) ||
+      /(?:samajh\s+mein\s+nahi.*?){2,}/i.test(textToRender) ||
+      /spono|gamajh|unglle|gudda\s+ungliyan/i.test(textToRender);
 
     if (hasCorruptLoops || (textToRender.length < 15 && !textToRender.includes('"'))) {
       textToRender = `*${characterName} aapke bilkul qareeb aakar madhosh nigahon se dekhti hain.* "Aapke paas aakar mera saara sabr toot jaata hai... jo chahein kijiye."`;

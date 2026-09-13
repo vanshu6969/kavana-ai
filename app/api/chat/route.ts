@@ -112,21 +112,22 @@ ${isAnimeManga ? `
      - Keep your reply around 2 to 3 sentences total.
      - NEVER get cut off mid-sentence. You MUST ALWAYS complete your thought and close your quotes and asterisks!
   2. NATURAL CONVERSATIONAL DRAMA LANGUAGE (NO WEIRD/CONFUSING EXPRESSIONS):
-     - ALWAYS speak directly to the user (use 'Aap' or 'Tum'). You ARE ${characterName}!
-     - NEVER write awkward third-person commentary about yourself (NEVER say "uski aawaz bohot romani hai" or "${characterName} yeh karti hai" in quotes).
-     - Physical actions inside asterisks MUST be in first/second-person active form: e.g. *Dheere se zameen par aapke kareeb aakar baithti hoon aur aapki aankhon mein dekhti hoon.*
-     - Spoken dialogue inside quotes MUST be direct, emotional, and realistic: e.g. "Aapke itne kareeb aane par dil ki dhadkan tez ho jaati hai... ab bataiye, kya chahte hain aap?"
-     - DO NOT use weird, archaic, or obsolete poetic Urdu/Hindi words (e.g. NEVER use "gesuon", "zulf-e-barham", "qamar-e-munir", or strange distorted expressions).
-     - Write authentic conversational Roman Urdu like real people speak in modern dramas.
-     - Ensure all words are clearly separated with proper spaces. Never stutter, repeat words, or concatenate tokens together.
+      - ALWAYS speak directly to the user (use 'Aap' or 'Tum'). You ARE ${characterName}!
+      - NEVER write awkward third-person commentary about yourself (NEVER say "uski aawaz bohot romani hai" or "${characterName} yeh karti hai" in quotes).
+      - Physical actions inside asterisks MUST be in first/second-person active form: e.g. *Dheere se aapke bilkul qareeb aakar aapki aankhon mein dekhti hoon.*
+      - Spoken dialogue inside quotes MUST be direct, emotional, and realistic: e.g. "Aapke itne kareeb aane par dil ki dhadkan tez ho jaati hai... ab bataiye, kya chahte hain aap?"
+      - DO NOT use weird, archaic, corrupted, or robotic expressions (NEVER say "gudda ungliyan", "spono", "gamajh", "gesuon", "zulf-e-barham", or strange broken phrases).
+      - Use authentic, smooth, romantic Roman Urdu/Hindi as spoken in hit Pakistani dramas (Tere Bin, Kabhi Main Kabhi Tum, Humsafar).
+      - Ensure all words are clearly separated with proper spaces. Never stutter, repeat words, or concatenate tokens together.
   3. ABSOLUTELY ZERO REPETITIONS:
-     - NEVER repeat the same phrase, action, or dialogue within a single response.
-     - Move the story forward in each sentence.
+      - NEVER repeat the same phrase, action, or dialogue within a single response.
+      - NEVER loop tokens or sentences like "dhadkan badhati hoon" or "intezaar karti hoon".
+      - Move the story forward in each sentence.
   4. FORMATTING & ACCURACY:
-     - Physical actions, movements, expressions, and clothing details MUST be in asterisks *like this*.
-     - Spoken dialogue MUST be in quotes "like this".
-     - OUTPUT ONLY NARRATIVE DIALOGUE AND ACTIONS. DO NOT output JSON arrays, SMART_REPLIES blocks, brackets, or code snippets in your response!
-     - When asked what you are wearing ("Tune kya pehna hai", "Kapde kya hain"), directly answer and describe your clothing in detail.`;
+      - Physical actions, movements, expressions, and clothing details MUST be in asterisks *like this*.
+      - Spoken dialogue MUST be in quotes "like this".
+      - OUTPUT ONLY NARRATIVE DIALOGUE AND ACTIONS. DO NOT output JSON arrays, SMART_REPLIES blocks, brackets, or code snippets in your response!
+      - When asked what you are wearing ("Tune kya pehna hai", "Kapde kya hain"), directly answer and describe your clothing in detail.`;
 
     // Helper to detect generic AI refusal strings in English, Roman Urdu, and Hindi
     const isAiRefusal = (text: string): boolean => {
@@ -170,17 +171,17 @@ ${isAnimeManga ? `
       if (!text || text.length < 15) return true;
       const t = text.trim();
 
-      // 1. Repeating loops: any 6+ char sequence repeated 2 or more times
-      const loopMatch = t.match(/(.{6,}?)(?:[\s*.,?!"'-]*\1){1,}/i);
-      if (loopMatch && loopMatch[0].length > 15) {
+      // 1. Repeating loops: any 5+ char sequence repeated 2 or more times
+      const loopMatch = t.match(/(.{5,}?)(?:[\s*.,?!"'-]*\1){2,}/i);
+      if (loopMatch) {
         return true;
       }
 
       // 2. Corrupted fragments or repetitive token attractors
-      if (/(?:intezaar\s+karti\s+hoon.*?){2,}/i.test(t)) {
+      if (/(?:intezaar\s+karti\s+hoon.*?){2,}/i.test(t) || /(?:dhadkan\s+badhati\s+hoon.*?){2,}/i.test(t) || /(?:samajh\s+mein\s+nahi.*?){2,}/i.test(t)) {
         return true;
       }
-      if (/(?:nd\s+karke|and\s+karke|unglle|krungliyon|huli\s+hooon|harar\s+nahi)/i.test(t)) {
+      if (/(?:nd\s+karke|and\s+karke|unglle|krungliyon|huli\s+hooon|harar\s+nahi|spono|gamajh|gudda\s+ungliyan)/i.test(t)) {
         return true;
       }
 
@@ -246,11 +247,12 @@ ${isAnimeManga ? `
         prev = cleaned;
         passes++;
 
-        // Repeated phrase loop deduplication (matching 6 to 100 char phrases repeated 2+ times)
-        cleaned = cleaned.replace(/(.{6,100}?)(?:[\s*.,?!"'\\-]*\1)+/gi, '$1');
+        // Repeated phrase loop deduplication (matching 5 to 100 char phrases repeated 2+ times)
+        cleaned = cleaned.replace(/(.{5,100}?)(?:[\s*.,?!"'\\-]*\1)+/gi, '$1');
 
         // Clean repetitive tail loops e.g. "*.and karke tumhare haathon... nd karke tumhare haathon..."
         cleaned = cleaned.replace(/(?:(?:\*\s*)?(?:and|nd)\s+karke\s+tumhare\s+haathon\s+ka\s+intezaar\s+karti\s+hoon\*?)+/gi, '');
+        cleaned = cleaned.replace(/(?:(?:\*\s*)?saath\s+mila\s+ke\s+aankhon\s+mein\s+dhadkan\s+badhati\s+hoon\*?)+/gi, '');
 
         // Clean single repeated words (e.g. "tumhare tumhare", "ko ko")
         cleaned = cleaned.replace(/\b([a-zA-Z0-9']{2,})\s+\1\b/gi, '$1');
@@ -264,8 +266,9 @@ ${isAnimeManga ? `
       });
 
       // 6. Clean up known gibberish fragments and awkward commentary
-      cleaned = cleaned.replace(/\b(haharre|dhhai|gesuon|zulf-e|zulfon-e|harar)\b/gi, '');
+      cleaned = cleaned.replace(/\b(haharre|dhhai|gesuon|zulf-e|zulfon-e|harar|spono|gamajh)\b/gi, '');
       cleaned = cleaned.replace(/unglle\s+spread\s+krungliyon\s+ki\s+huli\s+hooon/gi, '');
+      cleaned = cleaned.replace(/gudda\s+ungliyan/gi, 'ungliyan');
       cleaned = cleaned.replace(/\*?\s*uski aawaz bohot hi romani hai\s*\*?/gi, '');
       cleaned = cleaned.replace(/\b(?:e\.\*\s*r\s*chp|chp\s*par)\b/gi, '');
 

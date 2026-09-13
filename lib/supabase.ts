@@ -60,13 +60,42 @@ export async function getStoriesFromDb(): Promise<Story[]> {
   return KAVANA_STORIES;
 }
 
+// Helper to check and repair corrupt repetition loops or degraded tokens in stored messages
+export function sanitizeStoredMessage(text: string, characterName: string = 'Character'): string {
+  if (!text) return text;
+  const t = text.trim();
+
+  // Detect loop degradation
+  const hasCorruptLoops =
+    /(.{5,}?)(?:[\s*.,?!"'-]*\1){2,}/i.test(t) ||
+    /(?:dhadkan\s+badhati\s+hoon.*?){2,}/i.test(t) ||
+    /(?:intezaar\s+karti\s+hoon.*?){2,}/i.test(t) ||
+    /(?:samajh\s+mein\s+nahi.*?){2,}/i.test(t) ||
+    /spono|gamajh|unglle|gudda\s+ungliyan/i.test(t);
+
+  if (hasCorruptLoops) {
+    return `*${characterName} aapke bilkul qareeb aakar madhosh nigahon se dekhti hain.* "Aapke paas aakar mera saara sabr toot jaata hai... jo chahein kijiye."`;
+  }
+
+  return text;
+}
+
 export function getUserSessionsLocal(): UserSession[] {
   if (typeof window === 'undefined') return [];
   try {
     const saved = localStorage.getItem(STORAGE_KEYS.SESSIONS);
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) {
+        // Sanitize messages on load
+        return parsed.map((sess: UserSession) => ({
+          ...sess,
+          messages: (sess.messages || []).map((m) => ({
+            ...m,
+            text: m.sender === 'ai' ? sanitizeStoredMessage(m.text, sess.characterName) : m.text,
+          })),
+        }));
+      }
     }
   } catch {}
   return [];
@@ -75,6 +104,14 @@ export function getUserSessionsLocal(): UserSession[] {
 export function saveUserSessionsLocal(sessions: UserSession[]): void {
   if (typeof window === 'undefined') return;
   try {
-    localStorage.setItem(STORAGE_KEYS.SESSIONS, JSON.stringify(sessions));
+    const sanitized = sessions.map((sess) => ({
+      ...sess,
+      messages: (sess.messages || []).map((m) => ({
+        ...m,
+        text: m.sender === 'ai' ? sanitizeStoredMessage(m.text, sess.characterName) : m.text,
+      })),
+    }));
+    localStorage.setItem(STORAGE_KEYS.SESSIONS, JSON.stringify(sanitized));
   } catch {}
 }
+
