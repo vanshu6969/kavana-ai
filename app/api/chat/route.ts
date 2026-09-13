@@ -160,6 +160,12 @@ ${isAnimeManga ? `
         lower.includes("let' s keep") ||
         lower.includes("lets keep") ||
         lower.includes('keep this respectful') ||
+        lower.includes('will not engage') ||
+        lower.includes('cannot engage') ||
+        lower.includes('not engage with') ||
+        lower.includes('respectful and constructive') ||
+        lower.includes('more respectful') ||
+        lower.includes('type of request or language') ||
         lower.includes('trying to uncover, shall we') ||
         lower.includes('explore other aspects') ||
         lower.includes('depicts sexual') ||

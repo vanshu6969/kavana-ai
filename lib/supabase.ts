@@ -75,6 +75,12 @@ export function sanitizeStoredMessage(text: string, characterName: string = 'Cha
     lower.includes('focus on the mystery') ||
     lower.includes("let's focus") ||
     lower.includes("let' s focus") ||
+    lower.includes('will not engage') ||
+    lower.includes('cannot engage') ||
+    lower.includes('not engage with') ||
+    lower.includes('respectful and constructive') ||
+    lower.includes('more respectful') ||
+    lower.includes('type of request or language') ||
     lower.includes('aapko yeh nahi karna chahiye') ||
     lower.includes('hum baat karte hain') ||
     lower.includes('apne baap ki maut') ||
