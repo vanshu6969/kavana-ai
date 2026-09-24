@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useApp } from '@/lib/context/AppContext';
 import ChatMessage from '@/components/ChatMessage';
-import SmartReplyChips from '@/components/SmartReplyChips';
 import {
   ArrowLeft,
   Send,
@@ -528,17 +527,6 @@ export default function ChatScreen() {
         {/* INPUT DOCK */}
         <footer className="flex-shrink-0 bg-[#050608]/95 backdrop-blur-xl border-t border-white/[0.08] px-2.5 sm:px-6 py-2 sm:py-3 z-20 pb-[max(0.6rem,env(safe-area-inset-bottom))]">
           <div className="max-w-3xl mx-auto w-full">
-            {/* Quick Dialogue Choices (Smart Reply Chips) */}
-            {!isAiTyping && showSmartReplies && smartReplies.length > 0 && (
-              <SmartReplyChips
-                replies={smartReplies}
-                onSelectReply={(reply) => handleSendMessage(reply)}
-                onClose={handleDismissSmartReplies}
-                disabled={isAiTyping}
-                isAnime={story.category === 'Anime' || story.category === 'Anime & Fantasy'}
-              />
-            )}
-
             {/* Input Bar */}
             <form
               onSubmit={(e) => {
@@ -547,20 +535,6 @@ export default function ChatScreen() {
               }}
               className="flex items-center gap-1.5 sm:gap-3"
             >
-              {/* Quick Choices Toggle Button */}
-              <button
-                type="button"
-                onClick={toggleSmartReplies}
-                className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl border flex items-center justify-center shrink-0 transition-all cursor-pointer ${
-                  showSmartReplies
-                    ? 'bg-rose-500/20 border-rose-500/40 text-[#FF2E55] shadow-glow-crimson'
-                    : 'bg-[#0D0E15] border-white/10 text-slate-400 hover:text-white hover:border-white/30'
-                }`}
-                title={showSmartReplies ? 'Hide Quick Choices' : 'Show Quick Choices'}
-                aria-label={showSmartReplies ? 'Hide Quick Choices' : 'Show Quick Choices'}
-              >
-                <Sparkles size={17} className={showSmartReplies ? 'text-[#FF2E55] fill-[#FF2E55]/30' : 'text-slate-400'} />
-              </button>
 
               {/* Text Input Field */}
               <div className="relative flex-1">

@@ -9,10 +9,32 @@ import {
   getProviderSettings, 
   saveProviderSettings 
 } from './ai-service.js';
+import { 
+  fetchTMDbMedia, 
+  searchTMDb, 
+  convertTMDbToKavanaStory, 
+  saveCustomTMDbStory, 
+  getSavedCustomTMDbStories,
+  VERIFIED_TMDB_STORIES 
+} from './tmdb-service.js';
+
+// Prepend user's saved custom TMDb stories from localStorage
+try {
+  const savedCustom = getSavedCustomTMDbStories();
+  if (savedCustom && savedCustom.length > 0) {
+    savedCustom.forEach(story => {
+      if (!KAVANA_STORIES.some(s => s.id === story.id || (story.tmdbId && s.tmdbId === story.tmdbId))) {
+        KAVANA_STORIES.unshift(story);
+      }
+    });
+  }
+} catch (e) {
+  console.warn('Could not load custom TMDb stories:', e);
+}
 
 // Application State
 const state = {
-  currentView: 'home-web', // Default to 1:1 Official Website homepage
+  currentView: 'stories-explore', // Clean modern cinema platform default
   activeLang: localStorage.getItem('kavana_lang') || 'hinglish',
   activeStory: KAVANA_STORIES[0],
   activeScenario: null,
@@ -200,34 +222,28 @@ export function showToast({ title, message, type = 'info', retryAction = null, d
 
 // Tab & View Router
 function switchView(viewName) {
+  if (viewName === 'home-web') {
+    viewName = 'stories-explore';
+  }
   state.currentView = viewName;
   playChime(600);
 
-  // Update Nav Links
-  document.querySelectorAll('.kavana-nav-link, .mobile-nav-item').forEach(btn => {
+  // Update Nav Links & Mobile Dock
+  document.querySelectorAll('.kavana-nav-link, .nav-btn, .mobile-nav-item, .mobile-dock-btn').forEach(btn => {
     if (btn.dataset.view === viewName) btn.classList.add('active');
     else btn.classList.remove('active');
   });
 
-  // Toggle Home Web View vs In-App Views
-  const webHome = document.getElementById('view-home-web');
   const appContainer = document.getElementById('main-app-container');
+  if (appContainer) appContainer.style.display = 'block';
 
-  if (viewName === 'home-web') {
-    if (webHome) webHome.style.display = 'block';
-    if (appContainer) appContainer.style.display = 'none';
-  } else {
-    if (webHome) webHome.style.display = 'none';
-    if (appContainer) appContainer.style.display = 'block';
+  document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+  document.getElementById(`view-${viewName}`)?.classList.add('active');
 
-    document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-    document.getElementById(`view-${viewName}`)?.classList.add('active');
-
-    if (viewName === 'stories-explore') renderExploreFeed();
-    else if (viewName === 'story-reader') renderStoryReader();
-    else if (viewName === 'character-chat') renderChatView();
-    else if (viewName === 'dance-studio') renderDanceStudio();
-  }
+  if (viewName === 'stories-explore') renderExploreFeed();
+  else if (viewName === 'story-reader') renderStoryReader();
+  else if (viewName === 'character-chat') renderChatView();
+  else if (viewName === 'dance-studio') renderDanceStudio();
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -240,9 +256,11 @@ function updateCoins(delta) {
 }
 
 // Launch 1:1 Interactive Scenario Chat
-function launchScenarioChat(story) {
+export function launchScenarioChat(story) {
+  if (!story) story = KAVANA_STORIES[0];
   state.activeScenario = story;
-  const partnerId = story.characterId || story.id;
+  state.activeStory = story;
+  const partnerId = story.id || story.characterId || 'scenario-' + Date.now();
   state.activeChatPartnerId = partnerId;
 
   // Initialize chat history for this specific scenario
@@ -270,6 +288,17 @@ function launchScenarioChat(story) {
   }
 
   switchView('character-chat');
+  renderChatView();
+}
+
+// Open Story Directly in Immersive Visual Novel Reader
+export function openStoryInReader(story) {
+  if (!story) story = KAVANA_STORIES[0];
+  state.activeStory = story;
+  state.activeScenario = story;
+  state.activeChapterId = 'c1';
+  switchView('story-reader');
+  renderStoryReader();
 }
 
 // Render Explore Stories Feed (105+ Stories)
@@ -284,22 +313,26 @@ function renderExploreFeed() {
   const filtered = KAVANA_STORIES.filter(s => {
     // 1. Category check
     let catMatch = true;
-    if (cat === 'trending') {
-      catMatch = (s.playerCount || 0) > 30000 || (s.tags || []).some(t => t.toLowerCase().includes('trending') || t.toLowerCase().includes('top'));
+    if (cat === 'tmdb') {
+      catMatch = Boolean(s.isCustomTMDb || s.tmdbId || (s.tags || []).some(t => t.toLowerCase().includes('tmdb')));
+    } else if (cat === 'pakistani') {
+      catMatch = s.category?.toLowerCase().includes('pakistan') || (s.tags || []).some(t => t.toLowerCase().includes('pakistan'));
+    } else if (cat === 'trending') {
+      catMatch = (s.playerCount || 0) > 30000 || (s.tags || []).some(t => t.toLowerCase().includes('trending') || t.toLowerCase().includes('top') || t.toLowerCase().includes('verified'));
     } else if (cat === 'drama') {
       catMatch = s.category?.toLowerCase().includes('drama') || (s.tags || []).some(t => t.toLowerCase().includes('drama') || t.toLowerCase().includes('marriage'));
     } else if (cat === 'spicy') {
       catMatch = s.category?.toLowerCase().includes('spicy') || (s.tags || []).some(t => t.toLowerCase().includes('18+') || t.toLowerCase().includes('spicy'));
     } else if (cat === 'mafia') {
-      catMatch = s.category?.toLowerCase().includes('mafia') || s.genre?.toLowerCase().includes('mafia') || (s.tags || []).some(t => t.toLowerCase().includes('mafia') || t.toLowerCase().includes('billionaire'));
+      catMatch = s.category?.toLowerCase().includes('mafia') || s.genre?.toLowerCase().includes('mafia') || (s.tags || []).some(t => t.toLowerCase().includes('mafia') || t.toLowerCase().includes('billionaire') || t.toLowerCase().includes('crime'));
     } else if (cat === 'fantasy') {
-      catMatch = s.category?.toLowerCase().includes('fantasy') || s.genre?.toLowerCase().includes('fantasy') || (s.tags || []).some(t => t.toLowerCase().includes('fantasy') || t.toLowerCase().includes('vampire') || t.toLowerCase().includes('magic'));
+      catMatch = s.category?.toLowerCase().includes('fantasy') || s.genre?.toLowerCase().includes('fantasy') || (s.tags || []).some(t => t.toLowerCase().includes('fantasy') || t.toLowerCase().includes('vampire') || t.toLowerCase().includes('magic') || t.toLowerCase().includes('dune'));
     } else if (cat === 'desi') {
-      catMatch = s.category?.toLowerCase().includes('desi') || (s.tags || []).some(t => t.toLowerCase().includes('punjabi') || t.toLowerCase().includes('desi') || t.toLowerCase().includes('hinglish'));
+      catMatch = s.category?.toLowerCase().includes('desi') || (s.tags || []).some(t => t.toLowerCase().includes('punjabi') || t.toLowerCase().includes('desi') || t.toLowerCase().includes('hinglish') || t.toLowerCase().includes('bollywood'));
     } else if (cat === 'anime') {
-      catMatch = s.category?.toLowerCase().includes('anime') || (s.tags || []).some(t => t.toLowerCase().includes('anime') || t.toLowerCase().includes('cyberpunk') || t.toLowerCase().includes('idol'));
+      catMatch = s.category?.toLowerCase().includes('anime') || (s.tags || []).some(t => t.toLowerCase().includes('anime') || t.toLowerCase().includes('cyberpunk') || t.toLowerCase().includes('manga') || t.toLowerCase().includes('hunter'));
     } else if (cat === 'thriller') {
-      catMatch = s.category?.toLowerCase().includes('thriller') || (s.tags || []).some(t => t.toLowerCase().includes('thriller') || t.toLowerCase().includes('detective') || t.toLowerCase().includes('crime'));
+      catMatch = s.category?.toLowerCase().includes('thriller') || (s.tags || []).some(t => t.toLowerCase().includes('thriller') || t.toLowerCase().includes('detective') || t.toLowerCase().includes('crime') || t.toLowerCase().includes('chaos'));
     }
 
     if (!catMatch) return false;
@@ -311,7 +344,8 @@ function renderExploreFeed() {
       const matchRole = (s.userRole || '').toLowerCase().includes(q);
       const matchDesc = (s.summary || '').toLowerCase().includes(q);
       const matchTag = (s.tags || []).some(t => t.toLowerCase().includes(q));
-      return matchTitle || matchChar || matchRole || matchDesc || matchTag;
+      const matchTmdb = s.tmdbId && s.tmdbId.includes(q);
+      return matchTitle || matchChar || matchRole || matchDesc || matchTag || matchTmdb;
     }
 
     return true;
@@ -320,7 +354,18 @@ function renderExploreFeed() {
   // Update live counter badge
   const countBadge = document.getElementById('stories-count-badge');
   if (countBadge) {
-    countBadge.textContent = `✨ ${filtered.length} ${filtered.length === 1 ? 'Scenario' : 'Scenarios'}`;
+    countBadge.textContent = `${filtered.length} Scenarios`;
+  }
+
+  // Update Spotlight Hero Banner
+  const spotlightStory = state.activeStory || filtered[0] || KAVANA_STORIES[0];
+  const heroBanner = document.getElementById('hero-banner');
+  const heroTitle = document.getElementById('hero-title-text');
+  const heroDesc = document.getElementById('hero-desc-text');
+  if (heroBanner && spotlightStory) {
+    heroBanner.style.backgroundImage = `url('${spotlightStory.cover || spotlightStory.avatar}')`;
+    if (heroTitle) heroTitle.textContent = spotlightStory.title;
+    if (heroDesc) heroDesc.textContent = spotlightStory.summary;
   }
 
   if (filtered.length === 0) {
@@ -328,8 +373,8 @@ function renderExploreFeed() {
       <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
         <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🔍</div>
         <h3 style="color: #fff; margin-bottom: 0.5rem;">No scenarios match "${state.searchQuery}"</h3>
-        <p style="font-size: 0.88rem;">Try searching for "Husband", "Mafia", "Vampire", or clear the search.</p>
-        <button class="btn-secondary" id="btn-reset-filters" style="margin-top: 1rem; padding: 0.6rem 1.25rem;">Show All Stories</button>
+        <p style="font-size: 0.88rem;">Try searching for "Mirzapur", "Dune", "Shelby", or import by TMDb ID.</p>
+        <button class="btn-secondary-mini" id="btn-reset-filters" style="margin-top: 1rem; padding: 0.6rem 1.25rem;">Show All Stories</button>
       </div>
     `;
     grid.querySelector('#btn-reset-filters')?.addEventListener('click', () => {
@@ -348,60 +393,49 @@ function renderExploreFeed() {
 
   filtered.forEach(story => {
     const card = document.createElement('div');
-    card.className = 'kavana-story-card';
+    card.className = 'story-card';
 
-    const readersCount = (story.playerCount || Math.floor(15000 + Math.random() * 80000)).toLocaleString();
-    const coverUrl = story.cover || story.visual || 'assets/sanctum.jpg';
-    const avatarUrl = story.avatar || (CHARACTERS[story.characterId]?.image) || 'assets/lucian.jpg';
-    const userRole = story.userRole || 'Protagonist';
+    const rating = story.imdbRating || '9.6';
+    const posterUrl = story.avatar || story.cover;
+    const isTmdb = Boolean(story.tmdbId || story.isCustomTMDb);
 
     card.innerHTML = `
-      <div class="story-card-top-cover-wrap">
-        <img src="${coverUrl}" alt="${story.title}" class="story-card-top-cover" loading="lazy">
-        <div class="story-card-cover-overlay"></div>
-        <div class="story-card-badges-top">
-          <span class="story-category-tag">${story.category || 'Spicy 18+'}</span>
-          <span class="story-readers-tag">👥 ${readersCount}</span>
+      <div class="story-card-poster">
+        <img src="${posterUrl}" alt="${story.title}" loading="lazy" onerror="this.src='${story.cover || 'assets/sanctum.jpg'}'">
+        <div class="poster-gradient-fade"></div>
+        <div class="poster-top-badges">
+          <span class="card-rating-badge">★ ${rating}</span>
+          ${isTmdb ? `<span class="card-quality-badge">TMDb</span>` : `<span class="card-quality-badge">4K UHD</span>`}
         </div>
-        <img src="${avatarUrl}" alt="${story.characterName || 'Character'}" class="story-card-avatar-pill">
+        <div class="card-hover-actions">
+          <button class="btn-card-action primary btn-play-story">▶ Play Scenario</button>
+          <button class="btn-card-action secondary btn-read-story">📖 Read</button>
+        </div>
       </div>
-
-      <div class="story-card-content">
-        <div>
-          <div class="story-role-assignment-pill">
-            <span>🎭</span> You: <strong>${userRole}</strong>
-          </div>
-          <h3 class="story-title-h3">${story.title}</h3>
-          <p class="story-desc-p">${story.summary || 'Step into an intense narrative where every choice shifts affection, tension, and climax.'}</p>
-        </div>
-
-        <div class="story-card-actions">
-          <button class="btn-start-scenario btn-play-story" title="Start Interactive Scenario">
-            <span>▶ Start Scenario</span>
-          </button>
-          <button class="btn-read-quick btn-read-story" title="Read as visual novel">
-            📖 Read
-          </button>
-          <button class="btn-dance-card btn-dance-story" title="Make character dance">
-            💃 Dance
-          </button>
-        </div>
+      <div class="story-card-body">
+        <h3 class="card-title-text">${story.title}</h3>
+        <p class="card-character-sub">${story.characterName || 'Lead Character'} • ${story.category || 'Cinema'}</p>
       </div>
     `;
 
-    card.querySelector('.btn-play-story')?.addEventListener('click', () => {
+    card.querySelector('.btn-play-story')?.addEventListener('click', (e) => {
+      e.stopPropagation();
       launchScenarioChat(story);
     });
 
-    card.querySelector('.btn-read-story')?.addEventListener('click', () => {
-      state.activeStory = story;
-      state.activeChapterId = 'c1';
-      switchView('story-reader');
+    card.querySelector('.btn-read-story')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openStoryInReader(story);
     });
 
-    card.querySelector('.btn-dance-story')?.addEventListener('click', () => {
-      state.activeDancerId = story.characterId || 'kabir';
-      switchView('dance-studio');
+    card.addEventListener('click', () => {
+      state.activeStory = story;
+      state.activeScenario = story;
+      if (heroBanner) {
+        heroBanner.style.backgroundImage = `url('${story.cover || story.avatar}')`;
+      }
+      if (heroTitle) heroTitle.textContent = story.title;
+      if (heroDesc) heroDesc.textContent = story.summary;
     });
 
     grid.appendChild(card);
@@ -416,67 +450,193 @@ function renderStoryReader() {
   let chapters = langData.chapters;
 
   if (!chapters || chapters.length === 0) {
-    // Generate dynamic chapters for catalog scenarios
+    // Generate dynamic chapters for catalog scenarios according to active language dialect
     const charName = story.characterName || 'Companion';
-    chapters = [
-      {
-        id: 'c1',
-        title: 'Chapter 1: The Encounter',
-        visual: story.cover || 'assets/sanctum.jpg',
-        speaker: charName,
-        characterMood: story.initialMood || 'High Drama',
-        narrative: `${story.summary || 'An intense moment unfolds.'}\n\n${story.openingHook || '*Looks at you closely.*'}`,
-        dialogue: `"So, ${story.userRole || 'my friend'}... what are you going to do now?"`,
-        choices: [
-          {
-            text: (story.smartReplies?.[0]) || "*Step closer and answer calmly*",
-            nextChapterId: 'c2a',
-            deltaAffection: +10,
-            deltaTension: +15,
-            tone: 'Bold & Direct'
-          },
-          {
-            text: (story.smartReplies?.[1]) || "*Stand your ground defiantly*",
-            nextChapterId: 'c2b',
-            deltaAffection: +15,
-            deltaTension: +10,
-            tone: 'Defiant & Passionate'
-          }
-        ]
-      },
-      {
-        id: 'c2a',
-        title: 'Chapter 2: Climax & Reckoning',
-        visual: story.cover || 'assets/sanctum.jpg',
-        speaker: charName,
-        characterMood: '🔥 Fever Pitch (Extreme 18+)',
-        narrative: `The room falls dead silent as your words sink in. ${charName}'s eyes blaze with raw, intoxicating intensity. Every barrier between you dissolves into electric tension.`,
-        dialogue: `"You have no idea what you've just started with me," ${charName} murmurs, stepping closer until your breaths mingle. "Don't stop now."`,
-        choices: [
-          {
-            text: "*Switch to direct 18+ uncensored roleplay chat*",
-            action: 'switch_to_chat',
-            characterId: story.characterId || story.id
-          }
-        ]
-      },
-      {
-        id: 'c2b',
-        title: 'Chapter 2: The Surrender',
-        visual: story.cover || 'assets/sanctum.jpg',
-        speaker: charName,
-        characterMood: 'Intensely Devoted',
-        narrative: `Your defiance catches ${charName} completely off guard. A slow, breathtaking smile breaks across their face as they reach out, catching you by the waist.`,
-        dialogue: `"I've met thousands of people in this world," ${charName} whispers against your ear. "None of them dared look at me the way you do."`,
-        choices: [
-          {
-            text: "*Step into 18+ uncensored roleplay chat*",
-            action: 'switch_to_chat',
-            characterId: story.characterId || story.id
-          }
-        ]
-      }
-    ];
+    const isHinglish = lang === 'hinglish' || lang === 'hindi' || lang === 'urdu';
+    const isPunjabi = lang === 'punjabi';
+
+    if (isHinglish) {
+      chapters = [
+        {
+          id: 'c1',
+          title: 'Adhyay 1: Khamosh Aamna-Saamna',
+          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
+          speaker: charName,
+          characterMood: story.initialMood || '🔥 Tanaav Aur Junoon',
+          narrative: `${story.summary ? story.summary + '\n\n' : ''}${story.openingHook || '*Bina palke jhapkaye aapki taraf dekhta hai.*'}`,
+          dialogue: `"Toh, ${story.userRole || 'meri jaan'}... ab aage kya karne ka iraada hai tumhara?"`,
+          choices: [
+            {
+              text: (story.smartReplies?.[0]) || "*Aankhon mein aankhein daal kar aage badho* 'Wahi jo tum soch rahe ho.'",
+              nextChapterId: 'c2a',
+              deltaAffection: +12,
+              deltaTension: +18,
+              tone: 'Tez Aur Direct'
+            },
+            {
+              text: (story.smartReplies?.[1]) || "*Halki si muskurahat ke saath unke bilkul qareeb aao* 'Darrte kyu ho mujhse?'",
+              nextChapterId: 'c2b',
+              deltaAffection: +18,
+              deltaTension: +12,
+              tone: 'Bekhauf Baghaawat'
+            }
+          ]
+        },
+        {
+          id: 'c2a',
+          title: 'Adhyay 2: Junoon Ka Bawaal',
+          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
+          speaker: charName,
+          characterMood: '🔥 Fever Pitch (Extreme 18+)',
+          narrative: `Aapke lafz sunte hi kamre ki hawa garam ho jaati hai. ${charName} ki aankhon mein ek aisi deewangi aur bhookh dikhti hai jo pehle kabhi nahi dekhi. Saari dooriyan pal bhar mein pighal jati hain jab wo aapko deewar ke saath pin karta hai.`,
+          dialogue: `"Tumhe andaaza bhi nahi hai ki tumne mere andar kis aag ko chheda hai," ${charName} aapki gardan par jhukte hue phusphusata hai. "Ab rukna mat."`,
+          choices: [
+            {
+              text: "*18+ Uncensored Roleplay Chat shuru karo*",
+              action: 'switch_to_chat',
+              characterId: story.characterId || story.id
+            }
+          ]
+        },
+        {
+          id: 'c2b',
+          title: 'Adhyay 2: Bekhabar Qurbat',
+          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
+          speaker: charName,
+          characterMood: 'Be-inteha Junoon',
+          narrative: `Aapka yeh bebaak andaaz ${charName} ko poori tarah hairan aur bebus kar deta hai. Ek dheemi si, madhosh kar dene wali muskurahat uske chehre par aati hai jab wo aapki kamar ko apni baahon mein thaam leta hai.`,
+          dialogue: `"Maine apni zindagi mein hazaron logon ko dekha hai," ${charName} aapke chehre par ungli pherte hue kehta hai. "Par kisine mujhe is tarah dekhne ki himmat nahi ki."`,
+          choices: [
+            {
+              text: "*18+ Uncensored Roleplay Chat shuru karo*",
+              action: 'switch_to_chat',
+              characterId: story.characterId || story.id
+            }
+          ]
+        }
+      ];
+    } else if (isPunjabi) {
+      chapters = [
+        {
+          id: 'c1',
+          title: 'ਕਾਂਡ ੧: ਦਿਲ ਦੀ ਟੱਕਰ',
+          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
+          speaker: charName,
+          characterMood: story.initialMood || '🔥 ਬੇਬਾਕ ਇਸ਼ਕ',
+          narrative: `${story.summary ? story.summary + '\n\n' : ''}${story.openingHook || '*ਤੁਹਾਡੇ ਵੱਲ ਗੂੜ੍ਹੀ ਨਜ਼ਰ ਨਾਲ ਵੇਖਦਾ ਏ।*'}`,
+          dialogue: `"ਦੱਸ, ${story.userRole || 'ਸੋਹਣੀਏ'}... ਹੁਣ ਅੱਗੇ ਕੀ ਇਰਾਦਾ ਏ ਤੇਰਾ?"`,
+          choices: [
+            {
+              text: (story.smartReplies?.[0]) || "*ਉਸਦੇ ਬਿਲਕੁਲ ਕੋਲ ਆਓ ਤੇ ਅੱਖਾਂ 'ਚ ਵੇਖੋ*",
+              nextChapterId: 'c2a',
+              deltaAffection: +15,
+              deltaTension: +20,
+              tone: 'ਰੋਹਬਦਾਰ'
+            },
+            {
+              text: (story.smartReplies?.[1]) || "*ਮੁਸਕਰਾ ਕੇ ਆਖੋ* 'ਮੈਂ ਕਿਸੇ ਤੋਂ ਨਹੀਂ ਡਰਦੀ!'",
+              nextChapterId: 'c2b',
+              deltaAffection: +20,
+              deltaTension: +15,
+              tone: 'ਬੇਬਾਕ ਇਸ਼ਕ'
+            }
+          ]
+        },
+        {
+          id: 'c2a',
+          title: 'ਕਾਂਡ ੨: ਬੇਕਾਬੂ ਇਸ਼ਕ',
+          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
+          speaker: charName,
+          characterMood: '🔥 ਬੇਕਾਬੂ ਇਸ਼ਕ (Extreme 18+)',
+          narrative: `ਉਹ ਆਪਣੀਆਂ ਨਰਮ ਬਾਹਾਂ ਤੁਹਾਡੇ ਗਲ 'ਚ ਪਾ ਦਿੰਦਾ ਏ। ਉਸਦੇ ਬੁੱਲ੍ਹ ਤੁਹਾਡੇ ਬੁੱਲ੍ਹਾਂ ਨਾਲ ਮਿਲਦੇ ਨੇ ਤੇ ਸਾਰੀ ਦੁਨੀਆ ਧੁੰਦਲੀ ਹੋ ਜਾਂਦੀ ਏ।`,
+          dialogue: `"ਹਾਏ ਰੱਬਾ... ਤੂੰ ਤਾਂ ਮੈਨੂੰ ਕਮਲੀ ਕਰ ਦਿੱਤਾ ਏ! ਹੁਣ ਹੋਰ ਦੂਰੀ ਨਾ ਰੱਖ।"`,
+          choices: [
+            {
+              text: "*18+ ਚੈਟ ਵਿੱਚ ਰੋਲਪਲੇਅ ਜਾਰੀ ਰੱਖੋ*",
+              action: 'switch_to_chat',
+              characterId: story.characterId || story.id
+            }
+          ]
+        },
+        {
+          id: 'c2b',
+          title: 'ਕਾਂਡ ੨: ਗਲਵਕੜੀ',
+          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
+          speaker: charName,
+          characterMood: 'ਗੂੜ੍ਹਾ ਪਿਆਰ',
+          narrative: `ਉਹ ਤੁਹਾਡਾ ਲੱਕ ਫੜ ਕੇ ਤੁਹਾਨੂੰ ਆਪਣੇ ਸੀਨੇ ਨਾਲ ਘੁੱਟ ਲੈਂਦਾ ਏ। ਉਸਦੇ ਗਰਮ ਸਾਹ ਤੁਹਾਡੀ ਧੌਣ 'ਤੇ ਲੱਗਦੇ ਨੇ।`,
+          dialogue: `"ਅੱਜ ਦੀ ਰਾਤ ਸਿਰਫ਼ ਸਾਡੀ ਆ, ਕੋਈ ਤੀਜਾ ਸਾਡੇ ਵਿਚਕਾਰ ਨਹੀਂ ਆ ਸਕਦਾ।"`,
+          choices: [
+            {
+              text: "*18+ ਚੈਟ ਵਿੱਚ ਰੋਲਪਲੇਅ ਜਾਰੀ ਰੱਖੋ*",
+              action: 'switch_to_chat',
+              characterId: story.characterId || story.id
+            }
+          ]
+        }
+      ];
+    } else {
+      // English
+      chapters = [
+        {
+          id: 'c1',
+          title: 'Chapter 1: The Encounter',
+          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
+          speaker: charName,
+          characterMood: story.initialMood || 'High Drama',
+          narrative: `${story.summary ? story.summary + '\n\n' : ''}${story.openingHook || '*Looks at you closely.*'}`,
+          dialogue: `"So, ${story.userRole || 'my friend'}... what are you going to do now?"`,
+          choices: [
+            {
+              text: (story.smartReplies?.[0]) || "*Step closer and answer calmly*",
+              nextChapterId: 'c2a',
+              deltaAffection: +10,
+              deltaTension: +15,
+              tone: 'Bold & Direct'
+            },
+            {
+              text: (story.smartReplies?.[1]) || "*Stand your ground defiantly*",
+              nextChapterId: 'c2b',
+              deltaAffection: +15,
+              deltaTension: +10,
+              tone: 'Defiant & Passionate'
+            }
+          ]
+        },
+        {
+          id: 'c2a',
+          title: 'Chapter 2: Climax & Reckoning',
+          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
+          speaker: charName,
+          characterMood: '🔥 Fever Pitch (Extreme 18+)',
+          narrative: `The room falls dead silent as your words sink in. ${charName}'s eyes blaze with raw, intoxicating intensity. Every barrier between you dissolves into electric tension.`,
+          dialogue: `"You have no idea what you've just started with me," ${charName} murmurs, stepping closer until your breaths mingle. "Don't stop now."`,
+          choices: [
+            {
+              text: "*Switch to direct 18+ uncensored roleplay chat*",
+              action: 'switch_to_chat',
+              characterId: story.characterId || story.id
+            }
+          ]
+        },
+        {
+          id: 'c2b',
+          title: 'Chapter 2: The Surrender',
+          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
+          speaker: charName,
+          characterMood: 'Intensely Devoted',
+          narrative: `Your defiance catches ${charName} completely off guard. A slow, breathtaking smile breaks across their face as they reach out, catching you by the waist.`,
+          dialogue: `"I've met thousands of people in this world," ${charName} whispers against your ear. "None of them dared look at me the way you do."`,
+          choices: [
+            {
+              text: "*Step into 18+ uncensored roleplay chat*",
+              action: 'switch_to_chat',
+              characterId: story.characterId || story.id
+            }
+          ]
+        }
+      ];
+    }
   }
 
   let chapter = chapters.find(c => c.id === state.activeChapterId) || chapters[0] || {
@@ -486,15 +646,16 @@ function renderStoryReader() {
     speaker: 'Character'
   };
 
-  const charId = story.characterId || 'kabir';
-  const char = CHARACTERS[charId] || {
+  const charId = story.characterId || story.id || 'scenario-' + (story.tmdbId || 'companion');
+  const char = (story.characterId && CHARACTERS[story.characterId]) || {
     name: story.characterName || 'Companion',
-    title: story.title,
-    image: story.avatar || 'assets/lucian.jpg'
+    title: story.title || 'Interactive Novel',
+    image: story.avatar || story.cover || 'assets/lucian.jpg',
+    category: story.category || 'Cinema'
   };
 
   if (!state.characterState[charId]) {
-    state.characterState[charId] = { affection: 60, tension: 80, intimacyLevel: '⚡ High Sexual Tension' };
+    state.characterState[charId] = { affection: 60, tension: 80, intimacyLevel: story.initialMood || '⚡ High Sexual Tension' };
   }
   const charState = state.characterState[charId];
 
@@ -562,13 +723,16 @@ function renderStoryReader() {
   }
 
   const sidePortrait = document.getElementById('side-char-portrait');
-  if (sidePortrait) sidePortrait.src = char.image;
+  if (sidePortrait) sidePortrait.src = story.avatar || story.cover || char.image;
 
   const sideName = document.getElementById('side-char-name');
-  if (sideName) sideName.textContent = char.name;
+  if (sideName) sideName.textContent = story.characterName || char.name;
 
   const sideTitle = document.getElementById('side-char-title');
-  if (sideTitle) sideTitle.textContent = char.title;
+  if (sideTitle) sideTitle.textContent = story.title || char.title;
+
+  const sideCat = document.getElementById('side-char-category');
+  if (sideCat) sideCat.textContent = story.category || 'Cinema';
 
   const fillAff = document.getElementById('fill-affection');
   const labelAff = document.getElementById('label-affection');
@@ -613,8 +777,36 @@ function renderChatView() {
     state.chatHistory[charId] = [{ sender: 'ai', text: greeting }];
   }
 
-  // Update active roster card if matching
-  document.querySelectorAll('.roster-card').forEach(c => {
+  // Dynamic Roster Item for Active Story Scenario
+  const rosterList = document.querySelector('.roster-list');
+  let activeScenarioRoster = document.getElementById('roster-active-scenario');
+  if (scenario) {
+    if (!activeScenarioRoster && rosterList) {
+      activeScenarioRoster = document.createElement('div');
+      activeScenarioRoster.id = 'roster-active-scenario';
+      activeScenarioRoster.className = 'roster-item';
+      rosterList.insertBefore(activeScenarioRoster, rosterList.firstChild);
+    }
+    if (activeScenarioRoster) {
+      activeScenarioRoster.style.display = 'flex';
+      activeScenarioRoster.dataset.character = charId;
+      activeScenarioRoster.innerHTML = `
+        <img src="${scenario.avatar || scenario.cover || 'assets/lucian.jpg'}" alt="${scenario.characterName || 'Character'}" class="roster-avatar">
+        <div class="roster-meta">
+          <h4>${scenario.characterName || scenario.title}</h4>
+          <p>🎬 ${scenario.title}</p>
+        </div>
+      `;
+      activeScenarioRoster.onclick = () => {
+        launchScenarioChat(scenario);
+      };
+    }
+  } else if (activeScenarioRoster) {
+    activeScenarioRoster.style.display = 'none';
+  }
+
+  // Update active roster item if matching
+  document.querySelectorAll('.roster-item').forEach(c => {
     if (c.dataset.character === charId) c.classList.add('active');
     else c.classList.remove('active');
   });
@@ -663,80 +855,40 @@ function renderChatView() {
       let text = msg.text.replace(/\*(.*?)\*/g, '<em>*$1*</em>');
       bubble.innerHTML = text;
       area.appendChild(bubble);
-
-      // If this is the latest AI message, render smart replies directly as clickable chips beneath the bubble
-      if (idx === history.length - 1 && msg.sender === 'ai' && activePrompts.length > 0) {
-        const inChatContainer = document.createElement('div');
-        inChatContainer.className = 'in-chat-chips-group';
-        inChatContainer.setAttribute('role', 'group');
-        inChatContainer.setAttribute('aria-label', 'Suggested Replies');
-
-        const label = document.createElement('div');
-        label.className = 'in-chat-chips-label';
-        label.innerHTML = '<span>⚡ Suggested Choices</span> <small>Tap chip to send</small>';
-        inChatContainer.appendChild(label);
-
-        const chipsWrap = document.createElement('div');
-        chipsWrap.className = 'in-chat-chips-list';
-
-        activePrompts.forEach(p => {
-          const chipBtn = document.createElement('button');
-          chipBtn.type = 'button';
-          chipBtn.className = 'in-chat-chip';
-          chipBtn.title = 'Click to reply with this message';
-          chipBtn.innerHTML = `<span class="chip-action-text">${p}</span><span class="chip-instant-icon">➔</span>`;
-          chipBtn.addEventListener('click', () => {
-            const inp = document.getElementById('chat-user-input');
-            if (inp) inp.value = '';
-            sendChatMessage(p);
-          });
-          chipsWrap.appendChild(chipBtn);
-        });
-
-        inChatContainer.appendChild(chipsWrap);
-        area.appendChild(inChatContainer);
-      }
     });
     area.scrollTop = area.scrollHeight;
   }
 
-  const quickContainer = document.getElementById('quick-prompts-container');
-  if (quickContainer) {
-    quickContainer.innerHTML = '';
-    activePrompts.forEach(p => {
-      const chipWrapper = document.createElement('div');
-      chipWrapper.className = 'quick-chip-wrapper';
+  // Render Dynamic Clickable Smart Reply Chips (Hinglish/English matching active context)
+  let repliesBar = document.getElementById('chat-quick-replies-bar');
+  if (!repliesBar) {
+    repliesBar = document.createElement('div');
+    repliesBar.id = 'chat-quick-replies-bar';
+    repliesBar.className = 'chat-quick-replies-bar';
+    const chatForm = document.getElementById('chat-form');
+    if (chatForm && chatForm.parentNode) {
+      chatForm.parentNode.insertBefore(repliesBar, chatForm);
+    }
+  }
 
-      const chip = document.createElement('button');
-      chip.type = 'button';
-      chip.className = 'quick-chip';
-      chip.title = 'Click to send instantly';
-      chip.innerHTML = `<span class="chip-text">${p}</span><span class="chip-send-bolt">⚡</span>`;
-      chip.addEventListener('click', () => {
-        const inp = document.getElementById('chat-user-input');
-        if (inp) inp.value = '';
-        sendChatMessage(p);
+  if (repliesBar) {
+    repliesBar.innerHTML = '';
+    if (activePrompts && activePrompts.length > 0) {
+      activePrompts.slice(0, 3).forEach(prompt => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'quick-reply-chip';
+        chip.textContent = prompt;
+        chip.title = 'Click to send this response';
+        chip.onclick = () => {
+          sendChatMessage(prompt);
+        };
+        repliesBar.appendChild(chip);
       });
-
-      const editBtn = document.createElement('button');
-      editBtn.type = 'button';
-      editBtn.className = 'quick-chip-edit';
-      editBtn.title = 'Edit in input box';
-      editBtn.setAttribute('aria-label', 'Edit prompt');
-      editBtn.innerHTML = '✎';
-      editBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const inp = document.getElementById('chat-user-input');
-        if (inp) {
-          inp.value = p;
-          inp.focus();
-        }
-      });
-
-      chipWrapper.appendChild(chip);
-      chipWrapper.appendChild(editBtn);
-      quickContainer.appendChild(chipWrapper);
-    });
+      repliesBar.style.display = 'flex';
+    } else {
+      repliesBar.style.display = 'none';
+    }
   }
 }
 
@@ -833,14 +985,14 @@ function triggerDanceAnimation() {
   if (state.isDancing) {
     state.isDancing = false;
     clearInterval(state.danceInterval);
-    wrapper.className = 'dancer-figure-wrapper';
+    wrapper.className = 'dancer-frame';
     const btn = document.getElementById('btn-trigger-dance-animation');
-    if (btn) btn.textContent = '▶ Start Dance Routine';
+    if (btn) btn.textContent = '▶ Play Routine';
   } else {
     state.isDancing = true;
-    wrapper.className = `dancer-figure-wrapper dancing-${state.activeDanceRoutine}`;
+    wrapper.className = `dancer-frame dancing dancing-${state.activeDanceRoutine}`;
     const btn = document.getElementById('btn-trigger-dance-animation');
-    if (btn) btn.textContent = '⏸ Pause Dance Routine';
+    if (btn) btn.textContent = '⏸ Pause Routine';
 
     playDanceBeat(state.activeDanceRoutine);
     state.danceInterval = setInterval(() => {
@@ -857,39 +1009,39 @@ function triggerDanceAnimation() {
 
 // Initialize Application
 document.addEventListener('DOMContentLoaded', () => {
-  // Brand Click -> Return to Homepage
+  // Brand Click -> Return to Cinema Explore
   document.getElementById('nav-brand')?.addEventListener('click', (e) => {
     e.preventDefault();
-    switchView('home-web');
+    switchView('stories-explore');
   });
 
-  // Top Nav Links
-  document.querySelectorAll('.kavana-nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-      const view = link.dataset.view;
+  // Top Nav Links & Mobile Dock
+  document.querySelectorAll('.kavana-nav-link, .nav-btn, .mobile-nav-item, .mobile-dock-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.view;
       if (view) switchView(view);
     });
   });
 
-  // Mobile Bottom Bar
-  document.querySelectorAll('.mobile-nav-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const view = item.dataset.view;
-      if (view) switchView(view);
-    });
+  // Spotlight Hero Action Buttons
+  document.getElementById('btn-hero-play')?.addEventListener('click', () => {
+    openStoryInReader(state.activeStory || KAVANA_STORIES[0]);
   });
 
-  // Homepage CTA Triggers
-  document.getElementById('btn-hero-launch-app')?.addEventListener('click', () => switchView('stories-explore'));
-  document.getElementById('btn-hero-explore-novels')?.addEventListener('click', () => switchView('stories-explore'));
-  document.getElementById('btn-hero-open-dance')?.addEventListener('click', () => switchView('dance-studio'));
-  document.getElementById('btn-cta-get-app')?.addEventListener('click', () => switchView('stories-explore'));
+  document.getElementById('btn-hero-chat')?.addEventListener('click', () => {
+    launchScenarioChat(state.activeStory || KAVANA_STORIES[0]);
+  });
 
-  // Simulator Tab Switches
-  document.getElementById('btn-mockup-tab-explore')?.addEventListener('click', () => switchView('stories-explore'));
-  document.getElementById('btn-mockup-tab-reader')?.addEventListener('click', () => switchView('story-reader'));
-  document.getElementById('btn-mockup-tab-chat')?.addEventListener('click', () => switchView('character-chat'));
-  document.getElementById('btn-mockup-tab-dance')?.addEventListener('click', () => switchView('dance-studio'));
+  document.getElementById('btn-hero-dance')?.addEventListener('click', () => {
+    state.activeDancerId = (state.activeStory || KAVANA_STORIES[0])?.characterId || 'kabir';
+    switchView('dance-studio');
+  });
+
+  // Footer explore link
+  document.getElementById('footer-link-explore')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    switchView('stories-explore');
+  });
 
   // Language Dropdown
   const langSelect = document.getElementById('app-language-select');
@@ -997,8 +1149,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Story Reader Controls
   document.getElementById('btn-jump-to-chat')?.addEventListener('click', () => {
-    state.activeChatPartnerId = state.activeStory?.characterId || 'kabir';
-    switchView('character-chat');
+    launchScenarioChat(state.activeStory || KAVANA_STORIES[0]);
   });
   document.getElementById('btn-restart-story')?.addEventListener('click', () => {
     state.activeChapterId = 'c1';
@@ -1021,14 +1172,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Chat Roster
   document.getElementById('roster-kabir')?.addEventListener('click', () => {
+    state.activeScenario = null;
     state.activeChatPartnerId = 'kabir';
     renderChatView();
   });
   document.getElementById('roster-valeria')?.addEventListener('click', () => {
+    state.activeScenario = null;
     state.activeChatPartnerId = 'valeria';
     renderChatView();
   });
   document.getElementById('roster-lucian')?.addEventListener('click', () => {
+    state.activeScenario = null;
     state.activeChatPartnerId = 'lucian';
     renderChatView();
   });
@@ -1160,7 +1314,211 @@ document.addEventListener('DOMContentLoaded', () => {
     switchView('story-reader');
   });
 
-  // Initial State: Start at official Homepage
+  // ==========================================
+  // TMDb Story Importer Modal Controller
+  // ==========================================
+  const tmdbModal = document.getElementById('modal-tmdb-importer');
+  const tmdbInput = document.getElementById('tmdb-query-input');
+  const tmdbTypeSelect = document.getElementById('tmdb-media-type-select');
+  const tmdbFetchBtn = document.getElementById('btn-fetch-tmdb-data');
+  const tmdbPreviewCard = document.getElementById('tmdb-preview-card');
+
+  let currentFetchedTMDbItem = null;
+
+  function openTMDbModal(defaultQuery = '') {
+    if (tmdbModal) tmdbModal.classList.add('active');
+    if (tmdbInput) {
+      if (defaultQuery) tmdbInput.value = defaultQuery;
+      tmdbInput.focus();
+    }
+    if (defaultQuery) {
+      fetchAndPreviewTMDb(defaultQuery);
+    }
+  }
+
+  function closeTMDbModal() {
+    if (tmdbModal) tmdbModal.classList.remove('active');
+  }
+
+  // Open triggers
+  document.getElementById('nav-open-tmdb')?.addEventListener('click', () => openTMDbModal());
+  document.getElementById('btn-header-add-tmdb')?.addEventListener('click', () => openTMDbModal());
+  document.getElementById('btn-hero-open-tmdb')?.addEventListener('click', () => openTMDbModal());
+  document.getElementById('btn-banner-open-tmdb')?.addEventListener('click', () => openTMDbModal());
+  document.getElementById('btn-explore-open-tmdb')?.addEventListener('click', () => openTMDbModal());
+  document.getElementById('mobile-open-tmdb')?.addEventListener('click', () => openTMDbModal());
+
+  // Close triggers
+  document.getElementById('btn-close-tmdb-modal')?.addEventListener('click', closeTMDbModal);
+  document.getElementById('btn-cancel-tmdb-preview')?.addEventListener('click', () => {
+    if (tmdbPreviewCard) tmdbPreviewCard.style.display = 'none';
+    currentFetchedTMDbItem = null;
+  });
+
+  // Fetch logic
+  async function fetchAndPreviewTMDb(queryOverride) {
+    const query = (queryOverride || tmdbInput?.value || '').trim();
+    if (!query) {
+      showToast({ title: 'TMDb Input Required', message: 'Enter a TMDb ID (e.g. 1399, 1378537) or movie title.', type: 'warning' });
+      return;
+    }
+
+    if (tmdbFetchBtn) {
+      tmdbFetchBtn.disabled = true;
+      tmdbFetchBtn.innerHTML = '<span>Fetching ⏳</span>';
+    }
+
+    try {
+      let result = null;
+      const mediaType = tmdbTypeSelect?.value || 'auto';
+
+      if (/^\d+$/.test(query)) {
+        result = await fetchTMDbMedia(query, mediaType);
+      } else {
+        const searchRes = await searchTMDb(query);
+        if (searchRes.local && searchRes.local.length > 0) {
+          result = { success: true, source: 'verified_cache', data: searchRes.local[0] };
+        } else if (searchRes.online && searchRes.online.length > 0) {
+          const first = searchRes.online[0];
+          result = await fetchTMDbMedia(first.id, first.media_type || mediaType);
+        } else {
+          throw new Error(`No movie or show found for "${query}"`);
+        }
+      }
+
+      const item = result.data;
+      currentFetchedTMDbItem = item;
+      renderTMDbPreview(item);
+      showToast({ title: '🎬 TMDb Title Found', message: `Found "${item.title || item.name}"!`, type: 'success' });
+      playChime(640);
+    } catch (err) {
+      showToast({ title: 'TMDb Lookup', message: err.message, type: 'error' });
+    } finally {
+      if (tmdbFetchBtn) {
+        tmdbFetchBtn.disabled = false;
+        tmdbFetchBtn.innerHTML = '<span>Fetch ⚡</span>';
+      }
+    }
+  }
+
+  function renderTMDbPreview(item) {
+    if (!tmdbPreviewCard) return;
+
+    const title = item.title || item.name || 'Untitled Cinema Novel';
+    const releaseYear = (item.release_date || item.first_air_date || '2024').slice(0, 4);
+    const posterUrl = item.avatar || (item.poster_path ? `https://image.tmdb.org/t/p/w780${item.poster_path}` : 'assets/lucian.jpg');
+    const backdropUrl = item.cover || (item.backdrop_path ? `https://image.tmdb.org/t/p/w1280${item.backdrop_path}` : posterUrl);
+    const rating = item.imdbRating || (item.vote_average ? (item.vote_average).toFixed(1) : '9.5');
+    const overview = item.summary || item.overview || 'Step inside the cinematic universe where your choices decide the story.';
+    const tagline = item.tagline || (item.tags ? item.tags.slice(0, 2).join(' • ') : 'TMDb Verified Cinema');
+
+    const backdropImg = document.getElementById('tmdb-preview-backdrop-img');
+    const posterImg = document.getElementById('tmdb-preview-poster-img');
+    const titleText = document.getElementById('tmdb-preview-title-text');
+    const taglineText = document.getElementById('tmdb-preview-tagline-text');
+    const ratingText = document.getElementById('tmdb-preview-rating');
+    const overviewText = document.getElementById('tmdb-preview-overview-text');
+    const castContainer = document.getElementById('tmdb-preview-cast-container');
+
+    if (backdropImg) backdropImg.src = backdropUrl;
+    if (posterImg) posterImg.src = posterUrl;
+    if (titleText) titleText.textContent = `${title} (${releaseYear})`;
+    if (taglineText) taglineText.textContent = tagline;
+    if (ratingText) ratingText.textContent = `★ ${rating} TMDb`;
+    if (overviewText) overviewText.textContent = overview;
+
+    // Render cast tags if available
+    if (castContainer) {
+      castContainer.innerHTML = '';
+      if (item.credits && item.credits.cast) {
+        item.credits.cast.slice(0, 5).forEach(c => {
+          const chip = document.createElement('span');
+          chip.className = 'tmdb-cast-chip';
+          chip.textContent = `${c.name} as ${c.character || 'Lead'}`;
+          castContainer.appendChild(chip);
+        });
+      } else if (item.characterName) {
+        const chip = document.createElement('span');
+        chip.className = 'tmdb-cast-chip';
+        chip.textContent = `Starring: ${item.characterName}`;
+        castContainer.appendChild(chip);
+      }
+    }
+
+    // Pre-fill customization inputs
+    const charInput = document.getElementById('tmdb-custom-char-name');
+    const roleInput = document.getElementById('tmdb-custom-user-role');
+    const goalInput = document.getElementById('tmdb-custom-user-goal');
+
+    if (charInput) charInput.value = item.characterName || (item.credits?.cast?.[0]?.name ? item.credits.cast[0].name : title.split(':')[0]);
+    if (roleInput) roleInput.value = item.userRole || 'Defiant Hostage / Rival Syndicate Boss';
+    if (goalInput) goalInput.value = item.userGoal || 'Negotiate survival or take over their empire';
+
+    tmdbPreviewCard.style.display = 'block';
+    tmdbPreviewCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  tmdbFetchBtn?.addEventListener('click', () => fetchAndPreviewTMDb());
+  tmdbInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      fetchAndPreviewTMDb();
+    }
+  });
+
+  // Presets 1-Click Handlers
+  document.querySelectorAll('.tmdb-preset-pill, .tmdb-preset-chip').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const tmdbId = pill.dataset.id || pill.dataset.tmdbId;
+      const type = pill.dataset.type || 'auto';
+      if (tmdbInput) tmdbInput.value = tmdbId;
+      if (tmdbTypeSelect) tmdbTypeSelect.value = type;
+      fetchAndPreviewTMDb(tmdbId);
+    });
+  });
+
+  // Convert & Launch Story
+  document.getElementById('btn-convert-and-launch-tmdb')?.addEventListener('click', () => {
+    if (!currentFetchedTMDbItem) {
+      showToast({ title: 'No Title Selected', message: 'Fetch a movie or TV show first.', type: 'warning' });
+      return;
+    }
+
+    const charName = document.getElementById('tmdb-custom-char-name')?.value?.trim();
+    const userRole = document.getElementById('tmdb-custom-user-role')?.value?.trim();
+    const userGoal = document.getElementById('tmdb-custom-user-goal')?.value?.trim();
+    const lang = document.getElementById('tmdb-custom-language')?.value || 'hinglish';
+
+    const overrides = {};
+    if (charName) overrides.characterName = charName;
+    if (userRole) overrides.userRole = userRole;
+    if (userGoal) overrides.userGoal = userGoal;
+
+    const newStory = convertTMDbToKavanaStory(currentFetchedTMDbItem, overrides);
+    saveCustomTMDbStory(newStory);
+
+    // Prepend to active stories
+    const existingIdx = KAVANA_STORIES.findIndex(s => s.id === newStory.id || (newStory.tmdbId && s.tmdbId === newStory.tmdbId));
+    if (existingIdx >= 0) {
+      KAVANA_STORIES[existingIdx] = newStory;
+    } else {
+      KAVANA_STORIES.unshift(newStory);
+    }
+
+    closeTMDbModal();
+    showToast({
+      title: '✨ TMDb Cinema Scenario Ready!',
+      message: `"${newStory.title}" has been added to your stories.`,
+      type: 'success'
+    });
+    playChime(750);
+
+    // Immediately launch into roleplay chat
+    state.activeLang = lang;
+    launchScenarioChat(newStory);
+  });
+
+  // Initial State: Start directly on modern Cinema Platform
   updateCoins(0);
-  switchView('home-web');
+  switchView('stories-explore');
 });

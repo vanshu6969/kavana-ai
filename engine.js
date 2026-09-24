@@ -526,29 +526,30 @@ export const KAVANA_STORIES = [
 ];
 
 /**
- * Detect language of user message
+ * Detect language of user message with high precision
  */
 export function detectLanguage(text) {
+  if (!text || typeof text !== 'string') return 'en';
   const t = text.toLowerCase();
   
-  // Punjabi Gurmukhi script detection
+  // 1. Punjabi Gurmukhi script detection
   if (/[\u0A00-\u0A7F]/.test(text)) {
     return 'punjabi_gurmukhi';
   }
-  // Hindi Devanagari script detection
+  // 2. Hindi Devanagari script detection
   if (/[\u0900-\u097F]/.test(text)) {
     return 'hindi';
   }
-  // Urdu script detection
+  // 3. Urdu script detection
   if (/[\u0600-\u06FF]/.test(text)) {
     return 'urdu';
   }
-  // Punjabi Roman keywords
-  if (/\b(ki|kivein|kiven|sohni|sohna|tu|tusi|tere|meri|changa|changi|jaaneman|kol|aaja|ve|oye|jatt|jatti|yaara|paa|lai|aundi|aunde|rehnde|haye|rabba|kamli|kamle)\b/i.test(t)) {
-    return 'punjabi_roman';
+  // 4. Punjabi Roman keywords
+  if (/\b(ki|kivein|kiven|sohni|sohna|tu|tusi|tussi|tere|meri|changa|changi|jaaneman|kol|aaja|ve|oye|jatt|jatti|yaara|paa|lai|aundi|aunde|rehnde|haye|rabba|kamli|kamle|galwakdi|gutt|chumm|chumma|dasso|dass|vich|ch)\b/i.test(t)) {
+    return 'punjabi';
   }
-  // Hinglish keywords
-  if (/\b(tum|meri|mera|kareeb|paas|aao|karo|raat|jaan|jaaneman|batao|kya|kyun|kaisi|kaisa|chaho|saath|bistar|deewar|khol|baahon|chhati|gardan|honth|chhoo|mat|hadd|bawaal|pyaar|ishq|mohabbat|deewana|deewani|sun|dekh)\b/i.test(t)) {
+  // 5. Extensive Hinglish keywords & grammar markers (filtering English homographs like 'the', 'to')
+  if (/\b(kya|kyun|kyu|kaise|kaisi|kaisa|batao|bata|bataiye|tum|tumhara|tumhari|tumhare|tumhe|tumhein|mujhe|mujhko|mera|meri|mere|main|mai|mein|hum|humein|humko|aao|aaye|aaya|aayi|jao|jaaye|jaana|karo|karna|karta|karti|karte|nahi|nahin|haan|han|suno|sun|sunona|dekh|dekho|dekhiye|kuch|kaha|apna|apne|apni|saath|yahan|wahan|idhar|udhar|ab|kab|tab|jab|dil|pyar|pyaar|ishq|mohabbat|jaan|jaaneman|bhai|bhaiya|bhaisaab|yaar|dost|achha|accha|theek|sahi|baat|baatein|chalo|chal|chalna|raat|kareeb|paas|chhod|chhor|mat|bistar|deewar|chhati|gardan|honth|hoth|rok|hadd|bawaal|shuru|khatam|matlab|samjhe|samjha|samjhi|bhejo|lao|rakh|rakho|rakhna|bol|bolo|chahiye|hoga|hogi|honge|hai|hain|tha|thi|bhi|toh|yeh|woh|kaun|kisne|kisko|kise|isse|usse|itna|itni|itne|kitna|kitni|kitne|chup|pagal|deewana|deewani|khubsoorat|khoobsurat|goli|dhandha|ilaaj|hisaab)\b/i.test(t)) {
     return 'hinglish';
   }
   

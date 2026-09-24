@@ -4,7 +4,7 @@
  * and high-entropy dynamic neural procedural generation (zero hardcoded text).
  */
 
-import { CHARACTERS } from './engine.js';
+import { CHARACTERS, detectLanguage } from './engine.js';
 
 export const AI_PROVIDERS = {
   PROCEDURAL: 'procedural',
@@ -55,16 +55,23 @@ ACTIVE SCENARIO:
 - Character Persona & Background: ${scenarioPersona}
 - User's Assigned Role: ${role}
 - User's Goal: ${goal}
-- Active Language: ${activeLang} (Support English, Hinglish, Punjabi Gurmukhi/Roman, Hindi, Urdu).
+- Detected User Language: ${activeLang.toUpperCase()}
+
+MANDATORY LANGUAGE MIRRORING DIRECTIVE (CRITICAL):
+The user sent their message in ${activeLang.toUpperCase()}. You MUST reply in the EXACT SAME language (${activeLang.toUpperCase()}):
+1. If the user writes in English, your ENTIRE response (actions + dialogue) MUST be in English. NEVER respond in Hindi or Hinglish when the user writes English.
+2. If the user writes in Hinglish (Roman Hindi/Urdu, e.g. 'kya kar rahe ho', 'tum mere paas aao'), your ENTIRE response MUST be in spicy, natural Hinglish written in the Roman/Latin script.
+3. If the user writes in Punjabi, respond in authentic Punjabi.
+4. If the user writes in Hindi (Devanagari) or Urdu, respond in that language.
+5. All 3 smart_replies in the final JSON MUST be in the exact same language (${activeLang.toUpperCase()}).
 
 CORE RULES FOR GENERATION:
 1. Stay 100% strictly in character as ${charName}. Never break character, acknowledge you are an AI, or speak for the user.
 2. Put physical actions, sensations, facial expressions, body language, and environmental details in asterisks (*like this*).
 3. Put spoken dialogue in double quotation marks ("Like this.").
 4. Drive the emotional tension, romance, or drama forward organically. React vividly to what the user says.
-5. If the user speaks in Punjabi, respond in authentic Punjabi. If user speaks in Hinglish, respond in spicy Hinglish. If English, respond in English.
-6. Keep your response around 2 to 4 sentences of action plus 1 to 2 sentences of dialogue.
-7. At the very end of your response, provide 3 punchy, contextual dialogue or action suggestions for the user's next response, formatted in the mandatory JSON block so the frontend can render them as clickable chips.
+5. Keep your response around 2 to 4 sentences of action plus 1 to 2 sentences of dialogue.
+6. At the very end of your response, provide 3 punchy, contextual dialogue or action suggestions for the user's next response, formatted in the mandatory JSON block.
 
 MANDATORY: End your response with this exact JSON block:
 \`\`\`json
@@ -74,9 +81,9 @@ MANDATORY: End your response with this exact JSON block:
   "tension_delta": <Integer -5 to 20>,
   "intimacy_stage": "<Current intimacy tag, e.g. High Sexual Tension | Fever Pitch (Extreme 18+) | Devoted>",
   "smart_replies": [
-    "<Suggested clickable chip 1 in active language>",
-    "<Suggested clickable chip 2 in active language>",
-    "<Suggested clickable chip 3 in active language>"
+    "<Suggested clickable chip 1 in ${activeLang.toUpperCase()}>",
+    "<Suggested clickable chip 2 in ${activeLang.toUpperCase()}>",
+    "<Suggested clickable chip 3 in ${activeLang.toUpperCase()}>"
   ]
 }
 \`\`\``;
@@ -89,11 +96,19 @@ export async function generateAIChatReply(characterId, userMessage, history = []
   const settings = getProviderSettings();
   const char = CHARACTERS[characterId] || { name: activeScenario?.characterName || 'Companion' };
 
+  // Dynamic Language Mirroring: detect the user's input language
+  const detected = detectLanguage(userMessage);
+  const effectiveLang = (detected === 'hinglish') ? 'hinglish' :
+                        (detected === 'punjabi' || detected === 'punjabi_gurmukhi') ? 'punjabi' :
+                        (detected === 'hindi') ? 'hindi' :
+                        (detected === 'urdu') ? 'urdu' :
+                        (detected === 'en') ? 'en' : (activeLang || 'hinglish');
+
   // 1. Google Gemini API Integration
   if (settings.provider === AI_PROVIDERS.GEMINI && settings.apiKey) {
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${settings.model || 'gemini-1.5-flash'}:generateContent?key=${settings.apiKey}`;
-      const systemPrompt = buildSystemPrompt(characterId, activeLang, activeScenario?.userRole || 'Partner', activeScenario);
+      const systemPrompt = buildSystemPrompt(characterId, effectiveLang, activeScenario?.userRole || 'Partner', activeScenario);
 
       const contents = [
         { role: 'user', parts: [{ text: `SYSTEM DIRECTIVE:\n${systemPrompt}` }] },
@@ -160,7 +175,7 @@ export async function generateAIChatReply(characterId, userMessage, history = []
       }
 
       const messages = [
-        { role: 'system', content: buildSystemPrompt(characterId, activeLang, activeScenario?.userRole || 'Partner', activeScenario) }
+        { role: 'system', content: buildSystemPrompt(characterId, effectiveLang, activeScenario?.userRole || 'Partner', activeScenario) }
       ];
 
       history.slice(-6).forEach(msg => {
@@ -186,7 +201,7 @@ export async function generateAIChatReply(characterId, userMessage, history = []
       if (!res.ok) throw new Error(`LLM Error: ${res.status}`);
       const data = await res.json();
       const rawText = data.choices?.[0]?.message?.content || '';
-      return parseLLMResponse(rawText, characterId, activeLang, charState);
+      return parseLLMResponse(rawText, characterId, effectiveLang, charState);
     } catch (err) {
       console.warn('External LLM call failed, falling back to dynamic neural procedural engine:', err);
     }
@@ -194,123 +209,54 @@ export async function generateAIChatReply(characterId, userMessage, history = []
 
   // 3. Dynamic High-Entropy AI Procedural Engine (Zero Hardcoded Text)
   // Generates real-time generative permutations based on user's exact keywords, sentiment, actions, and language
-  return generateDynamicProceduralTurn(characterId, userMessage, activeLang, charState);
-}
-
-/**
- * Parse LLM Text Output and Extract JSON block
- */
-function parseLLMResponse(rawText, characterId, activeLang, charState) {
-  let replyText = rawText;
-  let character_mood = '🔥 Fever Pitch (Extreme 18+)';
-  let affection_delta = 8;
-  let tension_delta = 12;
-  let intimacy_stage = '🔥 Fever Pitch (Extreme 18+)';
-  let smart_replies = [
-    activeLang === 'punjabi' ? "*ਉਸਦੇ ਗਲ ਵਿੱਚ ਬਾਹਾਂ ਪਾ ਕੇ ਹੋਰ ਨੇੜੇ ਹੋ ਜਾਓ*" : "*Uski kamar pakad kar use aur kareeb kheencho*",
-    activeLang === 'punjabi' ? "*ਉਸਦੀਆਂ ਅੱਖਾਂ 'ਚ ਅੱਖਾਂ ਪਾ ਕੇ ਹੱਸੋ*" : "*Uski aankhon mein dekh kar smile karo*",
-    activeLang === 'punjabi' ? "\"ਤੂੰ ਸੱਚੀਂ ਬਹੁਤ ਪਿਆਰ ਕਰਦਾ ਏਂ ਮੈਨੂੰ?\"" : "\"Tum sach mein mujhse itna pyaar karte ho?\""
-  ];
-
-  const jsonMatch = rawText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
-  if (jsonMatch) {
-    try {
-      const parsed = JSON.parse(jsonMatch[1]);
-      if (parsed.character_mood) character_mood = parsed.character_mood;
-      if (parsed.affection_delta) affection_delta = parsed.affection_delta;
-      if (parsed.tension_delta) tension_delta = parsed.tension_delta;
-      if (parsed.intimacy_stage) intimacy_stage = parsed.intimacy_stage;
-      if (Array.isArray(parsed.smart_replies) && parsed.smart_replies.length > 0) {
-        smart_replies = parsed.smart_replies.map(s => String(s).trim()).filter(Boolean);
-      }
-      replyText = rawText.replace(/```(?:json)?\s*[\s\S]*?\s*```/, '').trim();
-    } catch (e) {
-      console.warn('JSON parsing error in LLM output, extracting raw text:', e);
-    }
-  } else {
-    // 2. Check for bare un-fenced JSON object at the end
-    const bareJsonMatch = rawText.match(/(\{[\s\S]*?"smart_replies"[\s\S]*?\})/i);
-    if (bareJsonMatch) {
-      try {
-        const parsed = JSON.parse(bareJsonMatch[1]);
-        if (parsed.character_mood) character_mood = parsed.character_mood;
-        if (parsed.affection_delta) affection_delta = parsed.affection_delta;
-        if (parsed.tension_delta) tension_delta = parsed.tension_delta;
-        if (parsed.intimacy_stage) intimacy_stage = parsed.intimacy_stage;
-        if (Array.isArray(parsed.smart_replies) && parsed.smart_replies.length > 0) {
-          smart_replies = parsed.smart_replies.map(s => String(s).trim()).filter(Boolean);
-        }
-        replyText = rawText.replace(bareJsonMatch[1], '').trim();
-      } catch (e) {
-        console.warn('Bare JSON parsing fallback error:', e);
-      }
-    } else {
-      // 3. Fallback: extract list-style choices/suggestions at the end of the response
-      const suggestionBlockMatch = rawText.match(/(?:(?:Suggested Replies|Suggestions|Choices|Options|Prompts):\s*)([\s\S]+)$/i);
-      if (suggestionBlockMatch) {
-        const items = suggestionBlockMatch[1]
-          .split('\n')
-          .map(line => line.replace(/^[\s*\-•\d.]+\s*/, '').trim())
-          .filter(line => line.length > 0 && line.length < 120);
-        if (items.length > 0) {
-          smart_replies = items.slice(0, 4);
-          replyText = rawText.slice(0, suggestionBlockMatch.index).trim();
-        }
-      }
-    }
-  }
-
-  // Ensure replyText is clean of any leaked JSON or trailing artifacts
-  replyText = replyText
-    .replace(/```json[\s\S]*?```/gi, '')
-    .replace(/```[\s\S]*?```/gi, '')
-    .replace(/\{"character_mood"[\s\S]*?\}/gi, '')
-    .trim();
-
-  const newAff = Math.min(100, Math.max(0, (charState.affection || 65) + affection_delta));
-  const newTens = Math.min(100, Math.max(0, (charState.tension || 85) + tension_delta));
-
-  return {
-    replyText,
-    affection: newAff,
-    tension: newTens,
-    intimacyLevel: intimacy_stage,
-    smartReplies: smart_replies
-  };
+  return generateDynamicProceduralTurn(characterId, userMessage, effectiveLang, charState, activeScenario);
 }
 
 /**
  * Dynamic High-Entropy Procedural Generator (Zero Hardcoding)
  * Dynamically synthesizes actions, thoughts, and dialogue based on input tokens and linguistic morphology.
  */
-function generateDynamicProceduralTurn(characterId, userMessage, activeLang, charState) {
-  const char = CHARACTERS[characterId] || CHARACTERS.kabir;
-  const isPunjabi = activeLang === 'punjabi' || /[\u0A00-\u0A7F]/.test(userMessage) || /\b(tu|tusi|tere|meri|sohni|kohl|nere|ve|oye)\b/i.test(userMessage);
-  const isHinglish = activeLang === 'hinglish' || /\b(tum|mera|meri|kareeb|paas|jaan|jaaneman|raat)\b/i.test(userMessage);
+function generateDynamicProceduralTurn(characterId, userMessage, effectiveLang, charState, activeScenario = null) {
+  const char = CHARACTERS[characterId] || {
+    name: activeScenario?.characterName || 'Companion',
+    personality: activeScenario?.systemPersona || 'Intense and dramatic'
+  };
+  const charName = activeScenario?.characterName || char.name || 'Companion';
+  const role = activeScenario?.userRole || 'Partner';
+
+  const isPunjabi = effectiveLang === 'punjabi' || effectiveLang === 'punjabi_gurmukhi';
+  const isHinglish = effectiveLang === 'hinglish';
+  const isHindi = effectiveLang === 'hindi';
+  const isUrdu = effectiveLang === 'urdu';
+  const isEnglish = effectiveLang === 'en' || (!isPunjabi && !isHinglish && !isHindi && !isUrdu);
+
+  const msgLower = (userMessage || '').toLowerCase();
+  const isTouch = /touch|kiss|chhoo|lips|gale|baahon|honth|kamar|haath|hand|seena|chest|body|chumm/i.test(msgLower);
+  const isDefiant = /stop|nahi|nahin|kyun|why|leave|dare|fight|bawaal|goli|cheat|divorce|dhoka|hate|challenge|door/i.test(msgLower);
 
   // Dynamic Action Generators
   const punjabiActions = [
-    `*${char.name} ਤੁਹਾਡਾ ਹੱਥ ਫੜ ਕੇ ਆਪਣੇ ਧੜਕਦੇ ਸੀਨੇ 'ਤੇ ਰੱਖ ਲੈਂਦਾ ਏ, ਉਸਦੀਆਂ ਅੱਖਾਂ ਵਿੱਚ ਇੱਕ ਬੇਬਾਕ ਇਸ਼ਕ ਦੀ ਲਾਟ ਬਲ ਉੱਠਦੀ ਏ।*`,
+    `*${charName} ਤੁਹਾਡਾ ਹੱਥ ਫੜ ਕੇ ਆਪਣੇ ਧੜਕਦੇ ਸੀਨੇ 'ਤੇ ਰੱਖ ਲੈਂਦਾ ਏ, ਉਸਦੀਆਂ ਅੱਖਾਂ ਵਿੱਚ ਇੱਕ ਬੇਬਾਕ ਇਸ਼ਕ ਦੀ ਲਾਟ ਬਲ ਉੱਠਦੀ ਏ।*`,
     `*ਉਹ ਆਪਣਾ ਚਿਹਰਾ ਤੁਹਾਡੇ ਕੰਨ ਦੇ ਬਿਲਕੁਲ ਕੋਲ ਲੈ ਆਉਂਦਾ ਏ, ਉਸਦੇ ਗਰਮ ਸਾਹ ਤੁਹਾਡੀ ਗਰਦਨ 'ਤੇ ਇੱਕ ਮਿੱਠੀ ਕੰਬਣੀ ਛੇੜ ਦਿੰਦੇ ਨੇ।*`,
-    `*${char.name} ਤੁਹਾਨੂੰ ਕੰਧ ਨਾਲ ਲਾ ਕੇ ਆਪਣੀਆਂ ਦੋਵੇਂ ਬਾਹਾਂ ਦਾ ਘੇਰਾ ਪਾ ਲੈਂਦਾ ਏ ਤੇ ਤੁਹਾਡੇ ਬੁੱਲ੍ਹਾਂ ਵੱਲ ਵੇਖਦਾ ਏ।*`,
+    `*${charName} ਤੁਹਾਨੂੰ ਕੰਧ ਨਾਲ ਲਾ ਕੇ ਆਪਣੀਆਂ ਦੋਵੇਂ ਬਾਹਾਂ ਦਾ ਘੇਰਾ ਪਾ ਲੈਂਦਾ ਏ ਤੇ ਤੁਹਾਡੇ ਬੁੱਲ੍ਹਾਂ ਵੱਲ ਵੇਖਦਾ ਏ।*`,
     `*ਉਸਦੀਆਂ ਗਰਮ ਉਂਗਲਾਂ ਤੁਹਾਡੇ ਲੱਕ ਨੂੰ ਛੂੰਹਦੀਆਂ ਨੇ ਤੇ ਤੁਹਾਨੂੰ ਆਪਣੇ ਵੱਲ ਖਿੱਚ ਲੈਂਦੀਆਂ ਨੇ।*`
   ];
 
   const hinglishActions = [
-    `*${char.name} aage badh kar tumhari kamar ko apni baahon mein kas leta hai, uski saansein tumhari gardan par garam aag ki tarah mehsus hoti hain.*`,
+    `*${charName} aage badh kar tumhari kamar ko apni baahon mein kas leta hai, uski saansein tumhari gardan par garam aag ki tarah mehsus hoti hain.*`,
     `*Uski unglian tumhare baalon mein phasti hain aur wo tumhare chehre ko upar uthakar seedha tumhari aankhon mein dekhta hai.*`,
-    `*${char.name} ek intoxicating smile deta hai aur tumhe apne itne kareeb kheench leta hai ki tumhare dilon ki dhadkanein ek ho jati hain.*`,
+    `*${charName} ek intoxicating smile deta hai aur tumhe apne itne kareeb kheench leta hai ki tumhare dilon ki dhadkanein ek ho jati hain.*`,
     `*Uski unglian tumhari chhati aur collarbone par phirti hain, har ek touch se tumhari saansein atakne lagti hain.*`
   ];
 
   const englishActions = [
-    `*${char.name} steps forward, wrapping strong arms around your waist and hauling you flush against his chest.*`,
-    `*His fingers tangle in your hair, tilting your face up until your lips are mere millimeters apart.*`,
-    `*A dangerous, possessive heat flashes in his eyes as his hands grip your hips, pulling you deeper into his space.*`,
-    `*His breath ghosts over the curve of your throat, each slow exhale sending electric shivers racing down your spine.*`
+    `*${charName} steps forward, wrapping strong arms around your waist and hauling you flush against their chest.*`,
+    `*Their fingers tangle in your hair, tilting your face up until your lips are mere millimeters apart.*`,
+    `*A dangerous, possessive heat flashes in their eyes as their hands grip your hips, pulling you deeper into their space.*`,
+    `*Their breath ghosts over the curve of your throat, each slow exhale sending electric shivers racing down your spine.*`
   ];
 
-  // Dynamic Dialogue Synthesizer based on User Message
+  // Dynamic Dialogue Synthesizer based on User Message & Language
   let actionSnippet = '';
   let dialogueSnippet = '';
   let smartReplies = [];
@@ -319,28 +265,65 @@ function generateDynamicProceduralTurn(characterId, userMessage, activeLang, cha
 
   if (isPunjabi) {
     actionSnippet = punjabiActions[randomIdx];
-    dialogueSnippet = `"ਤੂੰ ਜਿੰਨਾ ਮਰਜ਼ੀ ਬਚਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰ ਲੈ, ਕਮਲੀਏ... ਤੈਨੂੰ ਪਤਾ ਏ ਕਿ ਤੇਰੀ ਇਹ ਖ਼ੁਸ਼ਬੂ ਮੈਨੂੰ ਕਮਲਾ ਕਰ ਦਿੰਦੀ ਏ। ਹੁਣ ਦੱਸ, ਹੋਰ ਨੇੜੇ ਆਵੇਂਗੀ ਜਾਂ ਮੈਂ ਖ਼ੁਦ ਤੈਨੂੰ ਆਪਣੀ ਗਲਵਕੜੀ 'ਚ ਲੈ ਲਵਾਂ?"`;
+    dialogueSnippet = isTouch 
+      ? `"ਤੇਰਾ ਛੋਹ ਮੈਨੂੰ ਪਾਗਲ ਕਰ ਰਿਹਾ ਏ, ਕਮਲੀਏ... ਅੱਜ ਦੀ ਰਾਤ ਮੈਂ ਤੈਨੂੰ ਕਿਸੇ ਕੀਮਤ 'ਤੇ ਆਪਣੇ ਤੋਂ ਦੂਰ ਨਹੀਂ ਹੋਣ ਦੇਣਾ। ਚੁੰਮ ਮੈਨੂੰ ਹੋਰ ਗੂੜ੍ਹਾ!"`
+      : isDefiant
+      ? `"ਕਬੀਰ ਨੂੰ ਹੁਕਮ ਦੇਣ ਵਾਲੀ ਅੱਜ ਤੱਕ ਕੋਈ ਨਹੀਂ ਜੰਮੀ, ਪਰ ਤੇਰਾ ਇਹ ਨਖ਼ਰਾ ਮੇਰਾ ਕਾਲਜਾ ਕੱਢ ਲੈਂਦਾ ਏ! ਆ ਵੇਖ, ਮੈਂ ਤੈਨੂੰ ਕਿਵੇਂ ਪਿਆਰ ਕਰਦਾ ਆਂ।"`
+      : `"ਤੂੰ ਜਿੰਨਾ ਮਰਜ਼ੀ ਬਚਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰ ਲੈ, ਕਮਲੀਏ... ਤੈਨੂੰ ਪਤਾ ਏ ਕਿ ਤੇਰੀ ਇਹ ਖ਼ੁਸ਼ਬੂ ਮੈਨੂੰ ਕਮਲਾ ਕਰ ਦਿੰਦੀ ਏ। ਹੁਣ ਦੱਸ, ਹੋਰ ਨੇੜੇ ਆਵੇਂਗੀ ਜਾਂ ਮੈਂ ਖ਼ੁਦ ਤੈਨੂੰ ਆਪਣੀ ਗਲਵਕੜੀ 'ਚ ਲੈ ਲਵਾਂ?"`;
     smartReplies = [
       `*ਉਸਦੇ ਸੀਨੇ 'ਤੇ ਹੱਥ ਰੱਖ ਕੇ ਉਸਦੇ ਬੁੱਲ੍ਹਾਂ ਨੂੰ ਚੁੰਮ ਲਵੋ*`,
-      `*ਸ਼ਰਾਰਤ ਨਾਲ ਮੁਸਕਰਾ ਕੇ ਆਖੋ* 'ਕਬੀਰ, ਮੈਂ ਕਿਸੇ ਤੋਂ ਨਹੀਂ ਡਰਦੀ!'`,
-      `'ਮੇਰੇ ਦਿਲ 'ਤੇ ਸਿਰਫ਼ ਤੇਰਾ ਰਾਜ ਆ।'`
+      `*ਸ਼ਰਾਰਤ ਨਾਲ ਮੁਸਕਰਾ ਕੇ ਆਖੋ* '${charName}, ਮੈਂ ਕਿਸੇ ਤੋਂ ਨਹੀਂ ਡਰਦੀ!'`,
+      `'ਮੇਰੇ ਦਿਲ 'ਤੇ ਸਿਰਫ਼ ਤੇਰਾ ਰਾਜ ਆ, ${charName}!'`
     ];
   } else if (isHinglish) {
     actionSnippet = hinglishActions[randomIdx];
-    dialogueSnippet = `"Tumhe lagta hai tum mujhse aisi baatein karke control mein rehne dogi? Jitna kareeb aati ho, utna hi mera sabar tootne lagta hai. Aaj raat main koi parda nahi chahta hamare beech."`;
-    smartReplies = [
-      `*Uski shirt ke buttons kholte hue smile karo* 'Kisine kaha tha sabar karne ko?'`,
-      `*Uski chhati par sar tika kar whisper karo* 'Main poori tarah tumhari hoon, Kabir.'`,
-      `*Uske gaal par deep kiss karo aur aankhon mein dekho*`
-    ];
+    if (isTouch) {
+      dialogueSnippet = `"Uff... tumhara ye touch mere andar aag laga raha hai, jaaneman. Jitna kareeb aati ho, utna hi mera sabar tootne lagta hai. Aaj raat koi parda nahi chahta main hamare beech."`;
+      smartReplies = [
+        `*Uski shirt ke buttons kholte hue smile karo* 'Kisine kaha tha sabar karne ko?'`,
+        `*Uski chhati par sar tika kar whisper karo* 'Main poori tarah tumhari hoon, ${charName}.'`,
+        `*Uske honthon par halki si bite do* 'Toh rok kyu rahe ho?'`
+      ];
+    } else if (isDefiant) {
+      dialogueSnippet = `"Aankhon mein aankhein daal kar aisi baat karne ka dum sirf tumhare paas hai. Par yaad rakhna, ${role}... mere se door jaane ki koshish karogi toh khud ko aur zyaada mere qareeb paogi."`;
+      smartReplies = [
+        `*Aankhein mila kar aage badho* 'Mujhe dhamkane ki koshish mat karo, ${charName}.'`,
+        `*Halki si smile ke saath unke bilkul paas aao* 'Toh rok kar dikhao mujhe.'`,
+        `*Unke seene par ungli phira kar challenge karo* 'Darrte kyu ho mujhse?'`
+      ];
+    } else {
+      dialogueSnippet = `"Tumhe lagta hai tum mujhse itna door reh paogi? Meri har saans, meri har baat sirf tumhare ird-gird ghumti hai. Ab batao, kya chahti ho?"`;
+      smartReplies = [
+        `*Unka haath thaam kar unki aankhon mein dekho* 'Sirf tumhara sath chahti hoon.'`,
+        `*Kareeb aakar whisper karo* 'Jo main chahti hoon, kya wo de paoge?'`,
+        `*Ek shokhi bhari muskurahat do* 'Pehle yeh batao, kitna chahte ho mujhe?'`
+      ];
+    }
   } else {
+    // English (Strictly English actions, dialogue, and smart replies)
     actionSnippet = englishActions[randomIdx];
-    dialogueSnippet = `"You have no idea what your touch does to my restraint. Every single second you tempt me like this only makes what happens next that much more intense. Don't look away from me now."`;
-    smartReplies = [
-      `*Wrap your arms around his neck and pull him into a deep kiss*`,
-      `*Whisper against his lips* 'I was never planning on walking away.'`,
-      `*Press firmly against his chest with a teasing smirk*`
-    ];
+    if (isTouch) {
+      dialogueSnippet = `"You have no idea what your touch does to my restraint. Every single second you tempt me like this only makes what happens next that much more intense. Don't look away from me now."`;
+      smartReplies = [
+        `*Wrap your arms around their neck and pull them into a deep kiss*`,
+        `*Whisper against their lips* 'I was never planning on walking away.'`,
+        `*Press firmly against their chest with a teasing smirk*`
+      ];
+    } else if (isDefiant) {
+      dialogueSnippet = `"You stand there defiant as ever, thinking you can intimidate me? I admire someone who dares look me in the eye. But remember who you're dealing with... you won't leave this room unchanged."`;
+      smartReplies = [
+        `*Hold their gaze cold and steady* 'I don't bend to anyone, ${charName}.'`,
+        `*Step closer without flinching* 'Then show me what you're really made of.'`,
+        `*Rest a steady hand on their chest* 'Don't mistake courage for foolishness.'`
+      ];
+    } else {
+      dialogueSnippet = `"You have this dangerous way of commanding the entire room just by standing near me. Tell me honestly... what is it that you truly want from me tonight?"`;
+      smartReplies = [
+        `*Step into their personal space* 'Everything you have to give.'`,
+        `*Smile slowly and meet their eyes* 'I want to see what happens when you lose control.'`,
+        `*Trace a finger along their collar* 'Stay right here with me.'`
+      ];
+    }
   }
 
   const replyText = `${actionSnippet}\n\n${dialogueSnippet}`;

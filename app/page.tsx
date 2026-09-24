@@ -16,6 +16,7 @@ export default function HomePage() {
 
   const HOME_CATEGORIES = [
     { id: 'All', label: 'All Stories' },
+    { id: 'TMDb Cinema', label: '🎬 TMDb Cinema' },
     { id: 'Romance', label: '💖 Romance' },
     { id: 'Revenge & Drama', label: '🔥 Revenge & Drama' },
     { id: 'Anime & Fantasy', label: '🎌 Anime & Manga' },
@@ -28,6 +29,9 @@ export default function HomePage() {
 
   const filteredCategoryStories = React.useMemo(() => {
     if (selectedCategory === 'All') return stories;
+    if (selectedCategory === 'TMDb Cinema') {
+      return stories.filter(s => s.tags.some(t => t.toLowerCase().includes('tmdb')) || (s as any).tmdbId);
+    }
     const cat = selectedCategory.toLowerCase();
     return stories.filter((s) => {
       if (selectedCategory === 'Anime & Fantasy') {
