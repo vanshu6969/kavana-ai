@@ -99,8 +99,13 @@ export default function StoryCard({ story, layout = 'grid' }: StoryCardProps) {
           </div>
         </div>
 
+        {/* Mobile Direct Play Badge */}
+        <div className="sm:hidden absolute bottom-2 right-2 w-7 h-7 rounded-full bg-[#FF2E55] flex items-center justify-center text-white shadow-glow-crimson z-10">
+          <Play size={11} className="fill-white ml-0.5" />
+        </div>
+
         {/* Bottom Title inside Image overlay */}
-        <div className="absolute bottom-2 left-2.5 right-2.5">
+        <div className="absolute bottom-2 left-2.5 right-10 sm:right-2.5">
           <h4 className="text-xs sm:text-base font-black text-white tracking-wide truncate group-hover:text-[#FF5C7A] transition-colors drop-shadow-md">
             {story.title}
           </h4>
@@ -116,7 +121,17 @@ export default function StoryCard({ story, layout = 'grid' }: StoryCardProps) {
           {story.summary}
         </p>
 
-        <div className="flex items-center justify-between pt-1.5 sm:pt-2 border-t border-white/[0.06] text-[10px] sm:text-[11px]">
+        {/* Mobile Quick Action Buttons Row */}
+        <div className="sm:hidden flex items-center gap-1.5 mt-1">
+          <span className="flex-1 py-1 rounded-md bg-[#FF2E55] text-white text-[10px] font-bold text-center shadow-sm">
+            ▶ Play
+          </span>
+          <span className="flex-1 py-1 rounded-md bg-white/[0.06] border border-white/10 text-slate-300 text-[10px] font-medium text-center truncate px-1">
+            {story.userRole.split(' ')[0]}
+          </span>
+        </div>
+
+        <div className="hidden sm:flex items-center justify-between pt-1.5 sm:pt-2 border-t border-white/[0.06] text-[10px] sm:text-[11px]">
           <span className="text-slate-400 truncate max-w-[95px] sm:max-w-[170px]">
             You: <strong className="text-slate-200 font-semibold">{story.userRole}</strong>
           </span>

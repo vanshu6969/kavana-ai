@@ -29,7 +29,7 @@ export default function Header() {
               </div>
               <div className="flex flex-col">
                 <span className="font-black text-xl sm:text-2xl tracking-wider text-white font-sans flex items-center gap-1">
-                  AuraFlex<span className="text-[#FF2E55]">.ai</span>
+                  KAVANA<span className="text-[#FF2E55]">.ai</span>
                 </span>
               </div>
             </Link>
