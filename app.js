@@ -411,10 +411,15 @@ function renderExploreFeed() {
           <button class="btn-card-action primary btn-play-story">▶ Play Scenario</button>
           <button class="btn-card-action secondary btn-read-story">📖 Read</button>
         </div>
+        <div class="mobile-poster-play-badge">▶</div>
       </div>
       <div class="story-card-body">
         <h3 class="card-title-text">${story.title}</h3>
         <p class="card-character-sub">${story.characterName || 'Lead Character'} • ${story.category || 'Cinema'}</p>
+        <div class="mobile-card-quick-actions">
+          <button class="mobile-quick-btn play btn-play-story-mobile" type="button">▶ Play</button>
+          <button class="mobile-quick-btn read btn-read-story-mobile" type="button">📖 Read</button>
+        </div>
       </div>
     `;
 
@@ -424,6 +429,16 @@ function renderExploreFeed() {
     });
 
     card.querySelector('.btn-read-story')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openStoryInReader(story);
+    });
+
+    card.querySelector('.btn-play-story-mobile')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      launchScenarioChat(story);
+    });
+
+    card.querySelector('.btn-read-story-mobile')?.addEventListener('click', (e) => {
       e.stopPropagation();
       openStoryInReader(story);
     });
@@ -810,6 +825,57 @@ function renderChatView() {
     if (c.dataset.character === charId) c.classList.add('active');
     else c.classList.remove('active');
   });
+
+  // Populate Mobile Horizontal Companion Strip
+  const mobileRoster = document.getElementById('mobile-chat-roster');
+  if (mobileRoster) {
+    mobileRoster.innerHTML = '';
+
+    // 1. If active scenario exists
+    if (scenario) {
+      const isScenActive = Boolean(state.activeScenario && (charId === scenario.id || charId.startsWith('scenario')));
+      const scenBtn = document.createElement('button');
+      scenBtn.type = 'button';
+      scenBtn.className = `mobile-companion-pill ${isScenActive ? 'active' : ''}`;
+      scenBtn.innerHTML = `
+        <span class="m-avatar-ring">
+          <img src="${scenario.avatar || scenario.cover || 'assets/lucian.jpg'}" alt="${scenario.characterName || 'Scenario'}">
+          <span class="m-live-dot"></span>
+        </span>
+        <span class="m-comp-label">${scenario.characterName ? scenario.characterName.split(' ')[0] : 'Cinema'}</span>
+      `;
+      scenBtn.onclick = () => {
+        launchScenarioChat(scenario);
+      };
+      mobileRoster.appendChild(scenBtn);
+    }
+
+    // 2. Default Companions: Kabir, Valeria, Lucian
+    const defaultComps = [
+      { id: 'kabir', name: 'Kabir', img: CHARACTERS.kabir?.image || 'assets/kabir.jpg' },
+      { id: 'valeria', name: 'Valeria', img: CHARACTERS.valeria?.image || 'assets/valeria.jpg' },
+      { id: 'lucian', name: 'Lucian', img: CHARACTERS.lucian?.image || 'assets/lucian.jpg' }
+    ];
+
+    defaultComps.forEach(comp => {
+      const isCompActive = !state.activeScenario && charId === comp.id;
+      const compBtn = document.createElement('button');
+      compBtn.type = 'button';
+      compBtn.className = `mobile-companion-pill ${isCompActive ? 'active' : ''}`;
+      compBtn.innerHTML = `
+        <span class="m-avatar-ring">
+          <img src="${comp.img}" alt="${comp.name}">
+        </span>
+        <span class="m-comp-label">${comp.name}</span>
+      `;
+      compBtn.onclick = () => {
+        state.activeScenario = null;
+        state.activeChatPartnerId = comp.id;
+        renderChatView();
+      };
+      mobileRoster.appendChild(compBtn);
+    });
+  }
 
   const avatar = document.getElementById('chat-partner-avatar');
   if (avatar) avatar.src = scenario?.avatar || char.image;
