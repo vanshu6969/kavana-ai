@@ -261,37 +261,24 @@
         <!-- Left Companion Roster -->
         <aside class="chat-roster-sidebar">
           <div class="roster-header">
-            <span class="roster-title">Companions</span>
+            <div class="roster-header-top">
+              <span class="roster-title">💬 Conversations</span>
+              <button class="btn-new-chat-pill" id="btn-open-new-chat-modal" type="button" title="Start New Conversation">
+                <span>✦ New Chat</span>
+              </button>
+            </div>
+            <div class="roster-search-wrap">
+              <span class="roster-search-icon">🔍</span>
+              <input type="text" id="roster-search-input" class="roster-search-input" placeholder="Search chats..." autocomplete="off">
+            </div>
           </div>
 
-          <div class="roster-list">
-            <div class="roster-item active" data-character="kabir" id="roster-kabir">
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80" alt="Kabir" class="roster-avatar">
-              <div class="roster-meta">
-                <h4>Kabir Oberoi</h4>
-                <p>🇮🇳 Mumbai Underworld</p>
-              </div>
-            </div>
-
-            <div class="roster-item" data-character="valeria" id="roster-valeria">
-              <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&auto=format&fit=crop&q=80" alt="Valeria" class="roster-avatar">
-              <div class="roster-meta">
-                <h4>Valeria Vane</h4>
-                <p>🔮 Shadow Mage</p>
-              </div>
-            </div>
-
-            <div class="roster-item" data-character="lucian" id="roster-lucian">
-              <img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=500&auto=format&fit=crop&q=80" alt="Prince Lucian" class="roster-avatar">
-              <div class="roster-meta">
-                <h4>Prince Lucian</h4>
-                <p>👑 Royal Scandal</p>
-              </div>
-            </div>
+          <div class="roster-list" id="chat-roster-list">
+            <!-- Dynamically populated from active persistent sessions -->
           </div>
 
           <div class="roster-footer-tip">
-            <span>🌐 Dialect AI: Reply in Punjabi, Hinglish, or English.</span>
+            <span>🌐 Dialect AI: Real-time Hinglish, English, or Punjabi.</span>
           </div>
         </aside>
 
@@ -686,6 +673,29 @@
 
       <div class="modal-actions" style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
         <button class="btn-primary-mini" id="btn-save-settings">Save Preferences</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Browse Companions & Start New Chat -->
+  <div class="modal-backdrop" id="modal-new-chat">
+    <div class="modal-card new-chat-modal-card">
+      <div class="modal-header">
+        <div class="tmdb-modal-title-wrap">
+          <div class="tmdb-badge-pill">✦ VIP COMPANION DIRECTORY</div>
+          <h3>Start a New Roleplay Conversation</h3>
+        </div>
+        <button class="modal-close" id="btn-close-new-chat">&times;</button>
+      </div>
+      <p class="modal-description">
+        Choose any companion or cinema protagonist from the catalog to launch a private interactive chat. All conversations are saved to your active chats.
+      </p>
+      <div class="search-box" style="margin: 0.5rem 0 1rem 0;">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="new-chat-search-input" class="search-input-field" placeholder="Search by companion name, show, or role...">
+      </div>
+      <div class="new-chat-grid" id="new-chat-companions-grid">
+        <!-- Rendered dynamically from stories & characters -->
       </div>
     </div>
   </div>

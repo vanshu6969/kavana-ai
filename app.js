@@ -32,15 +32,137 @@ try {
   console.warn('Could not load custom TMDb stories:', e);
 }
 
+// Persistent Chat Sessions & Message History
+export function getChatSessions() {
+  try {
+    const raw = localStorage.getItem('kavana_chat_sessions');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    console.warn('Error reading chat sessions:', e);
+  }
+  // Default VIP Companions if none started yet
+  return [
+    {
+      id: 'mirzapur-kaleen-bhaiya',
+      name: 'Akhandanand Tripathi (Kaleen Bhaiya)',
+      title: 'Mirzapur: Purvanchal Kingpin',
+      avatar: 'https://image.tmdb.org/t/p/w780/1rxLUFVrtTo82OxhbDXJDiJVkwL.jpg',
+      category: 'Crime & Syndicate',
+      userRole: "Rival Gangster's Enforcer",
+      userGoal: 'Negotiate your survival or dethrone the King of Mirzapur',
+      lastMessage: "Baithiye. Mirzapur ki hawa mein ya toh darr chalta hai, ya Tripathi parivaar ka sikka...",
+      timestamp: Date.now() - 60000 * 5,
+      unread: false
+    },
+    {
+      id: 'queen-of-tears',
+      name: 'Baek Hyun-woo',
+      title: 'Queen of Tears: Chaebol Marriage',
+      avatar: 'https://image.tmdb.org/t/p/w780/dzq83RHwQcnP6WGJ6YkenIqeaa5.jpg',
+      category: 'Romance & Drama',
+      userRole: 'Hong Hae-in (Queens Group Heiress)',
+      userGoal: 'Reignite lost passion or execute your secret divorce strategy',
+      lastMessage: "*Pulls you into the penthouse balcony* Let's stop lying to each other...",
+      timestamp: Date.now() - 60000 * 30,
+      unread: false
+    },
+    {
+      id: 'kabir',
+      name: 'Kabir Oberoi',
+      title: 'The Desi Mafia Don',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80',
+      category: 'Desi Romance & Don',
+      userRole: 'Captive Heiress / Defiant Partner',
+      userGoal: 'Tame the ruthless don',
+      lastMessage: "Tumhe lagta hai tum mere qaid se bach sakti ho? *Smiles dangerously*",
+      timestamp: Date.now() - 60000 * 120,
+      unread: false
+    },
+    {
+      id: 'peaky-blinders',
+      name: 'Thomas Shelby',
+      title: 'Peaky Blinders: Birmingham Empire',
+      avatar: 'https://image.tmdb.org/t/p/w780/hkBaDkMWbLaf8B1rWsKXqgughpw.jpg',
+      category: 'Crime & Syndicate',
+      userRole: 'Undercover Operative / Seductive Informant',
+      userGoal: 'Gain Tommy’s trust or betray the Shelby family',
+      lastMessage: "*Lights a cigarette in the smoke-filled Garrison office* In the bleak midwinter...",
+      timestamp: Date.now() - 60000 * 360,
+      unread: false
+    },
+    {
+      id: 'valeria',
+      name: 'Valeria Vane',
+      title: 'Shadow Mage Dynasty',
+      avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&auto=format&fit=crop&q=80',
+      category: 'Dark Fantasy 18+',
+      userRole: 'Apprentice / Blood Partner',
+      userGoal: 'Unlock forbidden arcana',
+      lastMessage: "*Traces a glowing rune across your palm* Magic requires sacrifice...",
+      timestamp: Date.now() - 60000 * 1440,
+      unread: false
+    }
+  ];
+}
+
+export function saveChatSessions(sessions) {
+  try {
+    localStorage.setItem('kavana_chat_sessions', JSON.stringify(sessions));
+  } catch (e) {
+    console.warn('Error saving chat sessions:', e);
+  }
+}
+
+export function getChatHistory(partnerId) {
+  if (state.chatHistory[partnerId] && state.chatHistory[partnerId].length > 0) {
+    return state.chatHistory[partnerId];
+  }
+  try {
+    const raw = localStorage.getItem(`kavana_chat_hist_${partnerId}`);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        state.chatHistory[partnerId] = parsed;
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.warn('Error loading chat history for', partnerId, e);
+  }
+  return null;
+}
+
+export function saveChatHistory(partnerId, history) {
+  state.chatHistory[partnerId] = history;
+  try {
+    localStorage.setItem(`kavana_chat_hist_${partnerId}`, JSON.stringify(history));
+  } catch (e) {
+    console.warn('Error saving chat history for', partnerId, e);
+  }
+}
+
+function formatChatTime(timestamp) {
+  if (!timestamp) return '';
+  const diff = Date.now() - timestamp;
+  if (diff < 60000) return 'Just now';
+  if (diff < 3600000) return `${Math.floor(diff / 60000)}m`;
+  if (diff < 86400000) return `${Math.floor(diff / 3600000)}h`;
+  return `${Math.floor(diff / 86400000)}d`;
+}
+
 // Application State
+const initialSavedSessions = getChatSessions();
 const state = {
   currentView: 'stories-explore', // Clean modern cinema platform default
   activeLang: localStorage.getItem('kavana_lang') || 'hinglish',
   activeStory: KAVANA_STORIES[0],
-  activeScenario: null,
+  activeScenario: KAVANA_STORIES.find(s => s.id === initialSavedSessions[0]?.id) || initialSavedSessions[0] || KAVANA_STORIES[0],
   searchQuery: '',
   activeChapterId: 'c1',
-  activeChatPartnerId: 'kabir',
+  activeChatPartnerId: localStorage.getItem('kavana_last_chat_id') || initialSavedSessions[0]?.id || 'mirzapur-kaleen-bhaiya',
   credits: parseInt(localStorage.getItem('kavana_coins') || '500', 10),
   activeCategory: 'all',
   
@@ -56,18 +178,9 @@ const state = {
     lucian: { affection: 50, tension: 85, intimacyLevel: '⚡ High Sexual Tension' }
   },
 
-  chatHistory: {
-    kabir: [],
-    valeria: [],
-    lucian: []
-  },
-
-  smartReplies: {
-    kabir: [],
-    valeria: [],
-    lucian: []
-  },
-
+  chatHistory: {},
+  smartReplies: {},
+  isAiTyping: false,
   audioPlaying: false
 };
 
@@ -258,15 +371,45 @@ function updateCoins(delta) {
 // Launch 1:1 Interactive Scenario Chat
 export function launchScenarioChat(story) {
   if (!story) story = KAVANA_STORIES[0];
+  const partnerId = story.id || story.characterId || 'scenario-' + (story.title || 'chat').toLowerCase().replace(/[^a-z0-9]/g, '-');
+  
+  const sessions = getChatSessions();
+  const existingIdx = sessions.findIndex(s => s.id === partnerId);
+  const sessionItem = {
+    id: partnerId,
+    name: story.characterName || story.title,
+    title: story.title,
+    avatar: story.avatar || story.cover || 'assets/lucian.jpg',
+    category: story.category || 'Roleplay Scenario',
+    userRole: story.userRole || 'Protagonist',
+    userGoal: story.userGoal || 'Shape the narrative',
+    lastMessage: story.openingHook ? (story.openingHook.length > 70 ? story.openingHook.slice(0, 67) + '...' : story.openingHook) : 'Roleplay scenario started',
+    timestamp: Date.now(),
+    unread: false
+  };
+
+  if (existingIdx >= 0) {
+    const existing = sessions[existingIdx];
+    sessionItem.lastMessage = existing.lastMessage || sessionItem.lastMessage;
+    sessionItem.timestamp = existing.timestamp || sessionItem.timestamp;
+    sessions.splice(existingIdx, 1);
+    sessions.unshift(sessionItem);
+  } else {
+    sessions.unshift(sessionItem);
+  }
+  saveChatSessions(sessions);
+
+  state.activeChatPartnerId = partnerId;
   state.activeScenario = story;
   state.activeStory = story;
-  const partnerId = story.id || story.characterId || 'scenario-' + Date.now();
-  state.activeChatPartnerId = partnerId;
+  try { localStorage.setItem('kavana_last_chat_id', partnerId); } catch(e){}
 
-  // Initialize chat history for this specific scenario
-  if (!state.chatHistory[partnerId] || state.chatHistory[partnerId].length === 0) {
+  // Initialize chat history for this specific scenario from storage or hook
+  let history = getChatHistory(partnerId);
+  if (!history || history.length === 0) {
     const greeting = story.openingHook || "*Smiles at you.* Hello.";
-    state.chatHistory[partnerId] = [{ sender: 'ai', text: greeting }];
+    history = [{ sender: 'ai', text: greeting, time: Date.now() }];
+    saveChatHistory(partnerId, history);
   }
 
   // Initialize smart replies
@@ -764,12 +907,286 @@ function renderStoryReader() {
   }
 }
 
+// Persistent Multi-Session Chat Controller
+
+export function switchChatSession(sessionId) {
+  if (!sessionId) return;
+  const sessions = getChatSessions();
+  const session = sessions.find(s => s.id === sessionId);
+  const matchedStory = KAVANA_STORIES.find(s => s.id === sessionId);
+  const char = CHARACTERS[sessionId];
+
+  state.activeChatPartnerId = sessionId;
+
+  if (matchedStory) {
+    state.activeScenario = matchedStory;
+    state.activeStory = matchedStory;
+  } else if (session) {
+    state.activeScenario = {
+      id: session.id,
+      title: session.title || session.name,
+      characterName: session.name,
+      avatar: session.avatar,
+      category: session.category,
+      userRole: session.userRole || 'Protagonist',
+      userGoal: session.userGoal || 'Shape the narrative',
+      openingHook: session.lastMessage
+    };
+  } else if (char) {
+    state.activeScenario = {
+      id: sessionId,
+      title: char.title || char.name,
+      characterName: char.name,
+      avatar: char.image,
+      category: char.archetype,
+      userRole: 'Partner',
+      userGoal: 'Shape the narrative turn-by-turn',
+      openingHook: char.greetings?.[state.activeLang] || char.greetings?.['hinglish'] || char.greetings?.['en']
+    };
+  }
+
+  try { localStorage.setItem('kavana_last_chat_id', sessionId); } catch(e){}
+  renderChatView();
+}
+
+export function deleteChatSession(sessionId, e) {
+  if (e) e.stopPropagation();
+  let sessions = getChatSessions();
+  sessions = sessions.filter(s => s.id !== sessionId);
+  saveChatSessions(sessions);
+
+  // If deleted session was active, switch to next available or default
+  if (state.activeChatPartnerId === sessionId) {
+    if (sessions.length > 0) {
+      switchChatSession(sessions[0].id);
+    } else {
+      const defaults = getChatSessions();
+      saveChatSessions(defaults);
+      switchChatSession(defaults[0].id);
+    }
+  } else {
+    renderChatRoster();
+  }
+  showToast({ title: 'Chat Removed', message: 'Conversation removed from active list.', type: 'info' });
+}
+
+export function openNewChatModal() {
+  const modal = document.getElementById('modal-new-chat');
+  if (modal) {
+    modal.classList.add('active');
+    renderNewChatDirectory('');
+    const searchInput = document.getElementById('new-chat-search-input');
+    if (searchInput) {
+      searchInput.value = '';
+      setTimeout(() => searchInput.focus(), 80);
+    }
+  }
+}
+
+export function closeNewChatModal() {
+  document.getElementById('modal-new-chat')?.classList.remove('active');
+}
+
+export function renderNewChatDirectory(filterText = '') {
+  const container = document.getElementById('new-chat-companions-grid');
+  if (!container) return;
+
+  const query = (filterText || '').toLowerCase().trim();
+  const items = [];
+  const seenIds = new Set();
+
+  // 1. Add all KAVANA_STORIES (48+ cinema, romance, mafia, thriller)
+  KAVANA_STORIES.forEach(story => {
+    if (!story.id || seenIds.has(story.id)) return;
+    seenIds.add(story.id);
+    items.push({
+      id: story.id,
+      name: story.characterName || story.title,
+      title: story.title,
+      avatar: story.avatar || story.cover || 'assets/lucian.jpg',
+      category: story.category || 'Cinema Scenario',
+      role: story.userRole || 'Protagonist',
+      goal: story.userGoal || 'Shape the narrative',
+      storyObj: story
+    });
+  });
+
+  // Filter items
+  const filtered = query 
+    ? items.filter(it => 
+        it.name.toLowerCase().includes(query) ||
+        it.title.toLowerCase().includes(query) ||
+        it.category.toLowerCase().includes(query) ||
+        it.role.toLowerCase().includes(query)
+      )
+    : items;
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem; color: var(--kavana-text-dim);">
+        <p style="font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--kavana-text-main);">No companions found matching "${query}"</p>
+        <span style="font-size: 0.85rem;">Try searching for "Mirzapur", "Queen of Tears", "Mafia", "Romance", or "Boss"</span>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(item => `
+    <div class="new-chat-card" data-companion-id="${item.id}">
+      <img src="${item.avatar}" alt="${item.name}" class="new-chat-avatar" loading="lazy">
+      <div class="new-chat-info">
+        <h4 class="new-chat-name">${item.name}</h4>
+        <div class="new-chat-title">🎬 ${item.title}</div>
+        <div class="new-chat-category">${item.category}</div>
+        <div style="font-size: 0.75rem; color: var(--kavana-text-dim); margin-top: 0.25rem;">
+          Role: <strong style="color: var(--kavana-gold);">${item.role}</strong>
+        </div>
+      </div>
+      <button class="btn-primary-mini" style="font-size: 0.75rem; padding: 0.35rem 0.75rem; border-radius: 9999px;">
+        Start ➔
+      </button>
+    </div>
+  `).join('');
+
+  // Bind click handlers to cards
+  container.querySelectorAll('.new-chat-card').forEach(card => {
+    card.onclick = () => {
+      const cId = card.dataset.companionId;
+      const matched = items.find(it => it.id === cId);
+      if (matched && matched.storyObj) {
+        closeNewChatModal();
+        launchScenarioChat(matched.storyObj);
+      }
+    };
+  });
+}
+
+export function renderChatRoster(filterText = '') {
+  const rosterList = document.getElementById('chat-roster-list');
+  const sessions = getChatSessions();
+  const query = (filterText || '').toLowerCase().trim();
+
+  // 1. Render Left Sidebar Desktop Roster
+  if (rosterList) {
+    rosterList.innerHTML = '';
+    const filtered = query
+      ? sessions.filter(s => 
+          s.name.toLowerCase().includes(query) || 
+          (s.title && s.title.toLowerCase().includes(query)) ||
+          (s.lastMessage && s.lastMessage.toLowerCase().includes(query))
+        )
+      : sessions;
+
+    if (filtered.length === 0) {
+      rosterList.innerHTML = `
+        <div style="padding: 2rem 1rem; text-align: center; color: var(--kavana-text-dim); font-size: 0.85rem;">
+          No matching chats found.<br>
+          <button class="btn-new-chat-pill" id="btn-empty-new-chat" style="margin-top: 0.75rem;" type="button">
+            ✦ Browse Companions
+          </button>
+        </div>
+      `;
+      document.getElementById('btn-empty-new-chat')?.addEventListener('click', openNewChatModal);
+    } else {
+      filtered.forEach(session => {
+        const isActive = session.id === state.activeChatPartnerId;
+        const item = document.createElement('div');
+        item.className = `roster-item ${isActive ? 'active' : ''} ${session.unread ? 'unread' : ''}`;
+        item.dataset.character = session.id;
+
+        const timeStr = formatChatTime(session.timestamp);
+        const lastMsgClean = (session.lastMessage || '').replace(/\*(.*?)\*/g, '$1');
+
+        item.innerHTML = `
+          <div class="roster-avatar-wrap">
+            <img src="${session.avatar}" alt="${session.name}" class="roster-avatar" loading="lazy">
+            <span class="online-status-dot"></span>
+          </div>
+          <div class="roster-meta">
+            <div class="roster-meta-top">
+              <span class="roster-meta-name">${session.name}</span>
+              <span class="roster-time">${timeStr}</span>
+            </div>
+            <div class="roster-meta-sub">
+              <span class="roster-last-msg">${lastMsgClean}</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.25rem;">
+              <span class="roster-cinema-tag">🎬 ${session.title ? (session.title.length > 22 ? session.title.slice(0, 20) + '...' : session.title) : 'Scenario'}</span>
+              <button class="btn-delete-session" title="Remove conversation" data-id="${session.id}">×</button>
+            </div>
+          </div>
+        `;
+
+        item.onclick = (e) => {
+          if (e.target.closest('.btn-delete-session')) return;
+          switchChatSession(session.id);
+        };
+
+        const delBtn = item.querySelector('.btn-delete-session');
+        if (delBtn) {
+          delBtn.onclick = (e) => {
+            e.stopPropagation();
+            deleteChatSession(session.id, e);
+          };
+        }
+
+        rosterList.appendChild(item);
+      });
+    }
+  }
+
+  // 2. Populate Mobile Horizontal Companion Strip
+  const mobileRoster = document.getElementById('mobile-chat-roster');
+  if (mobileRoster) {
+    mobileRoster.innerHTML = '';
+
+    // "+ New" quick action button in mobile strip
+    const newBtn = document.createElement('button');
+    newBtn.type = 'button';
+    newBtn.className = 'mobile-companion-pill add-new';
+    newBtn.innerHTML = `
+      <span class="m-avatar-ring" style="border-style: dashed; border-color: var(--kavana-gold); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--kavana-gold);">
+        +
+      </span>
+      <span class="m-comp-label" style="color: var(--kavana-gold);">New</span>
+    `;
+    newBtn.onclick = openNewChatModal;
+    mobileRoster.appendChild(newBtn);
+
+    // Render active sessions
+    sessions.forEach(session => {
+      const isActive = session.id === state.activeChatPartnerId;
+      const pill = document.createElement('button');
+      pill.type = 'button';
+      pill.className = `mobile-companion-pill ${isActive ? 'active' : ''}`;
+      
+      const shortName = session.name.split(' ')[0] || session.title.split(' ')[0];
+
+      pill.innerHTML = `
+        <span class="m-avatar-ring">
+          <img src="${session.avatar}" alt="${session.name}">
+          <span class="m-live-dot"></span>
+        </span>
+        <span class="m-comp-label">${shortName}</span>
+      `;
+
+      pill.onclick = () => {
+        switchChatSession(session.id);
+      };
+
+      mobileRoster.appendChild(pill);
+    });
+  }
+}
+
 // Render Chat View
 function renderChatView() {
-  const scenario = state.activeScenario;
+  const sessions = getChatSessions();
   const charId = state.activeChatPartnerId;
+  const currentSession = sessions.find(s => s.id === charId);
+  const scenario = state.activeScenario || currentSession;
   const char = CHARACTERS[charId] || {
-    name: scenario?.characterName || 'Companion',
+    name: scenario?.characterName || scenario?.name || 'Companion',
     image: scenario?.avatar || 'assets/lucian.jpg',
     archetype: scenario?.category || 'Roleplay Scenario',
     greetings: { en: scenario?.openingHook || '*Smiles.* Hello.' }
@@ -786,105 +1203,27 @@ function renderChatView() {
   }
   const charState = state.characterState[charId];
 
-  // Initialize chat history
-  if (!state.chatHistory[charId] || state.chatHistory[charId].length === 0) {
+  // Load chat history from persistent storage or initialize
+  let history = getChatHistory(charId);
+  if (!history || history.length === 0) {
     const greeting = scenario?.openingHook || char.greetings?.[lang] || char.greetings?.['hinglish'] || char.greetings?.['en'] || '*Smiles at you.* Hello.';
-    state.chatHistory[charId] = [{ sender: 'ai', text: greeting }];
+    history = [{ sender: 'ai', text: greeting, time: Date.now() }];
+    saveChatHistory(charId, history);
   }
+  state.chatHistory[charId] = history;
 
-  // Dynamic Roster Item for Active Story Scenario
-  const rosterList = document.querySelector('.roster-list');
-  let activeScenarioRoster = document.getElementById('roster-active-scenario');
-  if (scenario) {
-    if (!activeScenarioRoster && rosterList) {
-      activeScenarioRoster = document.createElement('div');
-      activeScenarioRoster.id = 'roster-active-scenario';
-      activeScenarioRoster.className = 'roster-item';
-      rosterList.insertBefore(activeScenarioRoster, rosterList.firstChild);
-    }
-    if (activeScenarioRoster) {
-      activeScenarioRoster.style.display = 'flex';
-      activeScenarioRoster.dataset.character = charId;
-      activeScenarioRoster.innerHTML = `
-        <img src="${scenario.avatar || scenario.cover || 'assets/lucian.jpg'}" alt="${scenario.characterName || 'Character'}" class="roster-avatar">
-        <div class="roster-meta">
-          <h4>${scenario.characterName || scenario.title}</h4>
-          <p>🎬 ${scenario.title}</p>
-        </div>
-      `;
-      activeScenarioRoster.onclick = () => {
-        launchScenarioChat(scenario);
-      };
-    }
-  } else if (activeScenarioRoster) {
-    activeScenarioRoster.style.display = 'none';
-  }
+  // Update Roster Sidebar and Mobile Strip
+  renderChatRoster();
 
-  // Update active roster item if matching
-  document.querySelectorAll('.roster-item').forEach(c => {
-    if (c.dataset.character === charId) c.classList.add('active');
-    else c.classList.remove('active');
-  });
-
-  // Populate Mobile Horizontal Companion Strip
-  const mobileRoster = document.getElementById('mobile-chat-roster');
-  if (mobileRoster) {
-    mobileRoster.innerHTML = '';
-
-    // 1. If active scenario exists
-    if (scenario) {
-      const isScenActive = Boolean(state.activeScenario && (charId === scenario.id || charId.startsWith('scenario')));
-      const scenBtn = document.createElement('button');
-      scenBtn.type = 'button';
-      scenBtn.className = `mobile-companion-pill ${isScenActive ? 'active' : ''}`;
-      scenBtn.innerHTML = `
-        <span class="m-avatar-ring">
-          <img src="${scenario.avatar || scenario.cover || 'assets/lucian.jpg'}" alt="${scenario.characterName || 'Scenario'}">
-          <span class="m-live-dot"></span>
-        </span>
-        <span class="m-comp-label">${scenario.characterName ? scenario.characterName.split(' ')[0] : 'Cinema'}</span>
-      `;
-      scenBtn.onclick = () => {
-        launchScenarioChat(scenario);
-      };
-      mobileRoster.appendChild(scenBtn);
-    }
-
-    // 2. Default Companions: Kabir, Valeria, Lucian
-    const defaultComps = [
-      { id: 'kabir', name: 'Kabir', img: CHARACTERS.kabir?.image || 'assets/kabir.jpg' },
-      { id: 'valeria', name: 'Valeria', img: CHARACTERS.valeria?.image || 'assets/valeria.jpg' },
-      { id: 'lucian', name: 'Lucian', img: CHARACTERS.lucian?.image || 'assets/lucian.jpg' }
-    ];
-
-    defaultComps.forEach(comp => {
-      const isCompActive = !state.activeScenario && charId === comp.id;
-      const compBtn = document.createElement('button');
-      compBtn.type = 'button';
-      compBtn.className = `mobile-companion-pill ${isCompActive ? 'active' : ''}`;
-      compBtn.innerHTML = `
-        <span class="m-avatar-ring">
-          <img src="${comp.img}" alt="${comp.name}">
-        </span>
-        <span class="m-comp-label">${comp.name}</span>
-      `;
-      compBtn.onclick = () => {
-        state.activeScenario = null;
-        state.activeChatPartnerId = comp.id;
-        renderChatView();
-      };
-      mobileRoster.appendChild(compBtn);
-    });
-  }
-
+  // Update Main Chat Pane Header
   const avatar = document.getElementById('chat-partner-avatar');
   if (avatar) avatar.src = scenario?.avatar || char.image;
 
   const nameEl = document.getElementById('chat-partner-name');
-  if (nameEl) nameEl.textContent = scenario?.characterName || char.name;
+  if (nameEl) nameEl.textContent = scenario?.characterName || scenario?.name || char.name;
 
   const archEl = document.getElementById('chat-partner-archetype');
-  if (archEl) archEl.textContent = scenario ? `${scenario.title}` : `${char.archetype} • 18+ Uncensored`;
+  if (archEl) archEl.textContent = scenario?.title ? `🎬 ${scenario.title}` : `${char.archetype} • 18+ Uncensored`;
 
   const intTag = document.getElementById('chat-intimacy-tag');
   if (intTag) intTag.textContent = charState.intimacyLevel;
@@ -895,15 +1234,9 @@ function renderChatView() {
   const roleUserGoal = document.getElementById('chat-role-user-goal');
 
   if (roleBanner && roleUserTitle && roleUserGoal) {
-    if (scenario) {
-      roleBanner.style.display = 'flex';
-      roleUserTitle.textContent = scenario.userRole || 'Protagonist';
-      roleUserGoal.textContent = scenario.userGoal ? `Goal: ${scenario.userGoal}` : 'Goal: Shape the narrative';
-    } else {
-      roleBanner.style.display = 'flex';
-      roleUserTitle.textContent = 'Partner';
-      roleUserGoal.textContent = 'Goal: Shape the narrative turn-by-turn';
-    }
+    roleBanner.style.display = 'flex';
+    roleUserTitle.textContent = scenario?.userRole || 'Protagonist';
+    roleUserGoal.textContent = scenario?.userGoal ? `Goal: ${scenario.userGoal}` : 'Goal: Shape the narrative';
   }
 
   const activePrompts = state.smartReplies[charId]?.length 
@@ -913,12 +1246,10 @@ function renderChatView() {
   const area = document.getElementById('chat-messages-area');
   if (area) {
     area.innerHTML = '';
-    const history = state.chatHistory[charId] || [];
-
-    history.forEach((msg, idx) => {
+    history.forEach((msg) => {
       const bubble = document.createElement('div');
       bubble.className = `chat-bubble ${msg.sender}`;
-      let text = msg.text.replace(/\*(.*?)\*/g, '<em>*$1*</em>');
+      let text = (msg.text || '').replace(/\*(.*?)\*/g, '<em>*$1*</em>');
       bubble.innerHTML = text;
       area.appendChild(bubble);
     });
@@ -981,12 +1312,27 @@ async function sendChatMessage(text) {
   playChime(480);
 
   const charId = state.activeChatPartnerId;
-  if (!state.chatHistory[charId]) state.chatHistory[charId] = [];
+  let history = getChatHistory(charId) || [];
 
-  state.chatHistory[charId].push({ sender: 'user', text: text.trim() });
+  const userMsg = { sender: 'user', text: text.trim(), time: Date.now() };
+  history.push(userMsg);
+  saveChatHistory(charId, history);
+
+  // Update session's lastMessage and timestamp
+  const sessions = getChatSessions();
+  const session = sessions.find(s => s.id === charId);
+  if (session) {
+    session.lastMessage = text.trim();
+    session.timestamp = Date.now();
+    const sIdx = sessions.indexOf(session);
+    sessions.splice(sIdx, 1);
+    sessions.unshift(session);
+    saveChatSessions(sessions);
+  }
+
   renderChatView();
 
-  const partnerName = state.activeScenario?.characterName || CHARACTERS[charId]?.name || 'Companion';
+  const partnerName = state.activeScenario?.characterName || state.activeScenario?.name || CHARACTERS[charId]?.name || 'Companion';
   const area = document.getElementById('chat-messages-area');
   const typing = document.createElement('div');
   typing.className = 'chat-bubble ai';
@@ -998,7 +1344,7 @@ async function sendChatMessage(text) {
     const aiResponse = await generateAIChatReply(
       charId,
       text,
-      state.chatHistory[charId],
+      history,
       state.activeLang,
       state.characterState[charId],
       state.activeScenario
@@ -1011,7 +1357,19 @@ async function sendChatMessage(text) {
     state.characterState[charId].intimacyLevel = aiResponse.intimacyLevel;
     state.smartReplies[charId] = aiResponse.smartReplies || [];
 
-    state.chatHistory[charId].push({ sender: 'ai', text: aiResponse.replyText });
+    const aiMsg = { sender: 'ai', text: aiResponse.replyText, time: Date.now() };
+    history.push(aiMsg);
+    saveChatHistory(charId, history);
+
+    // Update session with AI reply
+    const updatedSessions = getChatSessions();
+    const updatedSession = updatedSessions.find(s => s.id === charId);
+    if (updatedSession) {
+      updatedSession.lastMessage = aiResponse.replyText;
+      updatedSession.timestamp = Date.now();
+      saveChatSessions(updatedSessions);
+    }
+
     renderChatView();
     playChime(700);
   } catch (err) {
@@ -1163,15 +1521,25 @@ function initApp() {
   document.getElementById('btn-restart-chat-scenario')?.addEventListener('click', () => {
     const charId = state.activeChatPartnerId;
     const scenario = state.activeScenario;
-    if (scenario) {
-      state.chatHistory[charId] = [{ sender: 'ai', text: scenario.openingHook }];
-      state.smartReplies[charId] = scenario.smartReplies || [];
-    } else {
+    let greeting = scenario?.openingHook || "*Smiles at you.* Hello.";
+    if (!scenario) {
       const char = CHARACTERS[charId] || CHARACTERS.kabir;
-      const greeting = char.greetings?.[state.activeLang] || char.greetings?.['hinglish'] || '*Smiles.* Hello.';
-      state.chatHistory[charId] = [{ sender: 'ai', text: greeting }];
-      state.smartReplies[charId] = [];
+      greeting = char.greetings?.[state.activeLang] || char.greetings?.['hinglish'] || '*Smiles.* Hello.';
     }
+    const resetMsg = [{ sender: 'ai', text: greeting, time: Date.now() }];
+    state.chatHistory[charId] = resetMsg;
+    saveChatHistory(charId, resetMsg);
+    state.smartReplies[charId] = scenario?.smartReplies || [];
+
+    // Update session lastMessage
+    const sessions = getChatSessions();
+    const session = sessions.find(s => s.id === charId);
+    if (session) {
+      session.lastMessage = greeting;
+      session.timestamp = Date.now();
+      saveChatSessions(sessions);
+    }
+
     renderChatView();
     showToast({ title: 'Scenario Restarted', message: 'Narrative reset to initial opening hook.', type: 'info' });
   });
@@ -1236,21 +1604,19 @@ function initApp() {
     });
   });
 
-  // Chat Roster
-  document.getElementById('roster-kabir')?.addEventListener('click', () => {
-    state.activeScenario = null;
-    state.activeChatPartnerId = 'kabir';
-    renderChatView();
+  // New Chat Modal & Companion Directory
+  document.getElementById('btn-open-new-chat-modal')?.addEventListener('click', openNewChatModal);
+  document.getElementById('btn-close-new-chat')?.addEventListener('click', closeNewChatModal);
+  document.getElementById('modal-new-chat')?.addEventListener('click', (e) => {
+    if (e.target.id === 'modal-new-chat') closeNewChatModal();
   });
-  document.getElementById('roster-valeria')?.addEventListener('click', () => {
-    state.activeScenario = null;
-    state.activeChatPartnerId = 'valeria';
-    renderChatView();
+  document.getElementById('new-chat-search-input')?.addEventListener('input', (e) => {
+    renderNewChatDirectory(e.target.value);
   });
-  document.getElementById('roster-lucian')?.addEventListener('click', () => {
-    state.activeScenario = null;
-    state.activeChatPartnerId = 'lucian';
-    renderChatView();
+
+  // Chat Roster Search Filter
+  document.getElementById('roster-search-input')?.addEventListener('input', (e) => {
+    renderChatRoster(e.target.value);
   });
 
   // Chat Form
