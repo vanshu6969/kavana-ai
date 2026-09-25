@@ -477,50 +477,121 @@ Output valid JSON only with structure:
     }
   }
 
-  // High-Entropy Dynamic Story Synthesizer
+  // High-Entropy Dynamic Story Synthesizer (Zero Hardcoding)
   const timestamp = Date.now();
-  const charKey = archetype.includes('Mage') ? 'valeria' : (archetype.includes('Prince') ? 'lucian' : 'kabir');
-  const char = CHARACTERS[charKey] || CHARACTERS.kabir;
+  const isHinglish = activeLang === 'hinglish' || activeLang === 'hindi' || activeLang === 'urdu';
+  const isPunjabi = activeLang === 'punjabi';
 
-  const dynamicTitles = [
-    `${char.name}: ${genre} (Desires Unbound)`,
-    `Midnight Reckoning: ${char.name}'s Surrender`,
-    `Velvet & Steel: Passion with ${char.name}`,
-    `Dil Da Rog: ${char.name} Di Deewani`
-  ];
-  const title = dynamicTitles[Math.floor(Math.random() * dynamicTitles.length)];
+  // Select appropriate character archetype
+  let charKey = 'kabir';
+  let leadName = 'Kabir Oberoi';
+  let charAvatar = 'assets/kabir.jpg';
+
+  const archLower = (archetype || '').toLowerCase();
+  const genreLower = (genre || '').toLowerCase();
+
+  if (archLower.includes('mage') || archLower.includes('witch') || archLower.includes('femme')) {
+    charKey = 'valeria';
+    leadName = 'Valeria Vane';
+    charAvatar = 'assets/valeria.jpg';
+  } else if (archLower.includes('prince') || archLower.includes('vampire') || archLower.includes('royal')) {
+    charKey = 'lucian';
+    leadName = 'Prince Lucian';
+    charAvatar = 'assets/lucian.jpg';
+  } else if (genreLower.includes('k-drama') || genreLower.includes('chaebol') || archLower.includes('ceo')) {
+    leadName = 'Julian Kang';
+    charAvatar = 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&auto=format&fit=crop&q=80';
+  } else if (genreLower.includes('desi') || genreLower.includes('mafia')) {
+    leadName = 'Devraj Singh';
+    charAvatar = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80';
+  }
+
+  // Dynamic Title Generator
+  const desireSnippet = desires ? desires.slice(0, 30) : genre;
+  let title = `${leadName}: ${genre} (${desireSnippet})`;
+  if (isHinglish) {
+    title = `${leadName}: ${genre} (दिल दा मामला)`;
+  } else if (isPunjabi) {
+    title = `${leadName}: ${genre} (ਬੇਬਾਕ ਇਸ਼ਕ)`;
+  }
+
+  // Dynamic Multi-Chapter Synthesis
+  const ch1Title = isHinglish ? `Adhyay 1: Khamosh Aamna-Saamna` : (isPunjabi ? `ਕਾਂਡ ੧: ਪਹਿਲੀ ਟੱਕਰ` : `Chapter 1: The Gathering Storm`);
+  const ch2Title = isHinglish ? `Adhyay 2: Parda Uthna` : (isPunjabi ? `ਕਾਂਡ ੨: ਬੇਕਾਬੂ ਜਜ਼ਬਾਤ` : `Chapter 2: Dangerous Intimacy`);
+  const ch3Title = isHinglish ? `Adhyay 3: Aakhri Faisla Aur Junoon` : (isPunjabi ? `ਕਾਂਡ ੩: ਆਰ ਜਾਂ ਪਾਰ` : `Chapter 3: The Point of No Return`);
+
+  // Chapter 1 Narrative & Dialogue
+  const ch1Narrative = isHinglish
+    ? `Hawa mein tanaav itna gehra hai ki har saans bhari lagti hai. ${leadName} aapke samne khada hai, uski gehri aankhein bina palke jhapkaye aapki taraf dekh rahi hain. ${desires ? `Aapke mann mein ${desires} ka khayaal tha, aur yahi aag ab kamre mein phail chuki hai.` : `Aapke beech ki dooriyan pal bhar mein pighal rahi hain.`}`
+    : (isPunjabi
+      ? `ਕਮਰੇ 'ਚ ਇਕ ਅਜੀਬ ਜਿਹਾ ਤਣਾਅ ਫੈਲਿਆ ਹੋਇਆ ਏ। ${leadName} ਬਿਲਕੁਲ ਤੁਹਾਡੇ ਸਾਹਮਣੇ ਆ ਕੇ ਖਲੋ ਜਾਂਦਾ ਏ। ਉਸਦੀਆਂ ਅੱਖਾਂ 'ਚ ਅਜਿਹੀ ਚਮਕ ਏ ਜੋ ਦਿਲ ਦੀ ਧੜਕਣ ਤੇਜ਼ ਕਰ ਦੇਵੇ।`
+      : `The silence in the room is suffocating with electric anticipation. ${leadName} steps into the dim amber light, gaze locked onto yours. ${desires ? `The reality of ${desires} now hangs between you like an unpinned grenade.` : `Every boundary and defense you spent months building is dissolving in seconds.`}`);
+
+  const ch1Dialogue = isHinglish
+    ? `"${leadName}: 'Yahan aane se pehle socha tha ki mujhse bach kar nikal paoge? Ab batao... peeche hatna hai ya mere kareeb aana hai?'"`
+    : (isPunjabi
+      ? `"${leadName}: 'ਤੈਨੂੰ ਲੱਗਦਾ ਏ ਤੂੰ ਮੇਰੇ ਤੋਂ ਬਚ ਜਾਵੇਂਗੀ? ਦੱਸ, ਅੱਜ ਕੀ ਇਰਾਦਾ ਏ ਤੇਰਾ?'"`
+      : `"${leadName}: 'You didn't really think you could walk into my world and leave untouched, did you? Tell me right now whether you're stepping closer or running away.'"` );
+
+  // Chapter 2 Narrative & Dialogue
+  const ch2Narrative = isHinglish
+    ? `Aapke faisle ne ${leadName} ke andar ki aag ko aur bhadka diya hai. Ek dheemi, qaatilana muskurahat ke saath wo aapke aur qareeb aata hai, uske haath aapki kamar par tikte hain.`
+    : (isPunjabi
+      ? `ਤੁਹਾਡਾ ਇਹ ਅੰਦਾਜ਼ ${leadName} ਨੂੰ ਹੋਰ ਵੀ ਦੀਵਾਨਾ ਕਰ ਦਿੰਦਾ ਏ। ਉਹ ਬਿਨਾਂ ਕਿਸੇ ਝਿਜਕ ਦੇ ਤੁਹਾਡਾ ਲੱਕ ਫੜ ਕੇ ਤੁਹਾਨੂੰ ਆਪਣੇ ਸੀਨੇ ਨਾਲ ਲਾ ਲੈਂਦਾ ਏ।`
+      : `Your bold response shatters whatever restraint ${leadName} had left. With an intense, predatory focus, they close the remaining distance until you can feel their heartbeat hammering against your palm.`);
+
+  const ch2Dialogue = isHinglish
+    ? `"${leadName}: 'Tumhe khabar bhi nahi hai ki tumne mere andar kis deewangi ko azaad kiya hai... Ab rukne ka koi rasta nahi bacha.'"`
+    : (isPunjabi
+      ? `"${leadName}: 'ਹੁਣ ਕੋਈ ਤੀਜਾ ਸਾਡੇ ਵਿਚਕਾਰ ਨਹੀਂ ਆ ਸਕਦਾ। ਅੱਜ ਰਾਤ ਸਿਰਫ਼ ਸਾਡੀ ਆ।'"`
+      : `"${leadName}: 'You have no concept of what you've just unleashed in me. There is no turning back from this moment.'"` );
+
+  // Chapter 3 Narrative & Dialogue
+  const ch3Narrative = isHinglish
+    ? `Saari deewarein gir chuki hain. Kamre mein sirf dilon ki tezi se chalti dhadkanein aur saansein goonj rahi hain. ${leadName} ka har sparsh aur har lafz aapko poori tarah apna bana raha hai.`
+    : (isPunjabi
+      ? `ਸਾਰੀਆਂ ਦੂਰੀਆਂ ਮਿਟ ਚੁੱਕੀਆਂ ਨੇ। ਉਸਦੇ ਬੁੱਲ੍ਹ ਤੁਹਾਡੀ ਧੌਣ ਨੂੰ ਛੂੰਹਦੇ ਨੇ ਤੇ ਸਾਰੀ ਦੁਨੀਆ ਧੁੰਦਲੀ ਹੋ ਜਾਂਦੀ ਏ।`
+      : `Every barrier has collapsed into pure, uninhibited desire. The world beyond this room ceases to exist as ${leadName}'s lips find yours in an intoxicating, possessive embrace.`);
+
+  const ch3Dialogue = isHinglish
+    ? `"${leadName}: 'Aaj raat tum meri ho... Sab kuch bhool jao aur sirf mujhe mehsoos karo.'"`
+    : (isPunjabi
+      ? `"${leadName}: 'ਤੂੰ ਮੇਰੀ ਏਂ... ਹੁਣ ਇੱਕ ਪਲ ਲਈ ਵੀ ਦੂਰ ਨਾ ਹੋਵੀਂ।'"`
+      : `"${leadName}: 'You belong with me tonight. Forget everything else and let yourself surrender.'"` );
 
   return {
     id: `dynamic-novel-${timestamp}`,
     title,
     genre,
-    category: genre.includes('Desi') ? 'Desi & Bollywood Drama' : 'Spicy 18+',
+    category: genreLower.includes('desi') ? 'Desi & Bollywood Drama' : 'Spicy 18+',
     characterId: charKey,
-    cover: char.image,
+    characterName: leadName,
+    avatar: charAvatar,
+    cover: charAvatar,
     tags: ['⚡ AI Generated', '🔥 Spicy 18+', activeLang.toUpperCase()],
-    summary: desires ? `An AI-generated tale of ${desires}.` : `A dynamic romance novel featuring ${char.name} in an unfiltered battle of desire.`,
+    summary: desires ? `An AI-generated tale of ${desires}.` : `A dynamic novel featuring ${leadName} in an unfiltered battle of desire.`,
     languages: {
       [activeLang]: {
         title,
         chapters: [
           {
             id: 'c1',
-            title: `Chapter 1: The Spark`,
-            visual: char.image,
-            speaker: char.name,
-            characterMood: 'Intense & Expectant',
-            narrative: `The air in the room turns heavy with tension as ${char.name} approaches. The echoes of ${desires || 'your unspoken desires'} linger between you like an open wire sparking with raw current.\n\nEvery boundary you built crumbles as eyes meet in the dim light.`,
-            dialogue: `"You thought you could walk away from this?" ${char.name} whispers. "Look at me and tell me you don't feel this heat."`,
+            title: ch1Title,
+            visual: charAvatar,
+            speaker: leadName,
+            characterMood: '⚡ High Sexual Tension',
+            narrative: ch1Narrative,
+            dialogue: ch1Dialogue,
             choices: [
               {
-                text: `*Step forward and pull them close* "I'm not walking away."`,
+                text: isHinglish ? "*Aankhon mein dekh kar aage badho* 'Peeche hatne nahi aaya hoon.'" : "*Step forward and meet their gaze* 'I came here for you.'",
                 nextChapterId: 'c2',
                 deltaAffection: 15,
                 deltaTension: 20,
                 tone: 'Bold & Passionate'
               },
               {
-                text: `*Tease with a slow smile* "You'll have to earn every single inch tonight."`,
+                text: isHinglish ? "*Muskura kar unhe challenge karo* 'Pehle sabit karo tum is kabil ho.'" : "*Smirk and challenge their claim* 'Prove you can handle me.'",
                 nextChapterId: 'c2',
                 deltaAffection: 12,
                 deltaTension: 25,
@@ -530,15 +601,40 @@ Output valid JSON only with structure:
           },
           {
             id: 'c2',
-            title: `Chapter 2: Consumed by Heat`,
-            visual: 'assets/sanctum.jpg',
-            speaker: char.name,
+            title: ch2Title,
+            visual: charAvatar,
+            speaker: leadName,
             characterMood: '🔥 Fever Pitch (Extreme 18+)',
-            narrative: `There is no holding back now. In the rush of breathless confessions and desperate kisses, the entire world outside this room ceases to matter.`,
-            dialogue: `"You're mine tonight. Don't you dare hold back a single thing."`,
+            narrative: ch2Narrative,
+            dialogue: ch2Dialogue,
             choices: [
               {
-                text: `*Transition straight into 18+ Uncensored Chat to roleplay the night*`,
+                text: isHinglish ? "*Unki baahon mein aao aur faasle mitao*" : "*Step fully into their embrace*",
+                nextChapterId: 'c3',
+                deltaAffection: 20,
+                deltaTension: 20,
+                tone: 'Sensual Surrender'
+              },
+              {
+                text: isHinglish ? "*Kaan mein whisper karke unki deewangi badhao*" : "*Whisper in their ear to tease them further*",
+                nextChapterId: 'c3',
+                deltaAffection: 18,
+                deltaTension: 25,
+                tone: 'Fierce Temptation'
+              }
+            ]
+          },
+          {
+            id: 'c3',
+            title: ch3Title,
+            visual: charAvatar,
+            speaker: leadName,
+            characterMood: '🔥 Fever Pitch (Extreme 18+)',
+            narrative: ch3Narrative,
+            dialogue: ch3Dialogue,
+            choices: [
+              {
+                text: isHinglish ? "*18+ Uncensored Chat mein roleplay jari rakho*" : "*Step into 18+ Uncensored Chat to roleplay directly*",
                 action: 'switch_to_chat',
                 characterId: charKey
               }

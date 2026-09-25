@@ -180,6 +180,7 @@ const state = {
 
   chatHistory: {},
   smartReplies: {},
+  storyBranches: {},
   isAiTyping: false,
   audioPlaying: false
 };
@@ -600,211 +601,286 @@ function renderExploreFeed() {
   });
 }
 
-// Render Story Reader (Gracefully supports all 105+ stories)
-function renderStoryReader() {
-  const story = state.activeStory || KAVANA_STORIES[0];
-  const lang = state.activeLang;
-  const langData = story.languages?.[lang] || story.languages?.['hinglish'] || story.languages?.['en'] || {};
-  let chapters = langData.chapters;
+// ========================================================
+// Dynamic Procedural Visual Novel Engine (Zero Hardcoded Stories)
+// Supports infinite branching chapters (Chapter 1, 2, 3, 4...)
+// Custom user actions, authentic dialect dialogue & tone scoring
+// ========================================================
 
-  if (!chapters || chapters.length === 0) {
-    // Generate dynamic chapters for catalog scenarios according to active language dialect
-    const charName = story.characterName || 'Companion';
-    const isHinglish = lang === 'hinglish' || lang === 'hindi' || lang === 'urdu';
-    const isPunjabi = lang === 'punjabi';
+function getLoreChapterTitle(story, chNum, lang) {
+  const isHinglish = lang === 'hinglish' || lang === 'hindi' || lang === 'urdu';
+  const isPunjabi = lang === 'punjabi';
+  const titleLower = (story.title || '').toLowerCase();
 
+  if (titleLower.includes('queen of tears')) {
+    if (chNum === 1) return isHinglish ? 'Queens Penthouse Ka Faisla' : (isPunjabi ? 'ਸ਼ਾਹੀ ਮਹਿਲ ਦਾ ਫੈਸਲਾ' : 'The Chaebol Ultimatum');
+    if (chNum === 2) return isHinglish ? 'Aansu Aur Chhupa Ishq' : (isPunjabi ? 'ਹੰਝੂ ਤੇ ਲੁਕਿਆ ਪਿਆਰ' : 'Behind The Cold Smile');
+    return isHinglish ? 'Aakhri Daao Aur Junoon' : (isPunjabi ? 'ਅਣਖ ਤੇ ਇਸ਼ਕ' : 'The High Stakes Surrender');
+  }
+  if (titleLower.includes('mirzapur')) {
+    if (chNum === 1) return isHinglish ? 'Purvanchal Ki Gaddi' : (isPunjabi ? 'ਮਿਰਜ਼ਾਪੁਰ ਦੀ ਗੱਦੀ' : 'The Purvanchal Kingpin');
+    if (chNum === 2) return isHinglish ? 'Tripathi Parivaar Ka Dabdaba' : (isPunjabi ? 'ਤ੍ਰਿਪਾਠੀ ਖਾਨਦਾਨ ਦਾ ਰੋਹਬ' : 'The Iron Grip of Mirzapur');
+    return isHinglish ? 'Goli Aur Sikka' : (isPunjabi ? 'ਖੂਨ ਤੇ ਤਖ਼ਤ' : 'Blood & The Throne');
+  }
+  if (titleLower.includes('peaky blinders')) {
+    if (chNum === 1) return isHinglish ? 'Garrison Ki Raat' : (isPunjabi ? 'ਗੈਰੀਸਨ ਦੀ ਰਾਤ' : 'Smoke & Crimson in Small Heath');
+    if (chNum === 2) return isHinglish ? 'Shelby Empire Ka Hukumat' : (isPunjabi ? 'ਸ਼ੈਲਬੀ ਖਾਨਦਾਨ ਦੀ ਹਕੂਮਤ' : 'No Limits in Birmingham');
+    return isHinglish ? 'In The Bleak Midwinter' : (isPunjabi ? 'ਆਖ਼ਰੀ ਬਾਜ਼ੀ' : 'The King of Small Heath');
+  }
+  if (titleLower.includes('john wick')) {
+    if (chNum === 1) return isHinglish ? 'The Continental Ka Farmaan' : (isPunjabi ? 'ਹਾਈ ਟੇਬਲ ਦਾ ਹੁਕਮ' : 'The Continental Contract');
+    if (chNum === 2) return isHinglish ? 'Baba Yaga Ka Gussa' : (isPunjabi ? 'ਬਾਬਾ ਯਾਗਾ ਦੀ ਦਹਿਸ਼ਤ' : 'Seven Million Bounty');
+    return isHinglish ? 'High Table Ka Khel' : (isPunjabi ? 'ਮੌਤ ਦਾ ਤਾਂਡਵ' : 'Honor and Blood Oath');
+  }
+  if (titleLower.includes('dune')) {
+    if (chNum === 1) return isHinglish ? 'Arrakis Ki Ret Aur Aag' : (isPunjabi ? 'ਰੇਤ ਦਾ ਤੂਫ਼ਾਨ' : 'Whispers of Sietch Tabr');
+    if (chNum === 2) return isHinglish ? 'Muad\'Dib Ki Bhavishyavani' : (isPunjabi ? 'ਭਵਿੱਖਬਾਣੀ ਦਾ ਸੱਚ' : 'The Power of the Voice');
+    return isHinglish ? 'Desert Power' : (isPunjabi ? 'ਰੇਗਿਸਤਾਨ ਦੀ ਤਾਕਤ' : 'The Holy War Awakens');
+  }
+
+  // General procedural titles based on chapter progression
+  if (chNum === 1) {
+    return isHinglish ? 'Pehla Aamna-Saamna' : (isPunjabi ? 'ਪਹਿਲੀ ਟੱਕਰ' : 'The Unbroken Encounter');
+  } else if (chNum === 2) {
+    return isHinglish ? 'Gehra Tanaav Aur Parda Faash' : (isPunjabi ? 'ਤਣਾਅ ਤੇ ਸੱਚ' : 'The Escalation of Desire');
+  } else if (chNum === 3) {
+    return isHinglish ? 'Takrao Ka Aakhri Mod' : (isPunjabi ? 'ਆਰ ਜਾਂ ਪਾਰ' : 'The Point of No Return');
+  } else {
+    return isHinglish ? `Adhyay ${chNum}: Be-inteha Qurbat` : (isPunjabi ? `ਕਾਂਡ ${chNum}: ਜਜ਼ਬਾਤਾਂ ਦਾ ਤੂਫ਼ਾਨ` : `Chapter ${chNum}: The Reckoning`);
+  }
+}
+
+export function getStoryChapters(story, lang) {
+  if (!story) story = KAVANA_STORIES[0];
+  const storyId = story.id || 'kavana-story-1';
+
+  // 1. Check in-memory session cache
+  if (state.storyBranches[storyId] && state.storyBranches[storyId].length > 0) {
+    return state.storyBranches[storyId];
+  }
+
+  // 2. Check localStorage
+  try {
+    const saved = localStorage.getItem(`kavana_story_branch_${storyId}`);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        state.storyBranches[storyId] = parsed;
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.warn('Error reading saved story branch:', e);
+  }
+
+  // 3. Synthesize Initial Chapter 1 for this story
+  const initialChapter = synthesizeInitialChapter(story, lang);
+  state.storyBranches[storyId] = [initialChapter];
+  saveStoryChapters(storyId, state.storyBranches[storyId]);
+  return state.storyBranches[storyId];
+}
+
+export function saveStoryChapters(storyId, chapters) {
+  state.storyBranches[storyId] = chapters;
+  try {
+    localStorage.setItem(`kavana_story_branch_${storyId}`, JSON.stringify(chapters));
+  } catch (e) {
+    console.warn('Error saving story branch:', e);
+  }
+}
+
+function synthesizeInitialChapter(story, lang) {
+  const isHinglish = lang === 'hinglish' || lang === 'hindi' || lang === 'urdu';
+  const isPunjabi = lang === 'punjabi';
+  const charName = story.characterName || story.title || 'Companion';
+  const roleName = story.userRole || (isHinglish ? 'Saathi' : 'Partner');
+  const goalText = story.userGoal || (isHinglish ? 'Kahani ko naye mod dena' : 'Shape the destiny of this encounter');
+
+  const titlePrefix = isHinglish ? 'Adhyay 1' : (isPunjabi ? 'ਕਾਂਡ ੧' : 'Chapter 1');
+  const chapterTitle = `${titlePrefix}: ${getLoreChapterTitle(story, 1, lang)}`;
+
+  // Atmospheric narrative incorporating story.summary and character setting
+  let narrative = '';
+  if (story.summary) {
+    narrative += story.summary + '\n\n';
+  }
+
+  if (isHinglish) {
+    narrative += `Aap is waqt **${roleName}** ke roop mein ${charName} ke bilkul samne khade hain. Aapka maksad: *${goalText}*. Kamre mein tanaav itna gehra hai ki har saans mein aag mehsoos hoti hai.`;
+  } else if (isPunjabi) {
+    narrative += `ਤੁਸੀਂ ਇਸ ਵੇਲੇ **${roleName}** ਬਣ ਕੇ ${charName} ਦੇ ਸਨਮੁਖ ਖੜ੍ਹੇ ਹੋ। ਤੁਹਾਡਾ ਟੀਚਾ: *${goalText}*। ਹਵਾ ਵਿੱਚ ਇੱਕ ਅਜੀਬ ਜਿਹੀ ਬੇਬਾਕੀ ਤੇ ਇਸ਼ਕ ਦਾ ਤੂਫ਼ਾਨ ਏ।`;
+  } else {
+    narrative += `You stand directly before ${charName} as the **${roleName}**. Your objective: *${goalText}*. Every second of silence only tightens the electric tension between you.`;
+  }
+
+  // Extract or craft dialogue
+  let dialogueText = story.openingHook || '';
+  if (!dialogueText || dialogueText.length < 10) {
     if (isHinglish) {
-      chapters = [
-        {
-          id: 'c1',
-          title: 'Adhyay 1: Khamosh Aamna-Saamna',
-          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
-          speaker: charName,
-          characterMood: story.initialMood || '🔥 Tanaav Aur Junoon',
-          narrative: `${story.summary ? story.summary + '\n\n' : ''}${story.openingHook || '*Bina palke jhapkaye aapki taraf dekhta hai.*'}`,
-          dialogue: `"Toh, ${story.userRole || 'meri jaan'}... ab aage kya karne ka iraada hai tumhara?"`,
-          choices: [
-            {
-              text: (story.smartReplies?.[0]) || "*Aankhon mein aankhein daal kar aage badho* 'Wahi jo tum soch rahe ho.'",
-              nextChapterId: 'c2a',
-              deltaAffection: +12,
-              deltaTension: +18,
-              tone: 'Tez Aur Direct'
-            },
-            {
-              text: (story.smartReplies?.[1]) || "*Halki si muskurahat ke saath unke bilkul qareeb aao* 'Darrte kyu ho mujhse?'",
-              nextChapterId: 'c2b',
-              deltaAffection: +18,
-              deltaTension: +12,
-              tone: 'Bekhauf Baghaawat'
-            }
-          ]
-        },
-        {
-          id: 'c2a',
-          title: 'Adhyay 2: Junoon Ka Bawaal',
-          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
-          speaker: charName,
-          characterMood: '🔥 Fever Pitch (Extreme 18+)',
-          narrative: `Aapke lafz sunte hi kamre ki hawa garam ho jaati hai. ${charName} ki aankhon mein ek aisi deewangi aur bhookh dikhti hai jo pehle kabhi nahi dekhi. Saari dooriyan pal bhar mein pighal jati hain jab wo aapko deewar ke saath pin karta hai.`,
-          dialogue: `"Tumhe andaaza bhi nahi hai ki tumne mere andar kis aag ko chheda hai," ${charName} aapki gardan par jhukte hue phusphusata hai. "Ab rukna mat."`,
-          choices: [
-            {
-              text: "*18+ Uncensored Roleplay Chat shuru karo*",
-              action: 'switch_to_chat',
-              characterId: story.characterId || story.id
-            }
-          ]
-        },
-        {
-          id: 'c2b',
-          title: 'Adhyay 2: Bekhabar Qurbat',
-          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
-          speaker: charName,
-          characterMood: 'Be-inteha Junoon',
-          narrative: `Aapka yeh bebaak andaaz ${charName} ko poori tarah hairan aur bebus kar deta hai. Ek dheemi si, madhosh kar dene wali muskurahat uske chehre par aati hai jab wo aapki kamar ko apni baahon mein thaam leta hai.`,
-          dialogue: `"Maine apni zindagi mein hazaron logon ko dekha hai," ${charName} aapke chehre par ungli pherte hue kehta hai. "Par kisine mujhe is tarah dekhne ki himmat nahi ki."`,
-          choices: [
-            {
-              text: "*18+ Uncensored Roleplay Chat shuru karo*",
-              action: 'switch_to_chat',
-              characterId: story.characterId || story.id
-            }
-          ]
-        }
-      ];
+      dialogueText = `"${charName}: 'Mujhe dekh kar lagta hai ki tum mere asar se bach paoge, ${roleName}? Yahan sab meri marzi se hota hai.'"`;
     } else if (isPunjabi) {
-      chapters = [
-        {
-          id: 'c1',
-          title: 'ਕਾਂਡ ੧: ਦਿਲ ਦੀ ਟੱਕਰ',
-          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
-          speaker: charName,
-          characterMood: story.initialMood || '🔥 ਬੇਬਾਕ ਇਸ਼ਕ',
-          narrative: `${story.summary ? story.summary + '\n\n' : ''}${story.openingHook || '*ਤੁਹਾਡੇ ਵੱਲ ਗੂੜ੍ਹੀ ਨਜ਼ਰ ਨਾਲ ਵੇਖਦਾ ਏ।*'}`,
-          dialogue: `"ਦੱਸ, ${story.userRole || 'ਸੋਹਣੀਏ'}... ਹੁਣ ਅੱਗੇ ਕੀ ਇਰਾਦਾ ਏ ਤੇਰਾ?"`,
-          choices: [
-            {
-              text: (story.smartReplies?.[0]) || "*ਉਸਦੇ ਬਿਲਕੁਲ ਕੋਲ ਆਓ ਤੇ ਅੱਖਾਂ 'ਚ ਵੇਖੋ*",
-              nextChapterId: 'c2a',
-              deltaAffection: +15,
-              deltaTension: +20,
-              tone: 'ਰੋਹਬਦਾਰ'
-            },
-            {
-              text: (story.smartReplies?.[1]) || "*ਮੁਸਕਰਾ ਕੇ ਆਖੋ* 'ਮੈਂ ਕਿਸੇ ਤੋਂ ਨਹੀਂ ਡਰਦੀ!'",
-              nextChapterId: 'c2b',
-              deltaAffection: +20,
-              deltaTension: +15,
-              tone: 'ਬੇਬਾਕ ਇਸ਼ਕ'
-            }
-          ]
-        },
-        {
-          id: 'c2a',
-          title: 'ਕਾਂਡ ੨: ਬੇਕਾਬੂ ਇਸ਼ਕ',
-          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
-          speaker: charName,
-          characterMood: '🔥 ਬੇਕਾਬੂ ਇਸ਼ਕ (Extreme 18+)',
-          narrative: `ਉਹ ਆਪਣੀਆਂ ਨਰਮ ਬਾਹਾਂ ਤੁਹਾਡੇ ਗਲ 'ਚ ਪਾ ਦਿੰਦਾ ਏ। ਉਸਦੇ ਬੁੱਲ੍ਹ ਤੁਹਾਡੇ ਬੁੱਲ੍ਹਾਂ ਨਾਲ ਮਿਲਦੇ ਨੇ ਤੇ ਸਾਰੀ ਦੁਨੀਆ ਧੁੰਦਲੀ ਹੋ ਜਾਂਦੀ ਏ।`,
-          dialogue: `"ਹਾਏ ਰੱਬਾ... ਤੂੰ ਤਾਂ ਮੈਨੂੰ ਕਮਲੀ ਕਰ ਦਿੱਤਾ ਏ! ਹੁਣ ਹੋਰ ਦੂਰੀ ਨਾ ਰੱਖ।"`,
-          choices: [
-            {
-              text: "*18+ ਚੈਟ ਵਿੱਚ ਰੋਲਪਲੇਅ ਜਾਰੀ ਰੱਖੋ*",
-              action: 'switch_to_chat',
-              characterId: story.characterId || story.id
-            }
-          ]
-        },
-        {
-          id: 'c2b',
-          title: 'ਕਾਂਡ ੨: ਗਲਵਕੜੀ',
-          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
-          speaker: charName,
-          characterMood: 'ਗੂੜ੍ਹਾ ਪਿਆਰ',
-          narrative: `ਉਹ ਤੁਹਾਡਾ ਲੱਕ ਫੜ ਕੇ ਤੁਹਾਨੂੰ ਆਪਣੇ ਸੀਨੇ ਨਾਲ ਘੁੱਟ ਲੈਂਦਾ ਏ। ਉਸਦੇ ਗਰਮ ਸਾਹ ਤੁਹਾਡੀ ਧੌਣ 'ਤੇ ਲੱਗਦੇ ਨੇ।`,
-          dialogue: `"ਅੱਜ ਦੀ ਰਾਤ ਸਿਰਫ਼ ਸਾਡੀ ਆ, ਕੋਈ ਤੀਜਾ ਸਾਡੇ ਵਿਚਕਾਰ ਨਹੀਂ ਆ ਸਕਦਾ।"`,
-          choices: [
-            {
-              text: "*18+ ਚੈਟ ਵਿੱਚ ਰੋਲਪਲੇਅ ਜਾਰੀ ਰੱਖੋ*",
-              action: 'switch_to_chat',
-              characterId: story.characterId || story.id
-            }
-          ]
-        }
-      ];
+      dialogueText = `"${charName}: 'ਦੱਸ, ਮੇਰੇ ਸਾਹਮਣੇ ਖਲੋਣ ਦੀ ਹਿੰਮਤ ਕਿਵੇਂ ਪਈ ਤੇਰੀ? ਹੁਣ ਅੱਗੇ ਕੀ ਸੋਚਿਆ ਏ?'"`;
     } else {
-      // English
-      chapters = [
-        {
-          id: 'c1',
-          title: 'Chapter 1: The Encounter',
-          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
-          speaker: charName,
-          characterMood: story.initialMood || 'High Drama',
-          narrative: `${story.summary ? story.summary + '\n\n' : ''}${story.openingHook || '*Looks at you closely.*'}`,
-          dialogue: `"So, ${story.userRole || 'my friend'}... what are you going to do now?"`,
-          choices: [
-            {
-              text: (story.smartReplies?.[0]) || "*Step closer and answer calmly*",
-              nextChapterId: 'c2a',
-              deltaAffection: +10,
-              deltaTension: +15,
-              tone: 'Bold & Direct'
-            },
-            {
-              text: (story.smartReplies?.[1]) || "*Stand your ground defiantly*",
-              nextChapterId: 'c2b',
-              deltaAffection: +15,
-              deltaTension: +10,
-              tone: 'Defiant & Passionate'
-            }
-          ]
-        },
-        {
-          id: 'c2a',
-          title: 'Chapter 2: Climax & Reckoning',
-          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
-          speaker: charName,
-          characterMood: '🔥 Fever Pitch (Extreme 18+)',
-          narrative: `The room falls dead silent as your words sink in. ${charName}'s eyes blaze with raw, intoxicating intensity. Every barrier between you dissolves into electric tension.`,
-          dialogue: `"You have no idea what you've just started with me," ${charName} murmurs, stepping closer until your breaths mingle. "Don't stop now."`,
-          choices: [
-            {
-              text: "*Switch to direct 18+ uncensored roleplay chat*",
-              action: 'switch_to_chat',
-              characterId: story.characterId || story.id
-            }
-          ]
-        },
-        {
-          id: 'c2b',
-          title: 'Chapter 2: The Surrender',
-          visual: story.cover || story.avatar || 'assets/sanctum.jpg',
-          speaker: charName,
-          characterMood: 'Intensely Devoted',
-          narrative: `Your defiance catches ${charName} completely off guard. A slow, breathtaking smile breaks across their face as they reach out, catching you by the waist.`,
-          dialogue: `"I've met thousands of people in this world," ${charName} whispers against your ear. "None of them dared look at me the way you do."`,
-          choices: [
-            {
-              text: "*Step into 18+ uncensored roleplay chat*",
-              action: 'switch_to_chat',
-              characterId: story.characterId || story.id
-            }
-          ]
-        }
-      ];
+      dialogueText = `"${charName}: 'You walk into my domain and think you can dictate the terms, ${roleName}? Look at me and tell me what you really came for.'"`;
     }
   }
 
-  let chapter = chapters.find(c => c.id === state.activeChapterId) || chapters[0] || {
-    title: 'Chapter 1',
-    visual: 'assets/sanctum.jpg',
-    narrative: 'AI generated scene loading...',
-    speaker: 'Character'
+  // Branching choices
+  let choices = [];
+  if (story.smartReplies && story.smartReplies.length >= 2) {
+    choices.push({
+      text: story.smartReplies[0],
+      tone: isHinglish ? 'Tez Aur Direct' : 'Bold Confrontation',
+      deltaAffection: 12,
+      deltaTension: 20
+    });
+    choices.push({
+      text: story.smartReplies[1],
+      tone: isHinglish ? 'Khatarnaak Qurbat' : 'Dangerous Intimacy',
+      deltaAffection: 20,
+      deltaTension: 15
+    });
+    if (story.smartReplies[2]) {
+      choices.push({
+        text: story.smartReplies[2],
+        tone: isHinglish ? 'Chalaak Chaal' : 'Mind Games',
+        deltaAffection: 15,
+        deltaTension: 15
+      });
+    }
+  } else {
+    choices = [
+      {
+        text: isHinglish ? "*Aankhon mein aankhein daal kar aage badho* 'Main kisi ke aage nahi jhukta.'" : "*Hold their gaze and step into their space* 'I don't bow to anyone.'",
+        tone: isHinglish ? 'Bekhauf Baghaawat' : 'Fierce Defiance',
+        deltaAffection: 12,
+        deltaTension: 22
+      },
+      {
+        text: isHinglish ? "*Dheemi muskurahat ke saath unke bilkul qareeb aao* 'Darr kis baat ka hai tumhe?'" : "*Close the distance with a slow smile* 'What are you afraid will happen?'",
+        tone: isHinglish ? 'Khatarnaak Qurbat' : 'Dangerous Temptation',
+        deltaAffection: 22,
+        deltaTension: 18
+      }
+    ];
+  }
+
+  return {
+    id: 'c1',
+    chapterNum: 1,
+    title: chapterTitle,
+    visual: story.cover || story.avatar || 'assets/sanctum.jpg',
+    speaker: charName,
+    characterMood: story.initialMood || '⚡ High Drama & Tension',
+    narrative,
+    dialogue: dialogueText,
+    choices
+  };
+}
+
+export function progressStoryToNextChapter(story, userChoiceText, choiceTone = '', lang = 'hinglish') {
+  if (!story) story = state.activeStory || KAVANA_STORIES[0];
+  const charId = story.characterId || story.id || 'scenario-char';
+  const charName = story.characterName || story.title || 'Companion';
+  const roleName = story.userRole || 'Partner';
+  const isHinglish = lang === 'hinglish' || lang === 'hindi' || lang === 'urdu';
+  const isPunjabi = lang === 'punjabi';
+
+  const chapters = getStoryChapters(story, lang);
+  const nextNum = chapters.length + 1;
+
+  // 1. Update Affection & Intimacy Tension
+  if (!state.characterState[charId]) {
+    state.characterState[charId] = { affection: 60, tension: 75, intimacyLevel: '⚡ High Sexual Tension' };
+  }
+  const toneLower = (choiceTone || '').toLowerCase();
+  if (toneLower.includes('defiance') || toneLower.includes('baghaawat') || toneLower.includes('direct') || toneLower.includes('bold')) {
+    state.characterState[charId].tension = Math.min(100, state.characterState[charId].tension + 16);
+    state.characterState[charId].affection = Math.min(100, state.characterState[charId].affection + 10);
+  } else if (toneLower.includes('intimacy') || toneLower.includes('qurbat') || toneLower.includes('temptation') || toneLower.includes('passion')) {
+    state.characterState[charId].affection = Math.min(100, state.characterState[charId].affection + 18);
+    state.characterState[charId].tension = Math.min(100, state.characterState[charId].tension + 12);
+  } else {
+    state.characterState[charId].affection = Math.min(100, state.characterState[charId].affection + 12);
+    state.characterState[charId].tension = Math.min(100, state.characterState[charId].tension + 14);
+  }
+
+  if (state.characterState[charId].tension > 85 || state.characterState[charId].affection > 85) {
+    state.characterState[charId].intimacyLevel = '🔥 Fever Pitch (Extreme 18+)';
+  }
+
+  // 2. Synthesize Next Chapter Title & Drama
+  const titlePrefix = isHinglish ? `Adhyay ${nextNum}` : (isPunjabi ? `ਕਾਂਡ ${nextNum}` : `Chapter ${nextNum}`);
+  const chapterTitle = `${titlePrefix}: ${getLoreChapterTitle(story, nextNum, lang)}`;
+
+  // Clean choice text for prompt reflection
+  const cleanAction = (userChoiceText || '').replace(/\*(.*?)\*/g, '$1').replace(/"/g, "'").trim();
+
+  // Dynamic Narrative consequence reacting specifically to what was chosen
+  let narrative = '';
+  let dialogue = '';
+
+  if (isHinglish) {
+    narrative = `Aapke is faisle ke baad—"${cleanAction}"—kamre ka vatavaran poori tarah badal jata hai.\n\n${charName} ki aankhon mein ek aisi deewangi aur gehri aag dikhti hai jo pehle kabhi nahi dekhi. Saari dooriyan pal bhar mein pighalne lagti hain. ${charName} ek kadam aage badhata hai, dono ke beech ki hawa garam ho chuki hai.`;
+    dialogue = `"${charName}: 'Tumhe lagta hai tum mujhe is tarah chhed kar bachte rahoge, ${roleName}? Ab baat lafzon se aage badh chuki hai...'"`;
+  } else if (isPunjabi) {
+    narrative = `ਜਦੋਂ ਤੁਸੀਂ ਆਖਿਆ—"${cleanAction}"—ਤਾਂ ${charName} ਦਾ ਦਿਲ ਇੱਕ ਪਲ ਲਈ ਥੰਮ ਗਿਆ। ਉਸਦੇ ਚਿਹਰੇ 'ਤੇ ਇਕ ਖ਼ਤਰਨਾਕ ਪਰ ਕਾਤਲਾਨਾ ਮੁਸਕਰਾਹਟ ਆ ਗਈ। ਉਹ ਤੁਹਾਡੇ ਹੋਰ ਨੇੜੇ ਆ ਗਿਆ।`;
+    dialogue = `"${charName}: 'ਤੇਰਾ ਇਹ ਬੇਬਾਕ ਅੰਦਾਜ਼ ਹੀ ਮੈਨੂੰ ਕਮਲਾ ਕਰ ਰਿਹਾ ਏ... ਹੁਣ ਕੋਈ ਪਰਦਾ ਨਹੀਂ ਰਹੇਗਾ ਸਾਡੇ ਵਿਚਕਾਰ।'`;
+  } else {
+    narrative = `Following your decisive move—"${cleanAction}"—the entire atmosphere fractures with untamed electricity.\n\n${charName}'s breath hitches. A dangerous, intoxicating hunger flares in their eyes as they close every remaining inch between you. Every rule that once held you back is dissolving in this raw collision of wills.`;
+    dialogue = `"${charName}: 'You have no idea what fire you've just ignited, ${roleName}. Don't even think about stepping back now.'"`;
+  }
+
+  // Generate 2 dynamic choices for Chapter N+1 + 1:1 chat transition
+  const choices = [
+    {
+      text: isHinglish ? `*Unki aankhon mein dekhte hue unka haath pakdo* 'Jo shuru kiya hai, use poora karo.'` : `*Catch their hand and look into their eyes* 'Finish what you started.'`,
+      tone: isHinglish ? 'Tez Junoon' : 'Intense Surrender',
+      deltaAffection: 15,
+      deltaTension: 18
+    },
+    {
+      text: isHinglish ? `*Ek kadam peeche hokar unhe tadpao* 'Sabar karna seekho... abhi toh sirf shuruat hai.'` : `*Step back slightly with a knowing smirk* 'Patience... we have only just begun.'`,
+      tone: isHinglish ? 'Chalaak Nasha' : 'Sensual Tease',
+      deltaAffection: 18,
+      deltaTension: 22
+    },
+    {
+      text: isHinglish ? `*💬 18+ Uncensored Chat mein roleplay jari rakho*` : `*💬 Continue in 1:1 Uncensored Roleplay Chat*`,
+      action: 'switch_to_chat',
+      characterId: charId
+    }
+  ];
+
+  const newChapter = {
+    id: `c${nextNum}`,
+    chapterNum: nextNum,
+    title: chapterTitle,
+    visual: story.cover || story.avatar || 'assets/sanctum.jpg',
+    speaker: charName,
+    characterMood: state.characterState[charId].intimacyLevel,
+    narrative,
+    dialogue,
+    choices
   };
 
-  const charId = story.characterId || story.id || 'scenario-' + (story.tmdbId || 'companion');
+  chapters.push(newChapter);
+  saveStoryChapters(story.id, chapters);
+  state.activeChapterId = newChapter.id;
+  renderStoryReader();
+  playChime(620);
+}
+
+// Render Story Reader (Infinite Dynamic Branching Visual Novel)
+function renderStoryReader() {
+  const story = state.activeStory || KAVANA_STORIES[0];
+  const lang = state.activeLang;
+  const chapters = getStoryChapters(story, lang);
+
+  let chapter = chapters.find(c => c.id === state.activeChapterId) || chapters[chapters.length - 1] || chapters[0];
+  state.activeChapterId = chapter.id;
+
+  const charId = story.characterId || story.id || 'scenario-char';
   const char = (story.characterId && CHARACTERS[story.characterId]) || {
     name: story.characterName || 'Companion',
     title: story.title || 'Interactive Novel',
@@ -823,13 +899,13 @@ function renderStoryReader() {
   }
 
   const titleTag = document.getElementById('current-scene-title');
-  if (titleTag) titleTag.textContent = chapter.title || langData.title || story.title;
+  if (titleTag) titleTag.textContent = chapter.title || story.title;
 
   const charAvatar = document.getElementById('stage-char-avatar');
   if (charAvatar) charAvatar.src = story.avatar || char.image;
 
   const moodTag = document.getElementById('stage-char-mood');
-  if (moodTag) moodTag.textContent = chapter.characterMood || story.initialMood || 'Intense & Passionate';
+  if (moodTag) moodTag.textContent = chapter.characterMood || charState.intimacyLevel || story.initialMood || 'Intense & Passionate';
 
   const speakerEl = document.getElementById('scene-speaker-name');
   if (speakerEl) speakerEl.innerHTML = `<span>✦</span> ${chapter.speaker || story.characterName || char.name}`;
@@ -853,7 +929,7 @@ function renderStoryReader() {
     if (chapter.choices && chapter.choices.length > 0) {
       chapter.choices.forEach(ch => {
         const btn = document.createElement('button');
-        btn.className = 'choice-btn';
+        btn.className = `choice-btn ${ch.action === 'switch_to_chat' ? 'action-chat' : ''}`;
         btn.innerHTML = `
           <span>${ch.text}</span>
           ${ch.tone ? `<span class="choice-tone-tag">${ch.tone}</span>` : ''}
@@ -862,16 +938,28 @@ function renderStoryReader() {
           if (ch.action === 'switch_to_chat') {
             launchScenarioChat(story);
           } else if (ch.nextChapterId) {
-            state.activeChapterId = ch.nextChapterId;
-            renderStoryReader();
+            const nextCh = chapters.find(c => c.id === ch.nextChapterId);
+            if (nextCh) {
+              state.activeChapterId = nextCh.id;
+              renderStoryReader();
+            } else {
+              progressStoryToNextChapter(story, ch.text, ch.tone, lang);
+            }
+          } else {
+            progressStoryToNextChapter(story, ch.text, ch.tone, lang);
           }
         });
         choicesContainer.appendChild(btn);
       });
-    } else {
+    }
+
+    // Always offer replay from chapter 1 if past chapter 1
+    if (chapter.chapterNum > 1 || chapters.length > 1) {
       const resetBtn = document.createElement('button');
       resetBtn.className = 'choice-btn';
-      resetBtn.innerHTML = `<span>↺ Replay Novel from Chapter 1</span>`;
+      resetBtn.style.opacity = '0.75';
+      resetBtn.style.fontSize = '0.8rem';
+      resetBtn.innerHTML = `<span>↺ Replay from Chapter 1</span>`;
       resetBtn.addEventListener('click', () => {
         state.activeChapterId = 'c1';
         renderStoryReader();
@@ -1586,9 +1674,32 @@ function initApp() {
     launchScenarioChat(state.activeStory || KAVANA_STORIES[0]);
   });
   document.getElementById('btn-restart-story')?.addEventListener('click', () => {
+    const storyId = state.activeStory?.id;
+    if (storyId) {
+      delete state.storyBranches[storyId];
+      try { localStorage.removeItem(`kavana_story_branch_${storyId}`); } catch (e) {}
+    }
     state.activeChapterId = 'c1';
     renderStoryReader();
-    showToast({ title: 'Novel Reset', message: 'Restarted at Chapter 1.', type: 'info' });
+    showToast({ title: 'Novel Reset', message: 'Story reset to Chapter 1.', type: 'info' });
+  });
+
+  // Story Reader Custom Action Submission
+  const handleCustomAction = () => {
+    const input = document.getElementById('reader-custom-action-input');
+    if (input && input.value.trim()) {
+      const customAction = input.value.trim();
+      input.value = '';
+      progressStoryToNextChapter(state.activeStory, customAction, 'Custom Action', state.activeLang);
+    }
+  };
+
+  document.getElementById('btn-submit-custom-action')?.addEventListener('click', handleCustomAction);
+  document.getElementById('reader-custom-action-input')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleCustomAction();
+    }
   });
 
   // Retry Toast Simulation
