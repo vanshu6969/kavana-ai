@@ -19,6 +19,7 @@ export interface Story {
   imdbRating?: string;
   isFeatured?: boolean;
   isContinueChat?: boolean;
+  tmdbId?: string | number;
   sceneContext?: {
     location: string;
     empireControl: string;

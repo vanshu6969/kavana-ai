@@ -30,20 +30,10 @@ export default function HomePage() {
   const filteredCategoryStories = React.useMemo(() => {
     if (selectedCategory === 'All') return stories;
     if (selectedCategory === 'Cinema Originals' || selectedCategory === 'TMDb Cinema') {
-      return stories.filter(s => s.tags.some(t => t.toLowerCase().includes('tmdb')) || (s as any).tmdbId);
+      return stories.filter(s => s.tags.some(t => t.toLowerCase().includes('tmdb')) || s.tmdbId);
     }
     const cat = selectedCategory.toLowerCase();
     return stories.filter((s) => {
-      if (selectedCategory === 'Crime & Syndicate' || selectedCategory === 'Crime & Mafia') {
-        return (
-          s.category === 'Crime' ||
-          s.category === 'Crime & Mafia' ||
-          s.tags.some((t) => {
-            const l = t.toLowerCase();
-            return l.includes('mafia') || l.includes('crime') || l.includes('syndicate') || l.includes('don');
-          })
-        );
-      }
       if (selectedCategory === 'Anime & Fantasy') {
         return (
           s.category === 'Anime' ||
@@ -79,7 +69,7 @@ export default function HomePage() {
           })
         );
       }
-      if (selectedCategory === 'Crime & Mafia') {
+      if (selectedCategory === 'Crime & Syndicate' || selectedCategory === 'Crime & Mafia') {
         return (
           s.category === 'Crime' ||
           s.category === 'Crime & Mafia' ||

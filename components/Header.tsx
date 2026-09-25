@@ -75,6 +75,7 @@ export default function Header() {
           </div>
 
           {/* Right Actions */}
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Create Story Button */}
             <button
               onClick={() => setShowCreateModal(true)}
