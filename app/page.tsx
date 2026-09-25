@@ -12,6 +12,12 @@ export default function HomePage() {
   const { stories, sessions } = useApp();
   const [showCreateModal, setShowCreateModal] = useState(false);
 
+  React.useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.pathname === '/') {
+      window.location.replace('/index.html');
+    }
+  }, []);
+
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   const HOME_CATEGORIES = [
