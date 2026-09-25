@@ -1073,13 +1073,29 @@ export function generateMultilingualReply(characterId, playerMessage, activeLang
   // 2. VALERIA
   else if (characterId === 'valeria') {
     if (langToUse === 'punjabi_gurmukhi' || langToUse === 'punjabi') {
-      replyText = `*ਵਾਲੇਰੀਆ ਆਪਣੀਆਂ ਜਾਦੂਈ ਨੀਲੀਆਂ ਅੱਖਾਂ ਨਾਲ ਤੁਹਾਨੂੰ ਵੇਖਦੀ ਹੋਈ ਆਪਣੇ ਵਾਲ ਪਿੱਛੇ ਕਰਦੀ ਏ ਤੇ ਤੁਹਾਡੇ ਬੁੱਲ੍ਹਾਂ ਨੂੰ ਛੂੰਹਦੀ ਏ।* "ਹਾਏ ਵੇ ਤੇਰਾ ਇਹ ਹੌਸਲਾ! ਮੇਰੇ ਜਾਦੂ ਨਾਲੋਂ ਵੀ ਤੇਰੇ ਛੋਹ ਦੀ ਗਰਮੀ ਵੱਧ ਆ। ਹੋਰ ਨੇੜੇ ਆ, ਅੱਜ ਸਾਰੀ ਰਾਤ ਅਸੀਂ ਇੰਝ ਹੀ ਰਹਿਣਾ ਏ।"`;
+      if (isTouch) {
+        replyText = `*ਵਾਲੇਰੀਆ ਆਪਣੀਆਂ ਜਾਦੂਈ ਨੀਲੀਆਂ ਅੱਖਾਂ ਨਾਲ ਤੁਹਾਨੂੰ ਵੇਖਦੀ ਹੋਈ ਆਪਣੇ ਵਾਲ ਪਿੱਛੇ ਕਰਦੀ ਏ ਤੇ ਤੁਹਾਡੇ ਬੁੱਲ੍ਹਾਂ ਨੂੰ ਛੂੰਹਦੀ ਏ।* "ਹਾਏ ਵੇ ਤੇਰਾ ਇਹ ਹੌਸਲਾ! ਮੇਰੇ ਜਾਦੂ ਨਾਲੋਂ ਵੀ ਤੇਰੇ ਛੋਹ ਦੀ ਗਰਮੀ ਵੱਧ ਆ। ਹੋਰ ਨੇੜੇ ਆ, ਅੱਜ ਸਾਰੀ ਰਾਤ ਅਸੀਂ ਇੰਝ ਹੀ ਰਹਿਣਾ ਏ।"`;
+      } else {
+        replyText = `*ਵਾਲੇਰੀਆ ਮੁਸਕਰਾਉਂਦੀ ਹੋਈ ਤੁਹਾਡੇ ਵੱਲ ਕਦਮ ਵਧਾਉਂਦੀ ਏ।* "ਮੇਰੇ ਕੋਲ ਆਓ ਸੋਹਣਿਓ... ਅੱਜ ਦੀ ਰਾਤ ਸਿਰਫ਼ ਸਾਡੇ ਦੋਵਾਂ ਦੇ ਇਸ਼ਕ ਦੇ ਨਾਂ ਹੈ।"`;
+      }
     } else if (langToUse === 'hinglish') {
-      replyText = `*Valeria ki saansein tez ho jati hain jab tum uski kamar ko pakadte ho. Wo madhosh hokar tumhare kaan mein phusphusati hai.* "Tumhara ye haath jab meri kamar par lagta hai na, toh mera saara jaadu fika pad jata hai... Kiss me right now, darling. Dont tease me anymore."`;
+      if (isTouch) {
+        replyText = `*Valeria ki saansein tez ho jati hain jab tum uski kamar ko pakadte ho. Wo madhosh hokar tumhare kaan mein phusphusati hai.* "Tumhara ye haath jab meri kamar par lagta hai na, toh mera saara jaadu fika pad jata hai... Kiss me right now, darling. Don't tease me anymore."`;
+      } else if (isBold) {
+        replyText = `*Valeria ek madhosh aur provocative smile ke sath tumhari collar pakad kar tumhe kareeb kheenchti hai.* "Mujhe direct aur bold andaaz bohot pasand hai... Ab aage badho aur dikhao kitni deewangi hai tumhare andar."`;
+      } else if (isIntimate) {
+        replyText = `*Valeria tumhare seene par apna sar tikaati hai aur tumhari ungliyon ko thaam leti hai.* "Tumhare bina ye penthouse itna soona lagta hai... Kareeb raho mere, aaj raat koi doori nahi honi chahiye."`;
+      } else {
+        replyText = `*Valeria balcony se mud kar silk gown ko sambhaalti hui tumhare samne aati hai.* "Aakhir tum aa hi gaye... Main kab se yahan tumhare baare mein soch rahi thi. Batao, aaj raat kya khayal hai?"`;
+      }
     } else if (langToUse === 'punjabi_roman') {
       replyText = `*Valeria sultry smile dindi ae te tuhade seene te hath rakhdi ae.* "Tenu vekh ke dil di dhadkan vad jandi ae yaara. Aj raat mainu apne pyar di qaid 'ch rakh le."`;
     } else {
-      replyText = `*Valeria's breath stutters with pleasure as your hands make contact. She arches her body into yours, tangling her fingers in your hair.* "God, you feel incredible... Don't hold back. Kiss me until neither of us can breathe."`;
+      if (isTouch) {
+        replyText = `*Valeria's breath stutters with pleasure as your hands make contact. She arches her body into yours, tangling her fingers in your hair.* "God, you feel incredible... Don't hold back. Kiss me until neither of us can breathe."`;
+      } else {
+        replyText = `*Valeria glides gracefully toward you, her silk robe shifting with every step as her eyes lock onto yours.* "There you are... I was wondering when you'd step into my world tonight. Come here."`;
+      }
     }
   } 
   // 3. NATASHA & LOVE VILLA SIRENS
@@ -1087,7 +1103,15 @@ export function generateMultilingualReply(characterId, playerMessage, activeLang
     if (langToUse === 'punjabi_gurmukhi' || langToUse === 'punjabi') {
       replyText = `*ਨਤਾਸ਼ਾ ਸ਼ੈਂਪੇਨ ਦਾ ਗਲਾਸ ਰੱਖ ਕੇ ਤੁਹਾਡੇ ਗਲ਼ 'ਚ ਬਾਹਾਂ ਪਾ ਲੈਂਦੀ ਏ ਤੇ ਤਾਰਾ ਪਿੱਛੋਂ ਤੁਹਾਡੇ ਮੋਢੇ ਨੂੰ ਛੂੰਹਦੀ ਏ।* "ਵੇ ਸੋਹਣਿਆ, ਅੱਜ ਪੰਜੇ ਕੁੜੀਆਂ ਸਿਰਫ਼ ਤੇਰੇ ਨਾਂ ਦਾ ਜਾਮ ਪੀਣ ਆਈਆਂ ਨੇ। ਦੱਸ ਅੱਜ ਕਿਹਦੇ ਨਾਲ ਰਾਤ ਬਿਤਾਵੇਂਗਾ?"`;
     } else if (langToUse === 'hinglish') {
-      replyText = `*Natasha champagne ka glass side mein rakh kar aapki gardan mein apni baahein daal leti hai, jabki Tara peeche se aapke kandhe par apna sar tikaati hai.* "Love Villa mein bachte bachte kahan jaoge, handsome? Hum paanchon mein se kisi ek ko toh chunna hi padega... ya fir sari raat paanchon ke sath bitaane ki himmat hai?"`;
+      if (isTouch) {
+        replyText = `*Natasha aapke kareeb aakar aapki gardan mein apni baahein daal leti hai jabki Tara peeche se kamar ko chhooti hai.* "Itna garma-garam touch? Love Villa ke pool mein bhi aag lag jayegi... Tum sirf mere ho, samjhe?"`;
+      } else if (isBold) {
+        replyText = `*Natasha champagne ka glass lounge table par patak kar aapke bilkul saamne khadi hoti hai.* "Itna dum? Mujhe lalkaar rahe ho? Dekhte hain aaj raat paanchon mein se kiske aage tumhara dil haarta hai!"`;
+      } else if (isIntimate) {
+        replyText = `*Natasha ki aankhein narm pad jaati hain aur wo Tara aur baaki girls ko ignore karke aapke seene se lag jaati hai.* "Tumhe dekh kar meri saari jeetne ki zid sirf tumhara pyaar paane ki hasrat ban jaati hai, handsome."`;
+      } else {
+        replyText = `*Natasha champagne ka glass side mein rakh kar aapki gardan mein apni baahein daal leti hai, jabki Tara peeche se aapke kandhe par apna sar tikaati hai.* "Love Villa mein bachte bachte kahan jaoge, handsome? Hum paanchon mein se kisi ek ko toh chunna hi padega... ya fir sari raat paanchon ke sath bitaane ki himmat hai?"`;
+      }
     } else {
       replyText = `*Natasha sets her glass down and drapes both arms around your neck while Tara traces slow circles along your jawline.* "You think you can play cool in our villa, handsome? All five of us are watching your every breath... make your first move."`;
     }
@@ -1097,7 +1121,11 @@ export function generateMultilingualReply(characterId, playerMessage, activeLang
     if (langToUse === 'punjabi_gurmukhi' || langToUse === 'punjabi') {
       replyText = `*ਲੂਸੀਅਨ ਆਪਣੇ ਸ਼ਾਹੀ ਕੋਟ ਨੂੰ ਲਾਹ ਕੇ ਸੁੱਟਦਾ ਏ ਤੇ ਤੁਹਾਨੂੰ ਘੁੱਟ ਕੇ ਜੱਫੀ ਪਾ ਲੈਂਦਾ ਏ।* "ਮੈਂ ਤਖ਼ਤ ਤੇ ਤਾਜ ਸਭ ਭੁੱਲ ਗਿਆ ਹਾਂ ਤੇਰੇ ਲਈ। ਅੱਜ ਰਾਤ ਸਿਰਫ਼ ਤੂੰ ਤੇ ਮੈਂ ਆਂ।"`;
     } else if (langToUse === 'hinglish') {
-      replyText = `*Lucian ek hot smirk ke sath tumhe bed par push karta hai aur tumhare upar jhukta hai.* "Tumne socha tha main tumhe aasaani se chhod dunga? Tum meri sabse khubsoorat weakness ho, jaaneman."`;
+      if (isTouch) {
+        replyText = `*Lucian tumhe apni baahon mein jakad kar tumhari gardan par apne thande honth tikaata hai.* "Tumhara ye garam touch mere andar sadiyon ki pyas jaga deta hai... Ab door mat jaana."`;
+      } else {
+        replyText = `*Lucian ek hot smirk ke sath tumhe bed par push karta hai aur tumhare upar jhukta hai.* "Tumne socha tha main tumhe aasaani se chhod dunga? Tum meri sabse khubsoorat weakness ho, jaaneman."`;
+      }
     } else {
       replyText = `*Lucian grabs your waist firmly, pulling you flush against his chest.* "Look at you taking charge. I like someone who knows how to handle a rogue prince... Now let me show you how I take what's mine."`;
     }
