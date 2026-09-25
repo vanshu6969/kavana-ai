@@ -47,10 +47,10 @@
 
       <!-- Right Header Actions -->
       <div class="header-actions">
-        <!-- Minimal TMDb Quick Button -->
-        <button class="btn-tmdb-pill" id="btn-header-add-tmdb" title="Import Movie or TV Show by TMDb ID">
-          <span class="tmdb-pill-icon">🎬</span>
-          <span>+ TMDb</span>
+        <!-- Professional Cinema Title Import Button -->
+        <button class="btn-tmdb-pill" id="btn-header-add-tmdb" title="Import Movie or Series">
+          <span class="tmdb-pill-icon">✦</span>
+          <span>Import Title</span>
         </button>
 
         <!-- Dialect Selector -->
@@ -83,6 +83,9 @@
           <button id="btn-hero-launch-app"></button>
           <button id="btn-hero-explore-novels"></button>
           <button id="btn-hero-open-dance"></button>
+          <button id="btn-banner-open-tmdb"></button>
+          <button id="btn-hero-dance"></button>
+          <button id="btn-explore-open-tmdb"></button>
           <button id="btn-mockup-tab-explore"></button>
           <button id="btn-mockup-tab-reader"></button>
           <button id="btn-mockup-tab-chat"></button>
@@ -121,16 +124,10 @@
 
           <div class="hero-button-group">
             <button class="btn-hero-primary" id="btn-hero-play">
-              <span>▶</span> Play Scenario
+              <span>▶</span> Play Story
             </button>
             <button class="btn-hero-glass" id="btn-hero-chat">
-              <span>💬</span> 18+ Roleplay Chat
-            </button>
-            <button class="btn-hero-tmdb" id="btn-banner-open-tmdb">
-              <span>🎬</span> + Import by TMDb ID
-            </button>
-            <button class="btn-hero-icon" id="btn-hero-dance" title="Make Character Dance">
-              💃
+              <span>💬</span> Roleplay Chat
             </button>
           </div>
         </div>
@@ -144,15 +141,11 @@
             type="text" 
             id="stories-search-input" 
             class="search-input-field" 
-            placeholder="Search titles, actors, or themes (Mirzapur, Dune, Gojo, Peaky Blinders)..."
+            placeholder="Search titles, characters, or genres (Mirzapur, Dune, Gojo, Shelby)..."
             autocomplete="off"
           >
           <button class="search-clear-btn" id="btn-clear-search" style="display: none;">✕</button>
         </div>
-
-        <button class="btn-import-shortcut" id="btn-explore-open-tmdb">
-          <span>🎬 + Import TMDb</span>
-        </button>
 
         <div class="catalog-counter-pill" id="stories-count-badge">
           33 Scenarios
@@ -162,15 +155,15 @@
       <!-- Sleek Horizontal Category Filters -->
       <div class="category-pills-bar" id="category-pills-container">
         <button class="cat-pill active" data-category="all">✨ All</button>
-        <button class="cat-pill" data-category="tmdb">🎬 TMDb Cinema</button>
+        <button class="cat-pill" data-category="tmdb">🎬 Cinema Originals</button>
         <button class="cat-pill" data-category="trending">🔥 Trending</button>
-        <button class="cat-pill" data-category="anime">🎌 Anime</button>
-        <button class="cat-pill" data-category="mafia">🕶️ Mafia & Crime</button>
+        <button class="cat-pill" data-category="anime">🎌 Anime & Manga</button>
+        <button class="cat-pill" data-category="mafia">🕶️ Crime & Syndicate</button>
         <button class="cat-pill" data-category="pakistani">🇵🇰 Pakistani Drama</button>
-        <button class="cat-pill" data-category="spicy">🔞 Uncensored 18+</button>
+        <button class="cat-pill" data-category="spicy">🔞 Mature 18+</button>
         <button class="cat-pill" data-category="fantasy">🔮 Dark Fantasy</button>
         <button class="cat-pill" data-category="drama">💔 Drama</button>
-        <button class="cat-pill" data-category="thriller">⚡ Thriller</button>
+        <button class="cat-pill" data-category="thriller">⚡ Suspense</button>
       </div>
 
       <!-- Curated Cinema Cards Grid -->
@@ -191,7 +184,7 @@
           <div class="stage-header-bar">
             <div class="stage-title-tag" id="current-scene-title">Chapter 1: Trapped in the Penthouse</div>
             <div class="stage-header-right">
-              <button class="btn-dance-mini" id="btn-quick-dance" title="Make Character Dance">💃 Dance</button>
+              <button class="btn-dance-mini" id="btn-quick-dance" title="Character Motion Studio">🎭 Animate</button>
               <div class="stage-character-badge" id="current-char-badge">
                 <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80" alt="Character" class="char-tiny-avatar" id="stage-char-avatar">
                 <span class="char-mood-text" id="stage-char-mood">Dominant & Desi Boss</span>
@@ -246,13 +239,13 @@
 
             <div class="companion-btn-stack">
               <button class="btn-primary-mini" id="btn-jump-to-chat">
-                💬 Switch to 18+ Chat
+                💬 Open Roleplay Chat
               </button>
               <button class="btn-secondary-mini" id="btn-side-dance">
-                💃 Make Them Dance
+                🎭 Character Studio
               </button>
               <button class="btn-secondary-mini" id="btn-restart-story">
-                ↺ Restart Story
+                ↺ Restart Chapter
               </button>
             </div>
           </div>
@@ -316,8 +309,8 @@
             </div>
 
             <div class="chat-header-actions">
-              <button class="btn-dance-mini" id="btn-chat-dance" title="Make Them Dance">💃 Dance</button>
-              <span class="intimacy-tag" id="chat-intimacy-tag">🔥 Extreme 18+</span>
+              <button class="btn-dance-mini" id="btn-chat-dance" title="Character Motion Studio">🎭 Animate</button>
+              <span class="intimacy-tag" id="chat-intimacy-tag">🔥 Unrestricted</span>
             </div>
           </div>
 
@@ -327,9 +320,9 @@
           <!-- Role Banner -->
           <div class="chat-role-banner" id="chat-role-banner">
             <div class="role-desc">
-              <span>🎭 Role: <strong id="chat-role-user-title">Neglectful Husband</strong></span>
+              <span>🎭 Persona: <strong id="chat-role-user-title">Protagonist</strong></span>
               <span class="role-divider">•</span>
-              <span id="chat-role-user-goal">Goal: Beg for forgiveness or sign papers</span>
+              <span id="chat-role-user-goal">Objective: Shape the narrative</span>
             </div>
             <button class="btn-restart-mini" id="btn-restart-chat-scenario" title="Restart Scenario">↺</button>
           </div>
@@ -343,12 +336,12 @@
               type="text" 
               class="chat-input-field" 
               id="chat-user-input" 
-              placeholder="Type in Punjabi, Hinglish, or English (use *actions*)..." 
+              placeholder="Reply in English, Hinglish, or Punjabi (use *actions*)..." 
               autocomplete="off"
               required
             >
             <button type="submit" class="btn-send-message" id="btn-send-message">
-              <span>Send</span> <span>⚡</span>
+              <span>Send</span> <span>➔</span>
             </button>
           </form>
         </div>
@@ -527,19 +520,19 @@
     </button>
     <button class="mobile-dock-btn" data-view="story-reader">
       <span class="dock-icon">📖</span>
-      <span>Read</span>
+      <span>Novels</span>
     </button>
     <button class="mobile-dock-btn tmdb-highlight" id="mobile-open-tmdb">
-      <span class="dock-icon">➕</span>
-      <span>TMDb</span>
+      <span class="dock-icon">✦</span>
+      <span>Import</span>
     </button>
     <button class="mobile-dock-btn" data-view="character-chat">
       <span class="dock-icon">💬</span>
       <span>Chat</span>
     </button>
     <button class="mobile-dock-btn" data-view="dance-studio">
-      <span class="dock-icon">💃</span>
-      <span>Dance</span>
+      <span class="dock-icon">🎭</span>
+      <span>Studio</span>
     </button>
   </nav>
 
@@ -548,25 +541,25 @@
     <div class="modal-card tmdb-modal-card">
       <div class="modal-header">
         <div class="tmdb-modal-title-wrap">
-          <div class="tmdb-badge-pill">🎬 THE MOVIE DATABASE</div>
-          <h3>Import Any Story by TMDb ID</h3>
+          <div class="tmdb-badge-pill">✦ CINEMA ADAPTATION STUDIO</div>
+          <h3>Adapt Any Film or Series</h3>
         </div>
         <button class="modal-close" id="btn-close-tmdb-modal">&times;</button>
       </div>
 
       <p class="modal-description">
-        Enter any Movie or TV Show TMDb ID (e.g. <strong>1399</strong> for Game of Thrones, <strong>1378537</strong> for Mirzapur, <strong>155</strong> for The Dark Knight) or search by title. Kavana will automatically compose a playable adult novel scenario.
+        Search any movie or show by title or enter its TMDb reference. Kavana will automatically compose an authentic, interactive scenario with character dialogue and branching decisions.
       </p>
 
       <!-- TMDb Search Bar -->
       <div class="tmdb-search-box-row">
         <div class="search-box" style="flex: 1;">
-          <span class="search-icon">🎬</span>
+          <span class="search-icon">🔍</span>
           <input 
             type="text" 
             id="tmdb-query-input" 
             class="search-input-field" 
-            placeholder="Enter TMDb ID (e.g. 1399, 1378537, 60574, 550) or title..."
+            placeholder="Enter title (e.g. Mirzapur, Succession, Dune, Queen of Tears) or ID..."
           >
         </div>
         <select class="form-select" id="tmdb-media-type-select" style="width: auto; min-width: 110px;">
@@ -575,24 +568,24 @@
           <option value="movie">Movie</option>
         </select>
         <button class="btn-primary-mini" id="btn-fetch-tmdb-data">
-          <span>Fetch ⚡</span>
+          <span>Search Title</span>
         </button>
       </div>
 
       <!-- Quick 1-Click Presets -->
       <div class="tmdb-presets-container">
-        <span class="tmdb-presets-label">Popular 1-Click Presets:</span>
+        <span class="tmdb-presets-label">Featured Cinema Titles:</span>
         <div class="tmdb-presets-scroll">
-          <button class="tmdb-preset-chip" data-id="215720" data-type="tv">👑 Queen of Tears (215720)</button>
-          <button class="tmdb-preset-chip" data-id="76331" data-type="tv">💼 Succession (76331)</button>
-          <button class="tmdb-preset-chip" data-id="1378537" data-type="tv">👑 Mirzapur (84105)</button>
-          <button class="tmdb-preset-chip" data-id="60574" data-type="tv">🚬 Peaky Blinders (60574)</button>
-          <button class="tmdb-preset-chip" data-id="438631" data-type="movie">🏜️ Dune (438631)</button>
-          <button class="tmdb-preset-chip" data-id="1399" data-type="tv">🐉 Game of Thrones (1399)</button>
-          <button class="tmdb-preset-chip" data-id="1396" data-type="tv">🧪 Breaking Bad (1396)</button>
-          <button class="tmdb-preset-chip" data-id="155" data-type="movie">🦇 Dark Knight (155)</button>
-          <button class="tmdb-preset-chip" data-id="550" data-type="movie">🥊 Fight Club (550)</button>
-          <button class="tmdb-preset-chip" data-id="71446" data-type="tv">🎭 Money Heist (71446)</button>
+          <button class="tmdb-preset-chip" data-id="215720" data-type="tv">👑 Queen of Tears</button>
+          <button class="tmdb-preset-chip" data-id="76331" data-type="tv">💼 Succession</button>
+          <button class="tmdb-preset-chip" data-id="1378537" data-type="tv">👑 Mirzapur</button>
+          <button class="tmdb-preset-chip" data-id="60574" data-type="tv">🚬 Peaky Blinders</button>
+          <button class="tmdb-preset-chip" data-id="438631" data-type="movie">🏜️ Dune</button>
+          <button class="tmdb-preset-chip" data-id="1399" data-type="tv">🐉 Game of Thrones</button>
+          <button class="tmdb-preset-chip" data-id="1396" data-type="tv">🧪 Breaking Bad</button>
+          <button class="tmdb-preset-chip" data-id="155" data-type="movie">🦇 The Dark Knight</button>
+          <button class="tmdb-preset-chip" data-id="550" data-type="movie">🥊 Fight Club</button>
+          <button class="tmdb-preset-chip" data-id="71446" data-type="tv">🎭 Money Heist</button>
         </div>
       </div>
 
@@ -610,7 +603,7 @@
 
           <div class="tmdb-preview-details">
             <div class="tmdb-preview-badge-row">
-              <span class="tmdb-verified-badge">✓ Verified TMDb Media</span>
+              <span class="tmdb-verified-badge">✓ Verified Cinema Reference</span>
               <span class="tmdb-rating-badge" id="tmdb-preview-rating">★ 9.0</span>
             </div>
 
@@ -619,7 +612,7 @@
             <p class="tmdb-preview-overview" id="tmdb-preview-overview-text">Overview synopsis...</p>
 
             <div class="tmdb-cast-section">
-              <span class="tmdb-cast-label">Top Characters / Cast:</span>
+              <span class="tmdb-cast-label">Featured Characters & Cast:</span>
               <div class="tmdb-cast-chips" id="tmdb-preview-cast-container"></div>
             </div>
 
@@ -650,7 +643,7 @@
 
             <div class="tmdb-modal-actions">
               <button class="btn-primary-mini" id="btn-convert-and-launch-tmdb" style="padding: 0.75rem 1.5rem;">
-                🚀 Create & Play Scenario Now
+                ✦ Adapt & Play Scenario
               </button>
               <button class="btn-secondary-mini" id="btn-cancel-tmdb-preview">
                 Cancel
@@ -692,8 +685,7 @@
       </div>
 
       <div class="modal-actions" style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
-        <button class="btn-secondary-mini" id="btn-test-error-toast" style="font-size: 0.75rem;">Test Toast</button>
-        <button class="btn-primary-mini" id="btn-save-settings">Save Settings</button>
+        <button class="btn-primary-mini" id="btn-save-settings">Save Preferences</button>
       </div>
     </div>
   </div>

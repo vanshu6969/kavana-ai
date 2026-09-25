@@ -16,24 +16,34 @@ export default function HomePage() {
 
   const HOME_CATEGORIES = [
     { id: 'All', label: 'All Stories' },
-    { id: 'TMDb Cinema', label: '🎬 TMDb Cinema' },
+    { id: 'Cinema Originals', label: '🎬 Cinema Originals' },
     { id: 'Romance', label: '💖 Romance' },
     { id: 'Revenge & Drama', label: '🔥 Revenge & Drama' },
     { id: 'Anime & Fantasy', label: '🎌 Anime & Manga' },
     { id: 'Isekai & Cooking', label: '🍖 Isekai & Cooking' },
     { id: 'Pakistani Drama', label: '🇵🇰 Pakistani Drama' },
-    { id: 'Crime & Mafia', label: '🕶️ Crime & Mafia' },
+    { id: 'Crime & Syndicate', label: '🕶️ Crime & Syndicate' },
     { id: 'Billionaire CEO', label: '💼 Billionaire CEO' },
     { id: 'Historical & Royal', label: '👑 Historical & Royal' },
   ];
 
   const filteredCategoryStories = React.useMemo(() => {
     if (selectedCategory === 'All') return stories;
-    if (selectedCategory === 'TMDb Cinema') {
+    if (selectedCategory === 'Cinema Originals' || selectedCategory === 'TMDb Cinema') {
       return stories.filter(s => s.tags.some(t => t.toLowerCase().includes('tmdb')) || (s as any).tmdbId);
     }
     const cat = selectedCategory.toLowerCase();
     return stories.filter((s) => {
+      if (selectedCategory === 'Crime & Syndicate' || selectedCategory === 'Crime & Mafia') {
+        return (
+          s.category === 'Crime' ||
+          s.category === 'Crime & Mafia' ||
+          s.tags.some((t) => {
+            const l = t.toLowerCase();
+            return l.includes('mafia') || l.includes('crime') || l.includes('syndicate') || l.includes('don');
+          })
+        );
+      }
       if (selectedCategory === 'Anime & Fantasy') {
         return (
           s.category === 'Anime' ||

@@ -75,23 +75,19 @@ export default function Header() {
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-2 sm:gap-3">
             {/* Create Story Button */}
             <button
               onClick={() => setShowCreateModal(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-gradient-to-r from-[#FF2E55] to-rose-600 hover:from-red-600 hover:to-rose-700 text-white text-xs font-black shadow-glow-crimson hover:scale-105 active:scale-95 transition-all cursor-pointer"
             >
               <Plus size={14} className="stroke-[3]" />
-              <span className="tracking-wide">Create Story</span>
+              <span className="tracking-wide">Create Scenario</span>
             </button>
 
-            {/* Unlimited Free Badge */}
-            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/30 text-[#FF2E55] text-xs font-bold shadow-sm">
-              <Sparkles size={12} className="text-[#FF2E55]" />
-              <span className="font-bold">100% FREE</span>
-              <span className="text-[10px] text-white bg-[#FF2E55] px-1.5 py-0.2 rounded font-black">
-                AI
-              </span>
+            {/* Studio Live Badge */}
+            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-300 text-xs font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="font-semibold text-slate-300">Studio Live</span>
             </div>
           </div>
         </div>

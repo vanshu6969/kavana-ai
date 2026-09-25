@@ -373,7 +373,7 @@ function renderExploreFeed() {
       <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
         <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🔍</div>
         <h3 style="color: #fff; margin-bottom: 0.5rem;">No scenarios match "${state.searchQuery}"</h3>
-        <p style="font-size: 0.88rem;">Try searching for "Mirzapur", "Dune", "Shelby", or import by TMDb ID.</p>
+        <p style="font-size: 0.88rem;">Try searching for "Mirzapur", "Dune", "Shelby", or adapt a new title.</p>
         <button class="btn-secondary-mini" id="btn-reset-filters" style="margin-top: 1rem; padding: 0.6rem 1.25rem;">Show All Stories</button>
       </div>
     `;
@@ -405,11 +405,11 @@ function renderExploreFeed() {
         <div class="poster-gradient-fade"></div>
         <div class="poster-top-badges">
           <span class="card-rating-badge">★ ${rating}</span>
-          ${isTmdb ? `<span class="card-quality-badge">TMDb</span>` : `<span class="card-quality-badge">4K UHD</span>`}
+          ${isTmdb ? `<span class="card-quality-badge">CINEMA</span>` : `<span class="card-quality-badge">4K UHD</span>`}
         </div>
         <div class="card-hover-actions">
-          <button class="btn-card-action primary btn-play-story">▶ Play Scenario</button>
-          <button class="btn-card-action secondary btn-read-story">📖 Read</button>
+          <button class="btn-card-action primary btn-play-story">▶ Play Story</button>
+          <button class="btn-card-action secondary btn-read-story">📖 Read Novel</button>
         </div>
         <div class="mobile-poster-play-badge">▶</div>
       </div>
@@ -1425,13 +1425,13 @@ document.addEventListener('DOMContentLoaded', () => {
   async function fetchAndPreviewTMDb(queryOverride) {
     const query = (queryOverride || tmdbInput?.value || '').trim();
     if (!query) {
-      showToast({ title: 'TMDb Input Required', message: 'Enter a TMDb ID (e.g. 1399, 1378537) or movie title.', type: 'warning' });
+      showToast({ title: 'Title Required', message: 'Enter a movie or show title (e.g. Mirzapur, Succession, Dune).', type: 'warning' });
       return;
     }
 
     if (tmdbFetchBtn) {
       tmdbFetchBtn.disabled = true;
-      tmdbFetchBtn.innerHTML = '<span>Fetching ⏳</span>';
+      tmdbFetchBtn.innerHTML = '<span>Searching...</span>';
     }
 
     try {
@@ -1455,14 +1455,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const item = result.data;
       currentFetchedTMDbItem = item;
       renderTMDbPreview(item);
-      showToast({ title: '🎬 TMDb Title Found', message: `Found "${item.title || item.name}"!`, type: 'success' });
+      showToast({ title: '🎬 Cinema Title Loaded', message: `Found "${item.title || item.name}"!`, type: 'success' });
       playChime(640);
     } catch (err) {
-      showToast({ title: 'TMDb Lookup', message: err.message, type: 'error' });
+      showToast({ title: 'Cinema Search', message: err.message, type: 'error' });
     } finally {
       if (tmdbFetchBtn) {
         tmdbFetchBtn.disabled = false;
-        tmdbFetchBtn.innerHTML = '<span>Fetch ⚡</span>';
+        tmdbFetchBtn.innerHTML = '<span>Search Title</span>';
       }
     }
   }
@@ -1476,7 +1476,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const backdropUrl = item.cover || (item.backdrop_path ? `https://image.tmdb.org/t/p/w1280${item.backdrop_path}` : posterUrl);
     const rating = item.imdbRating || (item.vote_average ? (item.vote_average).toFixed(1) : '9.5');
     const overview = item.summary || item.overview || 'Step inside the cinematic universe where your choices decide the story.';
-    const tagline = item.tagline || (item.tags ? item.tags.slice(0, 2).join(' • ') : 'TMDb Verified Cinema');
+    const tagline = item.tagline || (item.tags ? item.tags.slice(0, 2).join(' • ') : 'Verified Cinema Reference');
 
     const backdropImg = document.getElementById('tmdb-preview-backdrop-img');
     const posterImg = document.getElementById('tmdb-preview-poster-img');
@@ -1490,7 +1490,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (posterImg) posterImg.src = posterUrl;
     if (titleText) titleText.textContent = `${title} (${releaseYear})`;
     if (taglineText) taglineText.textContent = tagline;
-    if (ratingText) ratingText.textContent = `★ ${rating} TMDb`;
+    if (ratingText) ratingText.textContent = `★ ${rating} Rating`;
     if (overviewText) overviewText.textContent = overview;
 
     // Render cast tags if available
@@ -1546,7 +1546,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Convert & Launch Story
   document.getElementById('btn-convert-and-launch-tmdb')?.addEventListener('click', () => {
     if (!currentFetchedTMDbItem) {
-      showToast({ title: 'No Title Selected', message: 'Fetch a movie or TV show first.', type: 'warning' });
+      showToast({ title: 'No Title Selected', message: 'Search for a film or show first.', type: 'warning' });
       return;
     }
 
@@ -1573,7 +1573,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeTMDbModal();
     showToast({
-      title: '✨ TMDb Cinema Scenario Ready!',
+      title: '✨ Cinema Scenario Ready!',
       message: `"${newStory.title}" has been added to your stories.`,
       type: 'success'
     });
