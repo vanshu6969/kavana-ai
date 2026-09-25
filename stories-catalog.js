@@ -4,6 +4,7 @@ import { KAVANA_LIB_STORIES } from './lib-stories.js';
 export const CINEMA_EXPANSION_STORIES = [
   {
     id: "love-villa-5-rivals",
+    gender: "female",
     title: "Love Villa: 5 Jealous Rivals (लव विला)",
     characterName: "The 5 Villa Sirens (Natasha, Tara, Aanya, Rhea & Meera)",
     userRole: "Sole Bachelor / Villa Master",

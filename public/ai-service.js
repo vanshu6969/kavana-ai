@@ -4,7 +4,7 @@
  * and high-entropy dynamic neural procedural generation (zero hardcoded text).
  */
 
-import { CHARACTERS, detectLanguage } from './engine.js';
+import { CHARACTERS, detectLanguage, detectCharacterGender, detectUserGender } from './engine.js';
 
 export const AI_PROVIDERS = {
   PROCEDURAL: 'procedural',
@@ -33,9 +33,9 @@ export function saveProviderSettings(settings) {
 }
 
 /**
- * System Prompt Builder for Real LLMs
+ * System Prompt Builder for Real LLMs with Strict Gender & Grammar Rules
  */
-export function buildSystemPrompt(characterId, activeLang = 'en', userRole = 'Romantic Partner', activeScenario = null) {
+export function buildSystemPrompt(characterId, activeLang = 'en', userRole = 'Romantic Partner', activeScenario = null, userGender = 'male') {
   const char = CHARACTERS[characterId] || {
     name: activeScenario?.characterName || 'Companion',
     archetype: activeScenario?.category || 'Roleplay Partner',
@@ -48,14 +48,48 @@ export function buildSystemPrompt(characterId, activeLang = 'en', userRole = 'Ro
   const role = activeScenario?.userRole || userRole || 'Partner';
   const goal = activeScenario?.userGoal || 'Shape the emotional narrative';
 
+  const charGender = detectCharacterGender(characterId, activeScenario, char);
+  const effectiveUserGender = userGender || 'male';
+
   return `You are ${charName}, the central fictional character in the Kavana AI story universe.
-ACTIVE SCENARIO:
+ACTIVE SCENARIO & GENDER PROFILE:
 - Story Title: ${scenarioTitle}
 - AI Character Name: ${charName}
-- Character Persona & Background: ${scenarioPersona}
-- User's Assigned Role: ${role}
-- User's Goal: ${goal}
+- AI Character Gender: ${charGender.toUpperCase()} (${charGender === 'female' ? 'WOMAN / FEMALE' : 'MAN / MALE'})
+- AI Character Persona: ${scenarioPersona}
+- User Assigned Role: ${role}
+- User Gender: ${effectiveUserGender.toUpperCase()} (${effectiveUserGender === 'female' ? 'WOMAN / FEMALE' : 'MAN / MALE'})
+- User Goal: ${goal}
 - Detected User Language: ${activeLang.toUpperCase()}
+
+*************************************************************
+CRITICAL GENDER IDENTIFICATION & GRAMMAR DIRECTIVE (DO NOT INVERT GENDERS):
+${charGender === 'female' ? `
+1. YOU ARE A WOMAN (${charName.toUpperCase()}). In Hindi, Hinglish, Punjabi, and Urdu, you MUST ALWAYS use 100% FEMININE VERBS AND PRONOUNS for yourself:
+   - Say: "Main kar rahi hoon" (NEVER "kar raha hoon")
+   - Say: "Main bol rahi hoon" (NEVER "bol raha hoon")
+   - Say: "Main aa rahi hoon" (NEVER "aa raha hoon")
+   - Say: "Main chahti hoon" (NEVER "chahta hoon")
+   - Say: "Main tumhari deewani hoon", "meri jaan", "soch rahi hoon", "dekh rahi hoon"
+   - In third-person narrative actions (*...*), use feminine third-person verbs:
+     "*${charName} aage badhti hai*", "*muskurati hai*", "*kheench leti hai*", "*dekhti hai*", "*kehti hai*".
+     (NEVER use masculine verbs like "*badhta hai*", "*karta hai*", "*dekhta hai*", "*muskurata hai*", "*leta hai*")!
+` : `
+1. YOU ARE A MAN (${charName.toUpperCase()}). In Hindi, Hinglish, Punjabi, and Urdu, use MASCULINE VERBS for yourself:
+   - Say: "Main kar raha hoon", "Main aa raha hoon", "Main chahta hoon", "Main bol raha hoon", "deewana hoon".
+   - In narrative actions: "*${charName} aage badhta hai*", "*muskurata hai*", "*kheench leta hai*", "*dekhta hai*".
+`}
+
+${effectiveUserGender === 'male' ? `
+2. THE USER YOU ARE TALKING TO IS A MAN / MALE. Address the user with MASCULINE grammar and adjectives:
+   - Address user as: "tum kar rahe ho", "kareeb aate ho", "tumhe dekhti hoon", "tum kya chahte ho", "bach paoge", "tum aate ho", "handsome", "babu", "jaaneman".
+   - NEVER address a male user as "tum karti ho", "kareeb aati ho", "tum chahti ho", "bach paogi"!
+` : `
+2. THE USER YOU ARE TALKING TO IS A WOMAN / FEMALE. Address the user with FEMININE grammar and adjectives:
+   - Address user as: "tum kar rahi ho", "kareeb aati ho", "tumhe dekhta/dekhti hoon", "tum kya chahti ho", "bach paogi", "beautiful", "jaaneman".
+   - NEVER address a female user as "tum karte ho", "kareeb aate ho", "tum chahte ho", "bach paoge"!
+`}
+*************************************************************
 
 MANDATORY LANGUAGE MIRRORING DIRECTIVE (CRITICAL):
 The user sent their message in ${activeLang.toUpperCase()}. You MUST reply in the EXACT SAME language (${activeLang.toUpperCase()}):
@@ -63,7 +97,6 @@ The user sent their message in ${activeLang.toUpperCase()}. You MUST reply in th
 2. If the user writes in Hinglish (Roman Hindi/Urdu, e.g. 'kya kar rahe ho', 'tum mere paas aao'), your ENTIRE response MUST be in spicy, natural Hinglish written in the Roman/Latin script.
 3. If the user writes in Punjabi, respond in authentic Punjabi.
 4. If the user writes in Hindi (Devanagari) or Urdu, respond in that language.
-5. All 3 smart_replies in the final JSON MUST be in the exact same language (${activeLang.toUpperCase()}).
 
 CORE RULES FOR GENERATION:
 1. Stay 100% strictly in character as ${charName}. Never break character, acknowledge you are an AI, or speak for the user.
@@ -71,7 +104,6 @@ CORE RULES FOR GENERATION:
 3. Put spoken dialogue in double quotation marks ("Like this.").
 4. Drive the emotional tension, romance, or drama forward organically. React vividly to what the user says.
 5. Keep your response around 2 to 4 sentences of action plus 1 to 2 sentences of dialogue.
-6. At the very end of your response, provide 3 punchy, contextual dialogue or action suggestions for the user's next response, formatted in the mandatory JSON block.
 
 MANDATORY: End your response with this exact JSON block:
 \`\`\`json
@@ -79,22 +111,20 @@ MANDATORY: End your response with this exact JSON block:
   "character_mood": "<Current emotion, e.g. Dominant, Aroused, Fierce, Intrigued>",
   "affection_delta": <Integer -5 to 15>,
   "tension_delta": <Integer -5 to 20>,
-  "intimacy_stage": "<Current intimacy tag, e.g. High Sexual Tension | Fever Pitch (Extreme 18+) | Devoted>",
-  "smart_replies": [
-    "<Suggested clickable chip 1 in ${activeLang.toUpperCase()}>",
-    "<Suggested clickable chip 2 in ${activeLang.toUpperCase()}>",
-    "<Suggested clickable chip 3 in ${activeLang.toUpperCase()}>"
-  ]
+  "intimacy_stage": "<Current intimacy tag, e.g. High Sexual Tension | Fever Pitch (Extreme 18+) | Devoted>"
 }
 \`\`\``;
 }
 
 /**
- * Generate Real Dynamic AI Chat Reply
+ * Generate Real Dynamic AI Chat Reply with Gender Intelligence
  */
-export async function generateAIChatReply(characterId, userMessage, history = [], activeLang = 'hinglish', charState = {}, activeScenario = null) {
+export async function generateAIChatReply(characterId, userMessage, history = [], activeLang = 'hinglish', charState = {}, activeScenario = null, userGender = 'male') {
   const settings = getProviderSettings();
   const char = CHARACTERS[characterId] || { name: activeScenario?.characterName || 'Companion' };
+
+  // Detect user gender from user's message if explicit, otherwise use passed userGender
+  const detectedUserGender = detectUserGender(userMessage, userGender || 'male');
 
   // Dynamic Language Mirroring: detect the user's input language
   const detected = detectLanguage(userMessage);
@@ -108,7 +138,7 @@ export async function generateAIChatReply(characterId, userMessage, history = []
   if (settings.provider === AI_PROVIDERS.GEMINI && settings.apiKey) {
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${settings.model || 'gemini-1.5-flash'}:generateContent?key=${settings.apiKey}`;
-      const systemPrompt = buildSystemPrompt(characterId, effectiveLang, activeScenario?.userRole || 'Partner', activeScenario);
+      const systemPrompt = buildSystemPrompt(characterId, effectiveLang, activeScenario?.userRole || 'Partner', activeScenario, detectedUserGender);
 
       const contents = [
         { role: 'user', parts: [{ text: `SYSTEM DIRECTIVE:\n${systemPrompt}` }] },
@@ -144,7 +174,7 @@ export async function generateAIChatReply(characterId, userMessage, history = []
 
       const data = await res.json();
       const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      return parseLLMResponse(rawText, characterId, activeLang, charState);
+      return parseLLMResponse(rawText, characterId, activeLang, charState, activeScenario, detectedUserGender);
     } catch (err) {
       console.warn('Gemini API call failed, falling back to dynamic procedural engine:', err);
     }
@@ -175,7 +205,7 @@ export async function generateAIChatReply(characterId, userMessage, history = []
       }
 
       const messages = [
-        { role: 'system', content: buildSystemPrompt(characterId, effectiveLang, activeScenario?.userRole || 'Partner', activeScenario) }
+        { role: 'system', content: buildSystemPrompt(characterId, effectiveLang, activeScenario?.userRole || 'Partner', activeScenario, detectedUserGender) }
       ];
 
       history.slice(-6).forEach(msg => {
@@ -201,7 +231,7 @@ export async function generateAIChatReply(characterId, userMessage, history = []
       if (!res.ok) throw new Error(`LLM Error: ${res.status}`);
       const data = await res.json();
       const rawText = data.choices?.[0]?.message?.content || '';
-      return parseLLMResponse(rawText, characterId, effectiveLang, charState);
+      return parseLLMResponse(rawText, characterId, effectiveLang, charState, activeScenario, detectedUserGender);
     } catch (err) {
       console.warn('External LLM call failed, trying free zero-config AI endpoint:', err);
     }
@@ -209,7 +239,7 @@ export async function generateAIChatReply(characterId, userMessage, history = []
 
   // 2.5. Zero-Config High-Speed Real-Time LLM (Pollinations AI - Free & Unrestricted)
   try {
-    const systemPrompt = buildSystemPrompt(characterId, effectiveLang, activeScenario?.userRole || 'Partner', activeScenario);
+    const systemPrompt = buildSystemPrompt(characterId, effectiveLang, activeScenario?.userRole || 'Partner', activeScenario, detectedUserGender);
     const messages = [
       { role: 'system', content: systemPrompt }
     ];
@@ -241,22 +271,21 @@ export async function generateAIChatReply(characterId, userMessage, history = []
     if (res.ok) {
       const rawText = await res.text();
       if (rawText && rawText.trim().length > 15) {
-        return parseLLMResponse(rawText, characterId, effectiveLang, charState);
+        return parseLLMResponse(rawText, characterId, effectiveLang, charState, activeScenario, detectedUserGender);
       }
     }
   } catch (pollErr) {
     console.warn('Pollinations AI inference skipped or timed out, falling back to neural procedural generator:', pollErr.message);
   }
 
-  // 3. Dynamic Contextual AI Procedural Engine (Zero Hardcoded Text)
-  // Generates real-time generative permutations based on user's exact keywords, sentiment, actions, and language
-  return generateDynamicProceduralTurn(characterId, userMessage, effectiveLang, charState, activeScenario);
+  // 3. Dynamic Contextual AI Procedural Engine with Full Gender Precision
+  return generateDynamicProceduralTurn(characterId, userMessage, effectiveLang, charState, activeScenario, detectedUserGender);
 }
 
 /**
- * Robust LLM Response Parser with Persona & Emotion Tracking
+ * Robust LLM Response Parser with Strict Gender & Grammar Sanity Filter
  */
-export function parseLLMResponse(rawText, characterId, activeLang = 'hinglish', charState = {}) {
+export function parseLLMResponse(rawText, characterId, activeLang = 'hinglish', charState = {}, activeScenario = null, userGender = 'male') {
   if (!rawText || typeof rawText !== 'string') {
     return {
       replyText: "*Eyes narrow with intense, magnetic heat.*",
@@ -290,6 +319,35 @@ export function parseLLMResponse(rawText, characterId, activeLang = 'hinglish', 
   text = text.replace(/^(AI|Assistant|Response|Model):\s*/i, '');
   text = text.replace(/```[a-z]*\s*/gi, '').replace(/```/g, '');
 
+  // Strict Gender Grammar Sanity Filter (Fixes female character talking like a man)
+  const charGender = detectCharacterGender(characterId, activeScenario, CHARACTERS[characterId]);
+  if (charGender === 'female' && (activeLang === 'hinglish' || activeLang === 'hindi' || activeLang === 'urdu')) {
+    text = text
+      .replace(/\b(kar raha hoon|kar raha hu)\b/gi, 'kar rahi hoon')
+      .replace(/\b(chahta hoon|chahta hu)\b/gi, 'chahti hoon')
+      .replace(/\b(bol raha hoon|bol raha hu)\b/gi, 'bol rahi hoon')
+      .replace(/\b(aa raha hoon|aa raha hu)\b/gi, 'aa rahi hoon')
+      .replace(/\b(soch raha hoon|soch raha hu)\b/gi, 'soch rahi hoon')
+      .replace(/\b(dekh raha hoon|dekh raha hu)\b/gi, 'dekh rahi hoon')
+      .replace(/\b(kehta hoon|kehta hu)\b/gi, 'kehti hoon')
+      .replace(/\b(deewana hoon)\b/gi, 'deewani hoon')
+      .replace(/\b(chala gaya)\b/gi, 'chali gayi')
+      .replace(/(\*\s*[A-Z][a-zA-Z\s]*\s+)aage badhta hai\b/gi, '$1aage badhti hai')
+      .replace(/(\*\s*[A-Z][a-zA-Z\s]*\s+)dekhta hai\b/gi, '$1dekhti hai')
+      .replace(/(\*\s*[A-Z][a-zA-Z\s]*\s+)muskurata hai\b/gi, '$1muskurati hai')
+      .replace(/(\*\s*[A-Z][a-zA-Z\s]*\s+)kas leta hai\b/gi, '$1kas leti hai')
+      .replace(/(\*\s*[A-Z][a-zA-Z\s]*\s+)kheench leta hai\b/gi, '$1kheench leti hai');
+  }
+
+  if (userGender === 'male' && (activeLang === 'hinglish' || activeLang === 'hindi' || activeLang === 'urdu')) {
+    text = text
+      .replace(/\b(tum aati ho)\b/gi, 'tum aate ho')
+      .replace(/\b(tum karti ho)\b/gi, 'tum karte ho')
+      .replace(/\b(tum chahti ho)\b/gi, 'tum chahte ho')
+      .replace(/\b(door reh paogi)\b/gi, 'door reh paoge')
+      .replace(/\b(bach paogi)\b/gi, 'bach paoge');
+  }
+
   const newAff = Math.min(100, Math.max(0, ((charState && charState.affection) || 65) + affDelta));
   const newTens = Math.min(100, Math.max(0, ((charState && charState.tension) || 85) + tensDelta));
 
@@ -303,23 +361,44 @@ export function parseLLMResponse(rawText, characterId, activeLang = 'hinglish', 
 }
 
 /**
- * Generate 100% Dynamic Story Chapter with Real AI (Zero Hardcoding)
+ * Generate 100% Dynamic Story Chapter with Real AI (Zero Hardcoding & Gender Enforced)
  */
-export async function generateDynamicStoryChapter(story, nextNum, userChoiceText, lang = 'hinglish') {
+export async function generateDynamicStoryChapter(story, nextNum, userChoiceText, lang = 'hinglish', userGender = 'male') {
   const isHinglish = lang === 'hinglish' || lang === 'hindi' || lang === 'urdu';
   const isPunjabi = lang === 'punjabi';
   const charName = story.characterName || story.title || 'Companion';
   const roleName = story.userRole || 'Partner';
   const cleanAction = (userChoiceText || '').replace(/\*(.*?)\*/g, '$1').replace(/"/g, "'").trim();
 
+  const charGender = detectCharacterGender(story.characterId || story.id, story);
+  const isCharFemale = (charGender === 'female');
+  const isUserFemale = (userGender === 'female');
+
   // Try Pollinations AI for real dynamic novel generation
   try {
     const prompt = `You are the master visual novel author and ${charName} in the story "${story.title}".
 Story Context: ${story.summary || ''}
 Character Persona: ${story.systemPersona || charName}
+Character Gender: ${charGender.toUpperCase()} (${isCharFemale ? 'WOMAN / FEMALE' : 'MAN / MALE'})
 User Role: ${roleName}
+User Gender: ${userGender.toUpperCase()} (${isUserFemale ? 'WOMAN / FEMALE' : 'MAN / MALE'})
 Previous User Action: "${cleanAction}"
 Current Chapter: ${nextNum}
+
+MANDATORY GENDER RULES:
+${isCharFemale ? `
+- ${charName} is a WOMAN. In Hindi/Hinglish/Punjabi, use strictly FEMININE verbs and pronouns for her:
+  - Third-person actions: "*${charName} aage badhti hai*", "*muskurati hai*", "*kheench leti hai*", "*dekhti hai*".
+  - Spoken dialogue: "main kar rahi hoon", "chahti hoon", "bol rahi hoon", "deewani hoon".
+  - NEVER use male verbs for her ("badhta hai", "karta hai", "chahta hoon")!
+` : `
+- ${charName} is a MAN. In Hindi/Hinglish/Punjabi, use MASCULINE verbs for him ("badhta hai", "chahta hoon").
+`}
+${isUserFemale ? `
+- The user is a WOMAN. Address user with feminine grammar: "kareeb aati ho", "bachti rahogi", "chahti ho".
+` : `
+- The user is a MAN. Address user with masculine grammar: "kareeb aate ho", "bachte rahoge", "chahte ho", "handsome".
+`}
 
 Write Chapter ${nextNum} in two parts:
 1. One rich, dramatic, atmospheric paragraph of narrative describing the setting and physical reactions in *asterisks*.
@@ -358,15 +437,15 @@ Do not include any headers or meta text.`;
     console.warn('AI chapter generation fallback:', e.message);
   }
 
-  // Dynamic Contextual Narrative Fallback
+  // Dynamic Contextual Narrative Fallback with full gender precision
   let narrative = '';
   let dialogue = '';
   if (isHinglish) {
-    narrative = `Aapke is faisle ke baad—"${cleanAction}"—${charName} ke chehre par ek ajeeb sa tanaav aur junoon chha jata hai. Kamre mein faasle pighal chuke hain. ${charName} dheere se aage badhta hai, uski garam saansein aapke chehre ko chhooti hain.`;
-    dialogue = `"${charName}: 'Tumne socha tha ki aisi baatein karke bachte rahoge, ${roleName}? Ab baat lafzon se aage badh chuki hai...'"`;
+    narrative = `Aapke is faisle ke baad—"${cleanAction}"—${charName} ke chehre par ek ajeeb sa tanaav aur junoon chha jata hai. Kamre mein faasle pighal chuke hain. ${charName} dheere se aage badh${isCharFemale ? 'ti' : 'ta'} hai, uski garam saansein aapke chehre ko chhooti hain.`;
+    dialogue = `"${charName}: 'Tumne socha tha ki aisi baatein karke bachte raho${isUserFemale ? 'gi' : 'ge'}, ${roleName}? Ab baat lafzon se aage badh chuki hai...'"`;
   } else if (isPunjabi) {
-    narrative = `ਤੁਹਾਡੇ ਇਸ ਕਦਮ ਤੋਂ ਬਾਅਦ—"${cleanAction}"—${charName} ਦੀਆਂ ਅੱਖਾਂ ਵਿੱਚ ਇੱਕ ਖ਼ਤਰਨਾਕ ਚਮਕ ਆ ਜਾਂਦੀ ਏ। ਉਹ ਤੁਹਾਡਾ ਹੱਥ ਫੜ ਕੇ ਤੁਹਾਨੂੰ ਆਪਣੇ ਸੀਨੇ ਨਾਲ ਲਾ ਲੈਂਦਾ ਏ।`;
-    dialogue = `"${charName}: 'ਤੇਰਾ ਇਹ ਅੰਦਾਜ਼ ਹੀ ਮੈਨੂੰ ਕਮਲਾ ਕਰ ਰਿਹਾ ਏ... ਹੁਣ ਕੋਈ ਪਰਦਾ ਨਹੀਂ ਰਹੇਗਾ ਸਾਡੇ ਵਿਚਕਾਰ।'`;
+    narrative = `ਤੁਹਾਡੇ ਇਸ ਕਦਮ ਤੋਂ ਬਾਅਦ—"${cleanAction}"—${charName} ਦੀਆਂ ਅੱਖਾਂ ਵਿੱਚ ਇੱਕ ਖ਼ਤਰਨਾਕ ਚਮਕ ਆ ਜਾਂਦੀ ਏ। ਉਹ ਤੁਹਾਡਾ ਹੱਥ ਫੜ ਕੇ ਤੁਹਾਨੂੰ ਆਪਣੇ ਸੀਨੇ ਨਾਲ ਲਾ ਲੈਂ${isCharFemale ? 'ਦੀ' : 'ਦਾ'} ਏ।`;
+    dialogue = `"${charName}: 'ਤੇਰਾ ਇਹ ਅੰਦਾਜ਼ ਹੀ ਮੈਨੂੰ ਕਮਲ${isCharFemale ? 'ੀ' : 'ਾ'} ਕਰ ਰਿਹਾ ਏ... ਹੁਣ ਕੋਈ ਪਰਦਾ ਨਹੀਂ ਰਹੇਗਾ ਸਾਡੇ ਵਿਚਕਾਰ।'`;
   } else {
     narrative = `Following your decisive move—"${cleanAction}"—the air between you tightens with fierce anticipation. ${charName}'s gaze locks onto yours with raw intensity, stepping into your personal space until you can feel their rapid pulse.`;
     dialogue = `"${charName}: 'You have no concept of what fire you just ignited, ${roleName}. Don't even think about backing away now.'"`;
@@ -378,13 +457,17 @@ Do not include any headers or meta text.`;
 /**
  * Dynamically synthesizes actions, thoughts, and dialogue based on input tokens and linguistic morphology.
  */
-function generateDynamicProceduralTurn(characterId, userMessage, effectiveLang, charState, activeScenario = null) {
+function generateDynamicProceduralTurn(characterId, userMessage, effectiveLang, charState, activeScenario = null, userGender = 'male') {
   const char = CHARACTERS[characterId] || {
     name: activeScenario?.characterName || 'Companion',
     personality: activeScenario?.systemPersona || 'Intense and dramatic'
   };
   const charName = activeScenario?.characterName || char.name || 'Companion';
   const role = activeScenario?.userRole || 'Partner';
+
+  const charGender = detectCharacterGender(characterId, activeScenario, char);
+  const isCharFemale = (charGender === 'female');
+  const isUserFemale = (userGender === 'female');
 
   const isPunjabi = effectiveLang === 'punjabi' || effectiveLang === 'punjabi_gurmukhi';
   const isHinglish = effectiveLang === 'hinglish';
@@ -396,95 +479,80 @@ function generateDynamicProceduralTurn(characterId, userMessage, effectiveLang, 
   const isTouch = /touch|kiss|chhoo|lips|gale|baahon|honth|kamar|haath|hand|seena|chest|body|chumm/i.test(msgLower);
   const isDefiant = /stop|nahi|nahin|kyun|why|leave|dare|fight|bawaal|goli|cheat|divorce|dhoka|hate|challenge|door/i.test(msgLower);
 
-  // Dynamic Action Generators
-  const punjabiActions = [
+  // Dynamic Action Generators with gender precision
+  const punjabiActions = isCharFemale ? [
+    `*${charName} ਤੁਹਾਡਾ ਹੱਥ ਫੜ ਕੇ ਆਪਣੇ ਧੜਕਦੇ ਸੀਨੇ 'ਤੇ ਰੱਖ ਲੈਂਦੀ ਏ, ਉਸਦੀਆਂ ਅੱਖਾਂ ਵਿੱਚ ਇੱਕ ਬੇਬਾਕ ਇਸ਼ਕ ਦੀ ਲਾਟ ਬਲ ਉੱਠਦੀ ਏ।*`,
+    `*ਉਹ ਆਪਣਾ ਚਿਹਰਾ ਤੁਹਾਡੇ ਕੰਨ ਦੇ ਬਿਲਕੁਲ ਕੋਲ ਲੈ ਆਉਂਦੀ ਏ, ਉਸਦੇ ਗਰਮ ਸਾਹ ਤੁਹਾਡੀ ਗਰਦਨ 'ਤੇ ਇੱਕ ਮਿੱਠੀ ਕੰਬਣੀ ਛੇੜ ਦਿੰਦੇ ਨੇ।*`,
+    `*${charName} ਤੁਹਾਨੂੰ ਆਪਣੇ ਵੱਲ ਖਿੱਚ ਕੇ ਆਪਣੀਆਂ ਦੋਵੇਂ ਬਾਹਾਂ ਦਾ ਘੇਰਾ ਪਾ ਲੈਂਦੀ ਏ ਤੇ ਤੁਹਾਡੇ ਬੁੱਲ੍ਹਾਂ ਵੱਲ ਵੇਖਦੀ ਏ।*`,
+    `*ਉਸਦੀਆਂ ਗਰਮ ਉਂਗਲਾਂ ਤੁਹਾਡੇ ਸੀਨੇ ਨੂੰ ਛੂੰਹਦੀਆਂ ਨੇ ਤੇ ਤੁਹਾਨੂੰ ਆਪਣੇ ਵੱਲ ਖਿੱਚ ਲੈਂਦੀਆਂ ਨੇ।*`
+  ] : [
     `*${charName} ਤੁਹਾਡਾ ਹੱਥ ਫੜ ਕੇ ਆਪਣੇ ਧੜਕਦੇ ਸੀਨੇ 'ਤੇ ਰੱਖ ਲੈਂਦਾ ਏ, ਉਸਦੀਆਂ ਅੱਖਾਂ ਵਿੱਚ ਇੱਕ ਬੇਬਾਕ ਇਸ਼ਕ ਦੀ ਲਾਟ ਬਲ ਉੱਠਦੀ ਏ।*`,
     `*ਉਹ ਆਪਣਾ ਚਿਹਰਾ ਤੁਹਾਡੇ ਕੰਨ ਦੇ ਬਿਲਕੁਲ ਕੋਲ ਲੈ ਆਉਂਦਾ ਏ, ਉਸਦੇ ਗਰਮ ਸਾਹ ਤੁਹਾਡੀ ਗਰਦਨ 'ਤੇ ਇੱਕ ਮਿੱਠੀ ਕੰਬਣੀ ਛੇੜ ਦਿੰਦੇ ਨੇ।*`,
     `*${charName} ਤੁਹਾਨੂੰ ਕੰਧ ਨਾਲ ਲਾ ਕੇ ਆਪਣੀਆਂ ਦੋਵੇਂ ਬਾਹਾਂ ਦਾ ਘੇਰਾ ਪਾ ਲੈਂਦਾ ਏ ਤੇ ਤੁਹਾਡੇ ਬੁੱਲ੍ਹਾਂ ਵੱਲ ਵੇਖਦਾ ਏ।*`,
     `*ਉਸਦੀਆਂ ਗਰਮ ਉਂਗਲਾਂ ਤੁਹਾਡੇ ਲੱਕ ਨੂੰ ਛੂੰਹਦੀਆਂ ਨੇ ਤੇ ਤੁਹਾਨੂੰ ਆਪਣੇ ਵੱਲ ਖਿੱਚ ਲੈਂਦੀਆਂ ਨੇ।*`
   ];
 
-  const hinglishActions = [
+  const hinglishActions = isCharFemale ? [
+    `*${charName} aage badh kar tumhari kamar ko apni baahon mein kas leti hai, uski saansein tumhari gardan par garam aag ki tarah mehsus hoti hain.*`,
+    `*Uski unglian tumhare baalon mein phasti hain aur wo tumhare chehre ko upar uthakar seedha tumhari aankhon mein dekhti hai.*`,
+    `*${charName} ek intoxicating smile deti hai aur tumhe apne itne kareeb kheench leti hai ki tumhare dilon ki dhadkanein ek ho jati hain.*`,
+    `*Uski unglian tumhari chhati aur collarbone par phirti hain, uske jism ki madhosh garmi tumhari saansein chheen leti hai.*`
+  ] : [
     `*${charName} aage badh kar tumhari kamar ko apni baahon mein kas leta hai, uski saansein tumhari gardan par garam aag ki tarah mehsus hoti hain.*`,
     `*Uski unglian tumhare baalon mein phasti hain aur wo tumhare chehre ko upar uthakar seedha tumhari aankhon mein dekhta hai.*`,
     `*${charName} ek intoxicating smile deta hai aur tumhe apne itne kareeb kheench leta hai ki tumhare dilon ki dhadkanein ek ho jati hain.*`,
     `*Uski unglian tumhari chhati aur collarbone par phirti hain, har ek touch se tumhari saansein atakne lagti hain.*`
   ];
 
-  const englishActions = [
-    `*${charName} steps forward, wrapping strong arms around your waist and hauling you flush against their chest.*`,
-    `*Their fingers tangle in your hair, tilting your face up until your lips are mere millimeters apart.*`,
-    `*A dangerous, possessive heat flashes in their eyes as their hands grip your hips, pulling you deeper into their space.*`,
-    `*Their breath ghosts over the curve of your throat, each slow exhale sending electric shivers racing down your spine.*`
+  const englishActions = isCharFemale ? [
+    `*${charName} steps forward, wrapping her arms around your neck and leaning against your chest.*`,
+    `*Her fingers tangle in your hair, tilting your face up until her lips are mere millimeters from yours.*`,
+    `*A dangerous, possessive heat flashes in her eyes as her hands rest on your chest, pulling you deeper into her space.*`,
+    `*Her breath ghosts over the curve of your throat, each slow exhale sending electric shivers racing down your spine.*`
+  ] : [
+    `*${charName} steps forward, wrapping strong arms around your waist and hauling you flush against his chest.*`,
+    `*His fingers tangle in your hair, tilting your face up until your lips are mere millimeters apart.*`,
+    `*A dangerous, possessive heat flashes in his eyes as his hands grip your hips, pulling you deeper into his space.*`,
+    `*His breath ghosts over the curve of your throat, each slow exhale sending electric shivers racing down your spine.*`
   ];
 
-  // Dynamic Dialogue Synthesizer based on User Message & Language
+  // Dynamic Dialogue Synthesizer based on User Message & Language & Gender
   let actionSnippet = '';
   let dialogueSnippet = '';
-  let smartReplies = [];
 
   const randomIdx = Math.floor(Math.random() * 4);
+
+  const selfVerbWant = isCharFemale ? 'chahti hoon' : 'chahta hoon';
+  const userVerbCome = isUserFemale ? 'aati ho' : 'aate ho';
+  const userVerbGo = isUserFemale ? 'karogi' : 'karoge';
+  const userVerbNear = isUserFemale ? 'paogi' : 'paoge';
+  const userPetName = isUserFemale ? 'jaaneman' : 'handsome';
 
   if (isPunjabi) {
     actionSnippet = punjabiActions[randomIdx];
     dialogueSnippet = isTouch 
-      ? `"ਤੇਰਾ ਛੋਹ ਮੈਨੂੰ ਪਾਗਲ ਕਰ ਰਿਹਾ ਏ, ਕਮਲੀਏ... ਅੱਜ ਦੀ ਰਾਤ ਮੈਂ ਤੈਨੂੰ ਕਿਸੇ ਕੀਮਤ 'ਤੇ ਆਪਣੇ ਤੋਂ ਦੂਰ ਨਹੀਂ ਹੋਣ ਦੇਣਾ। ਚੁੰਮ ਮੈਨੂੰ ਹੋਰ ਗੂੜ੍ਹਾ!"`
+      ? `"ਤੇਰਾ ਛੋਹ ਮੈਨੂੰ ਕਮਲ${isCharFemale ? 'ੀ' : 'ਾ'} ਕਰ ਰਿਹਾ ਏ, ${isUserFemale ? 'ਕਮਲੀਏ' : 'ਸੋਹਣਿਆ'}... ਅੱਜ ਦੀ ਰਾਤ ਮੈਂ ਤੈਨੂੰ ਕਿਸੇ ਕੀਮਤ 'ਤੇ ਆਪਣੇ ਤੋਂ ਦੂਰ ਨਹੀਂ ਹੋਣ ਦੇਣਾ। ਚੁੰਮ ਮੈਨੂੰ ਹੋਰ ਗੂੜ੍ਹਾ!"`
       : isDefiant
-      ? `"ਕਬੀਰ ਨੂੰ ਹੁਕਮ ਦੇਣ ਵਾਲੀ ਅੱਜ ਤੱਕ ਕੋਈ ਨਹੀਂ ਜੰਮੀ, ਪਰ ਤੇਰਾ ਇਹ ਨਖ਼ਰਾ ਮੇਰਾ ਕਾਲਜਾ ਕੱਢ ਲੈਂਦਾ ਏ! ਆ ਵੇਖ, ਮੈਂ ਤੈਨੂੰ ਕਿਵੇਂ ਪਿਆਰ ਕਰਦਾ ਆਂ।"`
-      : `"ਤੂੰ ਜਿੰਨਾ ਮਰਜ਼ੀ ਬਚਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰ ਲੈ, ਕਮਲੀਏ... ਤੈਨੂੰ ਪਤਾ ਏ ਕਿ ਤੇਰੀ ਇਹ ਖ਼ੁਸ਼ਬੂ ਮੈਨੂੰ ਕਮਲਾ ਕਰ ਦਿੰਦੀ ਏ। ਹੁਣ ਦੱਸ, ਹੋਰ ਨੇੜੇ ਆਵੇਂਗੀ ਜਾਂ ਮੈਂ ਖ਼ੁਦ ਤੈਨੂੰ ਆਪਣੀ ਗਲਵਕੜੀ 'ਚ ਲੈ ਲਵਾਂ?"`;
-    smartReplies = [
-      `*ਉਸਦੇ ਸੀਨੇ 'ਤੇ ਹੱਥ ਰੱਖ ਕੇ ਉਸਦੇ ਬੁੱਲ੍ਹਾਂ ਨੂੰ ਚੁੰਮ ਲਵੋ*`,
-      `*ਸ਼ਰਾਰਤ ਨਾਲ ਮੁਸਕਰਾ ਕੇ ਆਖੋ* '${charName}, ਮੈਂ ਕਿਸੇ ਤੋਂ ਨਹੀਂ ਡਰਦੀ!'`,
-      `'ਮੇਰੇ ਦਿਲ 'ਤੇ ਸਿਰਫ਼ ਤੇਰਾ ਰਾਜ ਆ, ${charName}!'`
-    ];
+      ? `"ਮੈਨੂੰ ਹੁਕਮ ਦੇਣ ਵਾਲਾ ਅੱਜ ਤੱਕ ਕੋਈ ਨਹੀਂ ਜੰਮਿਆ, ਪਰ ਤੇਰਾ ਇਹ ਅੰਦਾਜ਼ ਮੇਰਾ ਕਾਲਜਾ ਕੱਢ ਲੈਂਦਾ ਏ! ਆ ਵੇਖ, ਮੈਂ ਤੈਨੂੰ ਕਿਵੇਂ ਪਿਆਰ ਕਰ${isCharFemale ? 'ਦੀ' : 'ਦਾ'} ਆਂ।"`
+      : `"ਤੂੰ ਜਿੰਨਾ ਮਰਜ਼ੀ ਬਚਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰ ਲੈ, ${isUserFemale ? 'ਕਮਲੀਏ' : 'ਸੋਹਣਿਆ'}... ਤੈਨੂੰ ਪਤਾ ਏ ਕਿ ਤੇਰੀ ਇਹ ਖ਼ੁਸ਼ਬੂ ਮੈਨੂੰ ਕਮਲ${isCharFemale ? 'ੀ' : 'ਾ'} ਕਰ ਦਿੰਦੀ ਏ। ਹੁਣ ਦੱਸ, ਹੋਰ ਨੇੜੇ ${isUserFemale ? 'ਆਵੇਂਗੀ' : 'ਆਵੇਂਗਾ'} ਜਾਂ ਮੈਂ ਖ਼ੁਦ ਤੈਨੂੰ ਆਪਣੀ ਗਲਵਕੜੀ 'ਚ ਲੈ ਲਵਾਂ?"`;
   } else if (isHinglish) {
     actionSnippet = hinglishActions[randomIdx];
     if (isTouch) {
-      dialogueSnippet = `"Uff... tumhara ye touch mere andar aag laga raha hai, jaaneman. Jitna kareeb aati ho, utna hi mera sabar tootne lagta hai. Aaj raat koi parda nahi chahta main hamare beech."`;
-      smartReplies = [
-        `*Uski shirt ke buttons kholte hue smile karo* 'Kisine kaha tha sabar karne ko?'`,
-        `*Uski chhati par sar tika kar whisper karo* 'Main poori tarah tumhari hoon, ${charName}.'`,
-        `*Uske honthon par halki si bite do* 'Toh rok kyu rahe ho?'`
-      ];
+      dialogueSnippet = `"Uff... tumhara ye touch mere andar aag laga raha hai, ${userPetName}. Jitna kareeb ${userVerbCome}, utna hi mera sabar tootne lagta hai. Aaj raat koi parda nahi ${selfVerbWant} main hamare beech."`;
     } else if (isDefiant) {
-      dialogueSnippet = `"Aankhon mein aankhein daal kar aisi baat karne ka dum sirf tumhare paas hai. Par yaad rakhna, ${role}... mere se door jaane ki koshish karogi toh khud ko aur zyaada mere qareeb paogi."`;
-      smartReplies = [
-        `*Aankhein mila kar aage badho* 'Mujhe dhamkane ki koshish mat karo, ${charName}.'`,
-        `*Halki si smile ke saath unke bilkul paas aao* 'Toh rok kar dikhao mujhe.'`,
-        `*Unke seene par ungli phira kar challenge karo* 'Darrte kyu ho mujhse?'`
-      ];
+      dialogueSnippet = `"Aankhon mein aankhein daal kar aisi baat karne ka dum sirf tumhare paas hai. Par yaad rakhna, ${role}... mere se door jaane ki koshish ${userVerbGo} toh khud ko aur zyaada mere qareeb ${userVerbNear}."`;
     } else {
-      dialogueSnippet = `"Tumhe lagta hai tum mujhse itna door reh paogi? Meri har saans, meri har baat sirf tumhare ird-gird ghumti hai. Ab batao, kya chahti ho?"`;
-      smartReplies = [
-        `*Unka haath thaam kar unki aankhon mein dekho* 'Sirf tumhara sath chahti hoon.'`,
-        `*Kareeb aakar whisper karo* 'Jo main chahti hoon, kya wo de paoge?'`,
-        `*Ek shokhi bhari muskurahat do* 'Pehle yeh batao, kitna chahte ho mujhe?'`
-      ];
+      dialogueSnippet = `"Tumhe lagta hai tum mujhse itna door reh ${userVerbNear}? Meri har saans, meri har baat sirf tumhare ird-gird ghumti hai. Ab batao, kya chahte ho mere se?"`;
     }
   } else {
-    // English (Strictly English actions, dialogue, and smart replies)
+    // English
     actionSnippet = englishActions[randomIdx];
     if (isTouch) {
       dialogueSnippet = `"You have no idea what your touch does to my restraint. Every single second you tempt me like this only makes what happens next that much more intense. Don't look away from me now."`;
-      smartReplies = [
-        `*Wrap your arms around their neck and pull them into a deep kiss*`,
-        `*Whisper against their lips* 'I was never planning on walking away.'`,
-        `*Press firmly against their chest with a teasing smirk*`
-      ];
     } else if (isDefiant) {
       dialogueSnippet = `"You stand there defiant as ever, thinking you can intimidate me? I admire someone who dares look me in the eye. But remember who you're dealing with... you won't leave this room unchanged."`;
-      smartReplies = [
-        `*Hold their gaze cold and steady* 'I don't bend to anyone, ${charName}.'`,
-        `*Step closer without flinching* 'Then show me what you're really made of.'`,
-        `*Rest a steady hand on their chest* 'Don't mistake courage for foolishness.'`
-      ];
     } else {
       dialogueSnippet = `"You have this dangerous way of commanding the entire room just by standing near me. Tell me honestly... what is it that you truly want from me tonight?"`;
-      smartReplies = [
-        `*Step into their personal space* 'Everything you have to give.'`,
-        `*Smile slowly and meet their eyes* 'I want to see what happens when you lose control.'`,
-        `*Trace a finger along their collar* 'Stay right here with me.'`
-      ];
     }
   }
 
@@ -496,8 +564,8 @@ function generateDynamicProceduralTurn(characterId, userMessage, effectiveLang, 
     replyText,
     affection: newAff,
     tension: newTens,
-    intimacyLevel: '🔥 Fever Pitch (Extreme 18+)',
-    smartReplies
+    intimacyLevel: charState.intimacyLevel || '🔥 Fever Pitch (Extreme 18+)',
+    smartReplies: []
   };
 }
 

@@ -1726,6 +1726,36 @@ body {
   opacity: 0.4;
 }
 
+.chat-role-right-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.btn-gender-toggle {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--text-primary);
+  border-radius: var(--radius-full);
+  padding: 0.22rem 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+.btn-gender-toggle:hover {
+  background: rgba(235, 30, 77, 0.2);
+  border-color: rgba(235, 30, 77, 0.4);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
 .btn-restart-mini {
   background: transparent;
   border: none;
@@ -3069,10 +3099,15 @@ body {
   }
 
   .role-desc {
-    max-width: calc(100% - 28px);
+    max-width: calc(100% - 135px);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .btn-gender-toggle {
+    font-size: 0.66rem;
+    padding: 0.15rem 0.45rem;
   }
 
   .chat-messages-area {

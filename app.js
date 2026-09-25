@@ -2,7 +2,7 @@
  * Kavana AI - 1:1 Official Website & Interactive Platform Controller
  */
 
-import { CHARACTERS, KAVANA_STORIES } from './engine.js';
+import { CHARACTERS, KAVANA_STORIES, detectUserGender, detectCharacterGender } from './engine.js';
 import { 
   generateAIChatReply, 
   generateDynamicNovel, 
@@ -167,6 +167,7 @@ const state = {
   credits: parseInt(localStorage.getItem('kavana_coins') || '500', 10),
   activeCategory: 'all',
   mobileChatView: 'list', // 'list' shows all conversations roster on mobile, 'conversation' shows active chat
+  userGender: localStorage.getItem('kavana_user_gender') || 'male',
   
   // Dance Studio
   activeDancerId: 'kabir',
@@ -839,15 +840,19 @@ export async function progressStoryToNextChapter(story, userChoiceText, choiceTo
   // Dynamic AI Generation
   let narrative = '';
   let dialogue = '';
+  const userGen = state.userGender || 'male';
+  const charGen = detectCharacterGender(charId, story, story);
   try {
-    const aiStory = await generateDynamicStoryChapter(story, nextNum, cleanAction, lang);
+    const aiStory = await generateDynamicStoryChapter(story, nextNum, cleanAction, lang, userGen);
     narrative = aiStory.narrative;
     dialogue = aiStory.dialogue;
   } catch (err) {
     console.warn('AI chapter generation fallback:', err);
     if (isHinglish) {
-      narrative = `Aapke is faisle ke baad—"${cleanAction}"—kamre ka vatavaran poori tarah badal jata hai.\n\n${charName} ki aankhon mein ek aisi deewangi aur gehri aag dikhti hai jo pehle kabhi nahi dekhi. Saari dooriyan pal bhar mein pighalne lagti hain. ${charName} ek kadam aage badhata hai, dono ke beech ki hawa garam ho chuki hai.`;
-      dialogue = `"${charName}: 'Tumhe lagta hai tum mujhe is tarah chhed kar bachte rahoge, ${roleName}? Ab baat lafzon se aage badh chuki hai...'"`;
+      const actionVerb = charGen === 'female' ? 'badhti hai' : 'badhta hai';
+      const addressVerb = userGen === 'female' ? 'bachti rahogi' : 'bachte rahoge';
+      narrative = `Aapke is faisle ke baad—"${cleanAction}"—kamre ka vatavaran poori tarah badal jata hai.\n\n${charName} ki aankhon mein ek aisi deewangi aur gehri aag dikhti hai jo pehle kabhi nahi dekhi. Saari dooriyan pal bhar mein pighalne lagti hain. ${charName} ek kadam aage ${actionVerb}, dono ke beech ki hawa garam ho chuki hai.`;
+      dialogue = `"${charName}: 'Tumhe lagta hai tum mujhe is tarah chhed kar ${addressVerb}, ${roleName}? Ab baat lafzon se aage badh chuki hai...'"`;
     } else {
       narrative = `Following your decisive move—"${cleanAction}"—the entire atmosphere fractures with untamed electricity.\n\n${charName}'s breath hitches. A dangerous, intoxicating hunger flares in their eyes as they close every remaining inch between you.`;
       dialogue = `"${charName}: 'You have no idea what fire you've just ignited, ${roleName}. Don't even think about stepping back now.'"`;
@@ -1358,15 +1363,33 @@ function renderChatView() {
   const intTag = document.getElementById('chat-intimacy-tag');
   if (intTag) intTag.textContent = charState.intimacyLevel;
 
-  // Update Sticky Role Banner
+  // Update Sticky Role Banner & User Gender Controls
   const roleBanner = document.getElementById('chat-role-banner');
   const roleUserTitle = document.getElementById('chat-role-user-title');
   const roleUserGoal = document.getElementById('chat-role-user-goal');
+  const btnGender = document.getElementById('btn-user-gender-toggle');
 
   if (roleBanner && roleUserTitle && roleUserGoal) {
     roleBanner.style.display = 'flex';
     roleUserTitle.textContent = scenario?.userRole || 'Protagonist';
     roleUserGoal.textContent = scenario?.userGoal ? `Goal: ${scenario.userGoal}` : 'Goal: Shape the narrative';
+  }
+
+  if (btnGender) {
+    const curGender = state.userGender || 'male';
+    btnGender.innerHTML = curGender === 'female' ? '👩 You: Female' : '👨 You: Male';
+    btnGender.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      state.userGender = state.userGender === 'male' ? 'female' : 'male';
+      localStorage.setItem('kavana_user_gender', state.userGender);
+      btnGender.innerHTML = state.userGender === 'female' ? '👩 You: Female' : '👨 You: Male';
+      showToast({
+        title: 'Grammar Adapted',
+        message: `Your gender set to ${state.userGender.toUpperCase()}. AI will address you accordingly.`,
+        type: 'info'
+      });
+    };
   }
 
   const area = document.getElementById('chat-messages-area');
@@ -1430,6 +1453,13 @@ async function sendChatMessage(text) {
     saveChatSessions(sessions);
   }
 
+  // Auto-detect gender if user typed gendered verbs (e.g., "kar raha hoon" -> male, "kar rahi hoon" -> female)
+  const inferredGender = detectUserGender(text, state.userGender || 'male');
+  if (inferredGender && inferredGender !== state.userGender) {
+    state.userGender = inferredGender;
+    localStorage.setItem('kavana_user_gender', inferredGender);
+  }
+
   renderChatView();
 
   const partnerName = state.activeScenario?.characterName || state.activeScenario?.name || CHARACTERS[charId]?.name || 'Companion';
@@ -1452,7 +1482,8 @@ async function sendChatMessage(text) {
       history,
       state.activeLang,
       state.characterState[charId],
-      state.activeScenario
+      state.activeScenario,
+      state.userGender || 'male'
     );
 
     if (typing.parentNode) typing.parentNode.removeChild(typing);

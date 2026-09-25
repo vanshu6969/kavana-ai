@@ -17,6 +17,7 @@ export const LANGUAGES = {
 export const CHARACTERS = {
   valeria: {
     id: 'valeria',
+    gender: 'female',
     name: 'Valeria Vane',
     title: 'The Dark Temptress & Shadow Mage',
     archetype: 'Dark Fantasy & Seductress',
@@ -69,6 +70,7 @@ export const CHARACTERS = {
   },
   lucian: {
     id: 'lucian',
+    gender: 'male',
     name: 'Prince Lucian',
     title: 'The Rebellious Crown Prince',
     archetype: 'Royalty & Bad Boy',
@@ -121,6 +123,7 @@ export const CHARACTERS = {
   },
   kabir: {
     id: 'kabir',
+    gender: 'male',
     name: 'Kabir Oberoi',
     title: 'The Desi Mafia Billionaire',
     archetype: 'Desi Romance & Don',
@@ -173,6 +176,7 @@ export const CHARACTERS = {
   },
   natasha: {
     id: 'natasha',
+    gender: 'female',
     name: 'Natasha & The Villa Sirens',
     title: 'The 5 Jealous Rivals of Love Villa',
     archetype: 'Luxury Villa Bombshells & Rivalry',
@@ -224,6 +228,7 @@ export const CHARACTERS = {
 export const KAVANA_STORIES = [
   {
     id: 'love-villa-5-rivals',
+    gender: 'female',
     title: 'Love Villa: 5 Jealous Rivals (लव विला)',
     genre: 'Spicy Romance & Harem Rivalry',
     category: 'Spicy 18+',
@@ -956,6 +961,54 @@ export function detectLanguage(text) {
 }
 
 /**
+ * Robust Gender Intelligence: Detects character gender (female vs male)
+ */
+export function detectCharacterGender(characterId, scenario = null, char = null) {
+  if (scenario?.gender) return scenario.gender.toLowerCase();
+  if (char?.gender) return char.gender.toLowerCase();
+  if (characterId === 'valeria' || characterId === 'natasha') return 'female';
+  if (characterId === 'lucian' || characterId === 'kabir') return 'male';
+
+  const textToScan = [
+    scenario?.characterName || '',
+    scenario?.title || '',
+    scenario?.systemPersona || '',
+    scenario?.archetype || '',
+    scenario?.category || '',
+    scenario?.summary || '',
+    char?.name || '',
+    char?.personality || ''
+  ].join(' ').toLowerCase();
+
+  const femaleRegex = /\b(female|woman|girl|sirens|bombshell|seductress|temptress|heiress|queen|princess|begum|rani|madame|lady|she|her|herself|valeria|natasha|tara|aanya|rhea|meera|maddy|wednesday|rhaenyra|sharjeena|meerab|khirad|kashaf|shibra|jiya|hala|priya|alisha|ria|sofia|elena|seraphina|vivienne|padmini|noor|zoya|anjali|aaliya|mehrunnisa|saba|sameera|dua|miraal|zara|kiran|mahira|naina|pooja|simran|ananya|deepika|katrina|alia|kareena|shraddha|kiara|kriti|donna|mikasa|yor|anya|makima|power|nezuko|cha hae-in|miss|mrs|sister|mother|wife|daughter|bhabhi)\b/i;
+  
+  const maleRegex = /\b(male|man|boy|king|prince|lord|brother|father|husband|son|master|bachelor|bad boy|don|mafia|he|him|his|himself|kabir|lucian|john|wick|paul|atreides|shelby|thomas|tripathi|kaleen|bhaiya|murtasim|parizaad|hadi|aryan|vito|corleone|gojo|megumi|levi|draken|mikey|sebastian|lu chen|harvey|specter|daemon|joker|batman|superman|spiderman|tony|stark|thor|loki|sherlock|mr|sir)\b/i;
+
+  if (femaleRegex.test(textToScan)) return 'female';
+  if (maleRegex.test(textToScan)) return 'male';
+
+  return 'female';
+}
+
+/**
+ * Detect User Gender from message verbs or fallback
+ */
+export function detectUserGender(userMessage, currentGender = 'male') {
+  if (!userMessage || typeof userMessage !== 'string') return currentGender;
+  const lower = userMessage.toLowerCase();
+
+  // Male self-indicators in Hinglish / Hindi / English
+  if (/\b(raha hoon|raha hu|karunga|aaunga|chahta hoon|chahta hu|dekhunga|bolunga|sochunga|ladka hoon|bhai hoon|i am a guy|i am male|i'm a guy|i'm male|i am a boy)\b/i.test(lower)) {
+    return 'male';
+  }
+  // Female self-indicators
+  if (/\b(rahi hoon|rahi hu|karungi|aaungi|chahti hoon|chahti hu|dekhungi|bolungi|sochungi|ladki hoon|behen hoon|i am a girl|i am female|i'm a girl|i'm female)\b/i.test(lower)) {
+    return 'female';
+  }
+  return currentGender;
+}
+
+/**
  * Intelligent Multilingual 18+ Uncensored Chat Response Generator
  * Generates natural responses in English, Hinglish, Punjabi (Gurmukhi & Roman), and Hindi
  */
@@ -1029,7 +1082,17 @@ export function generateMultilingualReply(characterId, playerMessage, activeLang
       replyText = `*Valeria's breath stutters with pleasure as your hands make contact. She arches her body into yours, tangling her fingers in your hair.* "God, you feel incredible... Don't hold back. Kiss me until neither of us can breathe."`;
     }
   } 
-  // 3. LUCIAN
+  // 3. NATASHA & LOVE VILLA SIRENS
+  else if (characterId === 'natasha') {
+    if (langToUse === 'punjabi_gurmukhi' || langToUse === 'punjabi') {
+      replyText = `*ਨਤਾਸ਼ਾ ਸ਼ੈਂਪੇਨ ਦਾ ਗਲਾਸ ਰੱਖ ਕੇ ਤੁਹਾਡੇ ਗਲ਼ 'ਚ ਬਾਹਾਂ ਪਾ ਲੈਂਦੀ ਏ ਤੇ ਤਾਰਾ ਪਿੱਛੋਂ ਤੁਹਾਡੇ ਮੋਢੇ ਨੂੰ ਛੂੰਹਦੀ ਏ।* "ਵੇ ਸੋਹਣਿਆ, ਅੱਜ ਪੰਜੇ ਕੁੜੀਆਂ ਸਿਰਫ਼ ਤੇਰੇ ਨਾਂ ਦਾ ਜਾਮ ਪੀਣ ਆਈਆਂ ਨੇ। ਦੱਸ ਅੱਜ ਕਿਹਦੇ ਨਾਲ ਰਾਤ ਬਿਤਾਵੇਂਗਾ?"`;
+    } else if (langToUse === 'hinglish') {
+      replyText = `*Natasha champagne ka glass side mein rakh kar aapki gardan mein apni baahein daal leti hai, jabki Tara peeche se aapke kandhe par apna sar tikaati hai.* "Love Villa mein bachte bachte kahan jaoge, handsome? Hum paanchon mein se kisi ek ko toh chunna hi padega... ya fir sari raat paanchon ke sath bitaane ki himmat hai?"`;
+    } else {
+      replyText = `*Natasha sets her glass down and drapes both arms around your neck while Tara traces slow circles along your jawline.* "You think you can play cool in our villa, handsome? All five of us are watching your every breath... make your first move."`;
+    }
+  }
+  // 4. LUCIAN
   else {
     if (langToUse === 'punjabi_gurmukhi' || langToUse === 'punjabi') {
       replyText = `*ਲੂਸੀਅਨ ਆਪਣੇ ਸ਼ਾਹੀ ਕੋਟ ਨੂੰ ਲਾਹ ਕੇ ਸੁੱਟਦਾ ਏ ਤੇ ਤੁਹਾਨੂੰ ਘੁੱਟ ਕੇ ਜੱਫੀ ਪਾ ਲੈਂਦਾ ਏ।* "ਮੈਂ ਤਖ਼ਤ ਤੇ ਤਾਜ ਸਭ ਭੁੱਲ ਗਿਆ ਹਾਂ ਤੇਰੇ ਲਈ। ਅੱਜ ਰਾਤ ਸਿਰਫ਼ ਤੂੰ ਤੇ ਮੈਂ ਆਂ।"`;
