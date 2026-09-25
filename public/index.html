@@ -294,11 +294,17 @@
           
           <!-- Chat Top Header -->
           <div class="chat-pane-header">
-            <div class="chat-partner-info">
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80" alt="Avatar" class="chat-partner-avatar" id="chat-partner-avatar">
-              <div>
-                <h3 class="chat-header-name" id="chat-partner-name">Kabir Oberoi</h3>
-                <span class="chat-header-sub" id="chat-partner-archetype">Desi Romance & Don</span>
+            <div class="chat-header-left" style="display: flex; align-items: center; gap: 0.5rem; min-width: 0;">
+              <button class="btn-chat-mobile-back" id="btn-chat-mobile-back" type="button" title="Back to All Chats">
+                <span class="back-arrow">←</span>
+                <span class="back-text">Chats</span>
+              </button>
+              <div class="chat-partner-info">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80" alt="Avatar" class="chat-partner-avatar" id="chat-partner-avatar">
+                <div style="min-width: 0;">
+                  <h3 class="chat-header-name" id="chat-partner-name">Kabir Oberoi</h3>
+                  <span class="chat-header-sub" id="chat-partner-archetype">Desi Romance & Don</span>
+                </div>
               </div>
             </div>
 
@@ -307,9 +313,6 @@
               <span class="intimacy-tag" id="chat-intimacy-tag">🔥 Unrestricted</span>
             </div>
           </div>
-
-          <!-- Mobile Companion Carousel Strip (Active on mobile screens) -->
-          <div class="mobile-chat-companion-strip" id="mobile-chat-roster"></div>
 
           <!-- Role Banner -->
           <div class="chat-role-banner" id="chat-role-banner">

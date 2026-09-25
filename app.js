@@ -6,6 +6,7 @@ import { CHARACTERS, KAVANA_STORIES } from './engine.js';
 import { 
   generateAIChatReply, 
   generateDynamicNovel, 
+  generateDynamicStoryChapter,
   getProviderSettings, 
   saveProviderSettings 
 } from './ai-service.js';
@@ -165,6 +166,7 @@ const state = {
   activeChatPartnerId: localStorage.getItem('kavana_last_chat_id') || initialSavedSessions[0]?.id || 'mirzapur-kaleen-bhaiya',
   credits: parseInt(localStorage.getItem('kavana_coins') || '500', 10),
   activeCategory: 'all',
+  mobileChatView: 'list', // 'list' shows all conversations roster on mobile, 'conversation' shows active chat
   
   // Dance Studio
   activeDancerId: 'kabir',
@@ -431,6 +433,7 @@ export function launchScenarioChat(story) {
     };
   }
 
+  state.mobileChatView = 'conversation';
   switchView('character-chat');
   renderChatView();
 }
@@ -787,7 +790,7 @@ function synthesizeInitialChapter(story, lang) {
   };
 }
 
-export function progressStoryToNextChapter(story, userChoiceText, choiceTone = '', lang = 'hinglish') {
+export async function progressStoryToNextChapter(story, userChoiceText, choiceTone = '', lang = 'hinglish') {
   if (!story) story = state.activeStory || KAVANA_STORIES[0];
   const charId = story.characterId || story.id || 'scenario-char';
   const charName = story.characterName || story.title || 'Companion';
@@ -797,6 +800,14 @@ export function progressStoryToNextChapter(story, userChoiceText, choiceTone = '
 
   const chapters = getStoryChapters(story, lang);
   const nextNum = chapters.length + 1;
+
+  // Immediate UI feedback showing AI is thinking & writing
+  const proseEl = document.getElementById('scene-prose-text');
+  const dialogueEl = document.getElementById('scene-dialogue-text');
+  if (proseEl) {
+    proseEl.innerHTML = `<span style="color: var(--kavana-crimson); font-style: italic; font-size: 0.95rem;">✦ AI is thinking and writing Chapter ${nextNum} for ${charName}...</span>`;
+  }
+  if (dialogueEl) dialogueEl.style.display = 'none';
 
   // 1. Update Affection & Intimacy Tension
   if (!state.characterState[charId]) {
@@ -825,22 +836,25 @@ export function progressStoryToNextChapter(story, userChoiceText, choiceTone = '
   // Clean choice text for prompt reflection
   const cleanAction = (userChoiceText || '').replace(/\*(.*?)\*/g, '$1').replace(/"/g, "'").trim();
 
-  // Dynamic Narrative consequence reacting specifically to what was chosen
+  // Dynamic AI Generation
   let narrative = '';
   let dialogue = '';
-
-  if (isHinglish) {
-    narrative = `Aapke is faisle ke baad—"${cleanAction}"—kamre ka vatavaran poori tarah badal jata hai.\n\n${charName} ki aankhon mein ek aisi deewangi aur gehri aag dikhti hai jo pehle kabhi nahi dekhi. Saari dooriyan pal bhar mein pighalne lagti hain. ${charName} ek kadam aage badhata hai, dono ke beech ki hawa garam ho chuki hai.`;
-    dialogue = `"${charName}: 'Tumhe lagta hai tum mujhe is tarah chhed kar bachte rahoge, ${roleName}? Ab baat lafzon se aage badh chuki hai...'"`;
-  } else if (isPunjabi) {
-    narrative = `ਜਦੋਂ ਤੁਸੀਂ ਆਖਿਆ—"${cleanAction}"—ਤਾਂ ${charName} ਦਾ ਦਿਲ ਇੱਕ ਪਲ ਲਈ ਥੰਮ ਗਿਆ। ਉਸਦੇ ਚਿਹਰੇ 'ਤੇ ਇਕ ਖ਼ਤਰਨਾਕ ਪਰ ਕਾਤਲਾਨਾ ਮੁਸਕਰਾਹਟ ਆ ਗਈ। ਉਹ ਤੁਹਾਡੇ ਹੋਰ ਨੇੜੇ ਆ ਗਿਆ।`;
-    dialogue = `"${charName}: 'ਤੇਰਾ ਇਹ ਬੇਬਾਕ ਅੰਦਾਜ਼ ਹੀ ਮੈਨੂੰ ਕਮਲਾ ਕਰ ਰਿਹਾ ਏ... ਹੁਣ ਕੋਈ ਪਰਦਾ ਨਹੀਂ ਰਹੇਗਾ ਸਾਡੇ ਵਿਚਕਾਰ।'`;
-  } else {
-    narrative = `Following your decisive move—"${cleanAction}"—the entire atmosphere fractures with untamed electricity.\n\n${charName}'s breath hitches. A dangerous, intoxicating hunger flares in their eyes as they close every remaining inch between you. Every rule that once held you back is dissolving in this raw collision of wills.`;
-    dialogue = `"${charName}: 'You have no idea what fire you've just ignited, ${roleName}. Don't even think about stepping back now.'"`;
+  try {
+    const aiStory = await generateDynamicStoryChapter(story, nextNum, cleanAction, lang);
+    narrative = aiStory.narrative;
+    dialogue = aiStory.dialogue;
+  } catch (err) {
+    console.warn('AI chapter generation fallback:', err);
+    if (isHinglish) {
+      narrative = `Aapke is faisle ke baad—"${cleanAction}"—kamre ka vatavaran poori tarah badal jata hai.\n\n${charName} ki aankhon mein ek aisi deewangi aur gehri aag dikhti hai jo pehle kabhi nahi dekhi. Saari dooriyan pal bhar mein pighalne lagti hain. ${charName} ek kadam aage badhata hai, dono ke beech ki hawa garam ho chuki hai.`;
+      dialogue = `"${charName}: 'Tumhe lagta hai tum mujhe is tarah chhed kar bachte rahoge, ${roleName}? Ab baat lafzon se aage badh chuki hai...'"`;
+    } else {
+      narrative = `Following your decisive move—"${cleanAction}"—the entire atmosphere fractures with untamed electricity.\n\n${charName}'s breath hitches. A dangerous, intoxicating hunger flares in their eyes as they close every remaining inch between you.`;
+      dialogue = `"${charName}: 'You have no idea what fire you've just ignited, ${roleName}. Don't even think about stepping back now.'"`;
+    }
   }
 
-  // Generate 2 dynamic choices for Chapter N+1 + 1:1 chat transition
+  // Generate dynamic choices for next chapter
   const choices = [
     {
       text: isHinglish ? `*Unki aankhon mein dekhte hue unka haath pakdo* 'Jo shuru kiya hai, use poora karo.'` : `*Catch their hand and look into their eyes* 'Finish what you started.'`,
@@ -1008,6 +1022,7 @@ function renderStoryReader() {
 
 export function switchChatSession(sessionId) {
   if (!sessionId) return;
+  state.mobileChatView = 'conversation';
   const sessions = getChatSessions();
   const session = sessions.find(s => s.id === sessionId);
   const matchedStory = KAVANA_STORIES.find(s => s.id === sessionId);
@@ -1290,6 +1305,24 @@ function renderChatView() {
   };
   const lang = state.activeLang;
 
+  // Handle mobile master-detail layout toggle
+  const workspace = document.querySelector('.chat-workspace');
+  if (workspace) {
+    workspace.dataset.mobileView = state.mobileChatView || 'list';
+  }
+
+  // Mobile Back Button: Return from conversation to chats list
+  const mobileBackBtn = document.getElementById('btn-chat-mobile-back');
+  if (mobileBackBtn) {
+    mobileBackBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      state.mobileChatView = 'list';
+      if (workspace) workspace.dataset.mobileView = 'list';
+      renderChatRoster();
+    };
+  }
+
   // Initialize character state
   if (!state.characterState[charId]) {
     state.characterState[charId] = {
@@ -1336,10 +1369,6 @@ function renderChatView() {
     roleUserGoal.textContent = scenario?.userGoal ? `Goal: ${scenario.userGoal}` : 'Goal: Shape the narrative';
   }
 
-  const activePrompts = state.smartReplies[charId]?.length 
-    ? state.smartReplies[charId] 
-    : (scenario?.smartReplies || char.suggestedPrompts?.[lang] || char.suggestedPrompts?.['hinglish'] || char.suggestedPrompts?.['en'] || []);
-
   const area = document.getElementById('chat-messages-area');
   if (area) {
     area.innerHTML = '';
@@ -1353,36 +1382,10 @@ function renderChatView() {
     area.scrollTop = area.scrollHeight;
   }
 
-  // Render Dynamic Clickable Smart Reply Chips (Hinglish/English matching active context)
-  let repliesBar = document.getElementById('chat-quick-replies-bar');
-  if (!repliesBar) {
-    repliesBar = document.createElement('div');
-    repliesBar.id = 'chat-quick-replies-bar';
-    repliesBar.className = 'chat-quick-replies-bar';
-    const chatForm = document.getElementById('chat-form');
-    if (chatForm && chatForm.parentNode) {
-      chatForm.parentNode.insertBefore(repliesBar, chatForm);
-    }
-  }
-
-  if (repliesBar) {
-    repliesBar.innerHTML = '';
-    if (activePrompts && activePrompts.length > 0) {
-      activePrompts.slice(0, 3).forEach(prompt => {
-        const chip = document.createElement('button');
-        chip.type = 'button';
-        chip.className = 'quick-reply-chip';
-        chip.textContent = prompt;
-        chip.title = 'Click to send this response';
-        chip.onclick = () => {
-          sendChatMessage(prompt);
-        };
-        repliesBar.appendChild(chip);
-      });
-      repliesBar.style.display = 'flex';
-    } else {
-      repliesBar.style.display = 'none';
-    }
+  // Permanently remove any quick dialogue / canned reply chips bar
+  const existingRepliesBar = document.getElementById('chat-quick-replies-bar');
+  if (existingRepliesBar && existingRepliesBar.parentNode) {
+    existingRepliesBar.parentNode.removeChild(existingRepliesBar);
   }
 }
 
@@ -1432,8 +1435,13 @@ async function sendChatMessage(text) {
   const partnerName = state.activeScenario?.characterName || state.activeScenario?.name || CHARACTERS[charId]?.name || 'Companion';
   const area = document.getElementById('chat-messages-area');
   const typing = document.createElement('div');
-  typing.className = 'chat-bubble ai';
-  typing.innerHTML = `<em>${partnerName} is thinking & breathless...</em>`;
+  typing.className = 'chat-bubble ai thinking-bubble';
+  typing.innerHTML = `
+    <div class="thinking-dots">
+      <span></span><span></span><span></span>
+    </div>
+    <em>${partnerName} is thinking...</em>
+  `;
   area?.appendChild(typing);
   if (area) area.scrollTop = area.scrollHeight;
 
@@ -1452,7 +1460,6 @@ async function sendChatMessage(text) {
     state.characterState[charId].affection = aiResponse.affection;
     state.characterState[charId].tension = aiResponse.tension;
     state.characterState[charId].intimacyLevel = aiResponse.intimacyLevel;
-    state.smartReplies[charId] = aiResponse.smartReplies || [];
 
     const aiMsg = { sender: 'ai', text: aiResponse.replyText, time: Date.now() };
     history.push(aiMsg);
@@ -1540,7 +1547,12 @@ function initApp() {
   document.querySelectorAll('.kavana-nav-link, .nav-btn, .mobile-nav-item, .mobile-dock-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const view = btn.dataset.view;
-      if (view) switchView(view);
+      if (view) {
+        if (view === 'character-chat') {
+          state.mobileChatView = 'list';
+        }
+        switchView(view);
+      }
     });
   });
 
