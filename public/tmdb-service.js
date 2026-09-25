@@ -256,7 +256,7 @@ export const VERIFIED_TMDB_STORIES = [
         chapters: [
           {
             id: 'c1',
-            title: 'Chapter 1: The Dragon's Throne',
+            title: "Chapter 1: The Dragon's Throne",
             visual: 'https://image.tmdb.org/t/p/w1280/zZqpAXxVSBtxV9qPBcscfXBcL2w.jpg',
             speaker: 'Daemon Targaryen',
             characterMood: 'Fierce & Seductive',

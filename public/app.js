@@ -1074,7 +1074,7 @@ function triggerDanceAnimation() {
 }
 
 // Initialize Application
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
   // Brand Click -> Return to Cinema Explore
   document.getElementById('nav-brand')?.addEventListener('click', (e) => {
     e.preventDefault();
@@ -1587,4 +1587,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial State: Start directly on modern Cinema Platform
   updateCoins(0);
   switchView('stories-explore');
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
