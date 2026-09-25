@@ -659,7 +659,16 @@ export function getStoryChapters(story, lang) {
     return state.storyBranches[storyId];
   }
 
-  // 2. Check localStorage
+  // 2. Check pre-written static chapters (e.g. Kabir, Valeria, or any pre-authored story)
+  const prewritten = story.languages?.[lang]?.chapters || 
+                     story.languages?.['en']?.chapters || 
+                     (Array.isArray(story.chapters) && story.chapters.length > 0 ? story.chapters : null);
+  if (prewritten && prewritten.length > 0) {
+    state.storyBranches[storyId] = prewritten;
+    return prewritten;
+  }
+
+  // 3. Check localStorage
   try {
     const saved = localStorage.getItem(`kavana_story_branch_${storyId}`);
     if (saved) {
@@ -673,7 +682,7 @@ export function getStoryChapters(story, lang) {
     console.warn('Error reading saved story branch:', e);
   }
 
-  // 3. Synthesize Initial Chapter 1 for this story
+  // 4. Synthesize Initial Chapter 1 for this story
   const initialChapter = synthesizeInitialChapter(story, lang);
   state.storyBranches[storyId] = [initialChapter];
   saveStoryChapters(storyId, state.storyBranches[storyId]);

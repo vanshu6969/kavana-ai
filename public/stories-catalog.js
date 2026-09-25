@@ -1,4 +1,5 @@
 import { VERIFIED_TMDB_STORIES } from './tmdb-service.js';
+import { KAVANA_LIB_STORIES } from './lib-stories.js';
 
 export const CINEMA_EXPANSION_STORIES = [
   {
@@ -195,9 +196,7 @@ export const CINEMA_EXPANSION_STORIES = [
   }
 ];
 
-export const KAVANA_STORIES_CATALOG = [
-  ...VERIFIED_TMDB_STORIES,
-  ...CINEMA_EXPANSION_STORIES,
+const CURATED_ORIGINAL_STORIES = [
   {
     "title": "Priya: Bad Husband",
     "characterName": "Priya",
@@ -812,6 +811,20 @@ export const KAVANA_STORIES_CATALOG = [
       "*Turn the tables and question Nyx's real motives*"
     ],
     "systemPersona": "You are Nyx in the dramatic scenario 'Nyx: The Demon Empress'. Stay 100% in character. Speak with raw emotion, tension, and vivid physical actions inside brackets."
-  },
-
+  }
 ];
+
+const RAW_ALL_STORIES = [
+  ...VERIFIED_TMDB_STORIES,
+  ...CINEMA_EXPANSION_STORIES,
+  ...KAVANA_LIB_STORIES,
+  ...CURATED_ORIGINAL_STORIES
+];
+
+const seenCatalogIds = new Set();
+export const KAVANA_STORIES_CATALOG = RAW_ALL_STORIES.filter((story, idx) => {
+  const key = story.id || story.tmdbId || story.title || `story-${idx}`;
+  if (seenCatalogIds.has(key)) return false;
+  seenCatalogIds.add(key);
+  return true;
+});
