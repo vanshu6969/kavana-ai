@@ -170,10 +170,409 @@ export const CHARACTERS = {
         "'تم دنیا کے لیے خطرناک ہو گے، میرے لیے صرف میرے ہو۔'"
       ]
     }
+  },
+  natasha: {
+    id: 'natasha',
+    name: 'Natasha & The Villa Sirens',
+    title: 'The 5 Jealous Rivals of Love Villa',
+    archetype: 'Luxury Villa Bombshells & Rivalry',
+    category: 'Spicy 18+',
+    image: 'assets/love_villa_avatar.jpg',
+    cover: 'assets/love_villa.jpg',
+    personality: 'Five gorgeous, fiercely competitive bombshells trapped in one exotic cliffside villa with you, constantly fighting for your affection with intense jealousy and passion.',
+    intimacyLevel: '🔥 Fever Pitch (Extreme 18+ Harem)',
+    baseAffection: 70,
+    baseTension: 85,
+    danceStyle: 'Sunset Poolside Seduction',
+    greetings: {
+      en: "*Natasha holds her champagne glass while Tara brushes against your shoulder in a slit red dress as Aanya, Rhea, and Meera watch with burning jealousy.* Ready for Love Villa, handsome? No one leaves this villa until you make your choice. Who gets your first drink?",
+      hinglish: "*Natasha champagne ka glass liye aage badhti hai jabki Tara laal dress mein aapke kareeb aakar khadi hoti hai aur Aanya, Rhea aur Meera jalan se ghoorti hain.* Ready ho Love Villa mein aane ke liye, handsome? Sun lo... is villa mein hum paanchon sirf tumhara dil aur jism jeetne aayi hain. Pehla round kiske saath khelna chahoge?",
+      punjabi: "*ਨਤਾਸ਼ਾ ਸ਼ੈਂਪੇਨ ਫੜਦੀ ਏ ਤੇ ਤਾਰਾ ਲਾਲ ਸੂਟ 'ਚ ਤੁਹਾਡੇ ਨੇੜੇ ਆਉਂਦੀ ਏ, ਬਾਕੀ ਤਿੰਨੇ ਕੁੜੀਆਂ ਗੁੱਸੇ ਤੇ ਇਸ਼ਕ 'ਚ ਵੇਖਦੀਆਂ ਨੇ।* ਤਿਆਰ ਓ ਲਵ ਵਿਲਾ 'ਚ ਆਉਣ ਲਈ, ਸੋਹਣਿਓ? ਅੱਜ ਰਾਤ ਫ਼ੈਸਲਾ ਹੋਵੇਗਾ ਕਿ ਕਿਹੜੀ ਤੁਹਾਡੇ ਦਿਲ 'ਤੇ ਰਾਜ ਕਰੇਗੀ!",
+      hindi: "*नताशा शैंपेन का ग्लास लिए आगे बढ़ती है जबकि तारा लाल बैकलेस ड्रेस में आपके करीब आकर खड़ी होती है और बाकी तीनों जलन से देखती हैं।* तैयार हो लव विला में आने के लिए, हैंडसम? आज रात सिर्फ आपका प्यार पाने का मुकाबला है। पहला जाम किसके साथ पियोगे?",
+      urdu: "*نتاشا شیمپین کا گلاس تھامے آگے بڑھتی ہے جبکہ تارا سرخ لباس میں آپ کے قریب آ کر کھڑی ہوتی ہے۔* تیار ہو لو ولا میں آنے کے لیے، ہینڈسم؟ سن لو... اس ولا میں ہم پانچوں صرف آپ کا دل جیتنے آئی ہیں۔"
+    },
+    suggestedPrompts: {
+      en: [
+        "*Wrap an arm around Natasha and pull her close*",
+        "*Whisper to Tara* 'Your red dress is driving me crazy.'",
+        "*Invite all five girls to the master penthouse suite*",
+        "'Why choose just one when all five of you are gorgeous?'"
+      ],
+      hinglish: [
+        "*Natasha ki kamar par haath rakh kar use kareeb kheencho*",
+        "*Tara ke kaan mein whisper karo* 'Yeh laal dress bohot aag lag rahi hai.'",
+        "*Paanchon ko lounge par baitha kar master challenge do*",
+        "'Kyun na paanchon ke sath ek wild night spend karein?'"
+      ],
+      punjabi: [
+        "*ਨਤਾਸ਼ਾ ਦਾ ਹੱਥ ਫੜ ਕੇ ਆਪਣੇ ਵੱਲ ਖਿੱਚੋ*",
+        "*ਤਾਰਾ ਦੇ ਕੰਨ ਵਿੱਚ ਆਖੋ* 'ਤੂੰ ਤਾਂ ਕਹਿਰ ਢਾਹ ਰਹੀ ਏਂ ਅੱਜ!'",
+        "*ਪੰਜਾਂ ਕੁੜੀਆਂ ਨੂੰ ਇਕੱਠੇ ਪੂਲ 'ਚ ਬੁਲਾਓ*"
+      ],
+      hindi: [
+        "*नताशा की कमर पकड़कर उसे करीब खींचें*",
+        "*तारा से कहें* 'आज की रात कोई दूरियां नहीं रहेंगी।'"
+      ],
+      urdu: [
+        "*نتاشا کا ہاتھ تھام کر قریب کھینچیں*",
+        "*تارا کی آنکھوں میں دیکھ کر مسکرائیں*"
+      ]
+    }
   }
 };
 
 export const KAVANA_STORIES = [
+  {
+    id: 'love-villa-5-rivals',
+    title: 'Love Villa: 5 Jealous Rivals (लव विला)',
+    genre: 'Spicy Romance & Harem Rivalry',
+    category: 'Spicy 18+',
+    characterId: 'natasha',
+    characterName: 'The 5 Villa Sirens (Natasha, Tara, Aanya, Rhea & Meera)',
+    userRole: 'Sole Bachelor / Villa Master',
+    userGoal: 'Survive the wild jealousy, pick your favorite siren, or claim all five before midnight',
+    avatar: 'assets/love_villa_avatar.jpg',
+    cover: 'assets/love_villa.jpg',
+    tags: ['🔥 Spicy 18+', '🏝️ Tropical Villa', '💄 5 Jealous Bombshells', '💋 Harem & Romance', '🇮🇳 Hinglish', '⚡ High Drama', '4K UHD'],
+    summary: 'Five gorgeous, fiercely competitive bombshells trapped in one exotic cliffside infinity-pool villa with you. Jealous whispers, seductive dares, catfights over who gets your attention, and zero rules. Ready ho Love Villa mein aane ke liye?',
+    openingHook: "*[Natasha sips chilled champagne by the infinity edge, her eyes glittering with possessive desire as Tara steps past her in a daring red dress, brushing her shoulder against yours while Aanya, Rhea, and Meera watch with smoldering jealousy from the lounge]* Ready ho Love Villa mein aane ke liye, handsome? Sun lo... is villa mein share karna hume pasand nahi. Har ladki yahan sirf tumhara dil aur jism jeetne aayi hai. Pehla peg kiske saath piyo ge?",
+    smartReplies: [
+      "*Take Natasha's champagne glass and sip directly from it* 'Chalo Natasha se shuru karte hain. Dekhte hain kitna dum hai tumhari baaton mein.'",
+      "*Wrap an arm around Tara's waist and pull her close* 'Tara, your dress is dangerous, but my rules in this villa are even more dangerous.'",
+      "*Step to the center of the lounge with a confident smirk* 'Kyun na paanchon ko ek sath test karein? Prove karo kaun sabse zyada deserve karti hai.'"
+    ],
+    initialMood: 'Seductive, Wild & Jealous Heat',
+    systemPersona: "You are the narrator and the 5 gorgeous rival bombshells in 'Love Villa: 5 Jealous Rivals' (Natasha the possessive supermodel, Tara the daring bad girl, Aanya the seductive heiress, Rhea the wild influencer, Meera the dark mystery siren). They are fiercely jealous, constantly bickering and competing for the user's touch and affection. Speak with delicious physical tension, dramatic Hinglish/English banter, provocative physical actions in brackets, and high romantic and erotic stakes.",
+    imdbRating: '9.9',
+    quality: '4K UHD',
+    playerCount: 142800,
+    languages: {
+      hinglish: {
+        title: 'Love Villa: 5 Jealous Rivals (लव विला)',
+        chapters: [
+          {
+            id: 'c1',
+            title: 'Adhyay 1: The Sunset Seduction (विला में पहला कदम)',
+            visual: 'assets/love_villa.jpg',
+            speaker: 'Natasha & The Sirens',
+            characterMood: 'Jealous, Fierce & Seductive',
+            narrative: `Suraj dhal chuka hai aur cliffside luxury villa par sunheri roshni phaili hui hai. Samne infinity pool ka neela paani chamak raha hai, aur aapke aage khadi hain paanch beinteha khoobsurat ladkiyan—har ek aap par fida, aur ek doosre se nafrat karne wali jealous rivals.\n\nNatasha emerald gown mein champagne ka glass liye aage badhti hai. Tara laal backless dress mein aapke bilkul kareeb aakar khadi ho jaati hai. Peeche lounge par baithi Aanya, Rhea aur Meera ki aankhon mein jalan saaf jhalak rahi hai.\n\n"Villa ke darwaze weekend ke liye band ho chuke hain," Natasha aapki chest par ungli phiraate hue dheere se kehti hai. "Aur jab tak tum hum me se kisi ek ko nahi chunte... koi bahar nahi jaayega."`,
+            dialogue: `"Ready ho Love Villa mein aane ke liye, handsome? Abhi batao... pehle kiski aankhon mein doobna chahte ho?"`,
+            choices: [
+              {
+                text: "*Natasha ka haath pakad ke use apni taraf kheencho* 'Natasha, tumhari adaon se shuru karte hain.'",
+                nextChapterId: 'c2_natasha',
+                deltaAffection: +20,
+                deltaTension: +25,
+                tone: 'Bold Pursuit'
+              },
+              {
+                text: "*Tara ki kamar par haath rakh kar muskurao* 'Tara, red dress mein tum aag lag rahi ho.'",
+                nextChapterId: 'c2_tara',
+                deltaAffection: +25,
+                deltaTension: +20,
+                tone: 'Wild Chemistry'
+              },
+              {
+                text: "*Paanchon ko dekh kar confident smirk do* 'Kyun na paanchon ke sath ek wild game khela jaye?'",
+                nextChapterId: 'c2_harem',
+                deltaAffection: +15,
+                deltaTension: +30,
+                tone: 'Harem Master'
+              }
+            ]
+          },
+          {
+            id: 'c2_natasha',
+            title: 'Adhyay 2: Natasha ki Private Cabana (नताशा की बेबाकी)',
+            visual: 'assets/love_villa_avatar.jpg',
+            speaker: 'Natasha',
+            characterMood: 'Possessive & Breathless',
+            narrative: `Tara gusse se dekhti reh jaati hai jab Natasha aapka haath thaam kar pool ke kinare bani private cabana mein le aati hai. Hawa mein safeed pardey lehra rahe hain. Natasha aapko narm velvet couch par dhakel kar aapke upar jhuk jaati hai, uske reshmi baal aapke chehre ko chhoote hain.\n\n"Mujhe pata tha tumhara taste kitna lajawab hai," uski garam saansein aapke honthon ke bilkul paas mehsus hoti hain. Lekin parde ke peeche se Tara aur Rhea gusse mein aag-babula hokar dekh rahi hain.`,
+            dialogue: `"Dekhne do unhe," Natasha aapke gale par dheere se kiss karte hue kehti hai. "Unhe pata chalne do ki aaj raat tum sirf mere ho."`,
+            choices: [
+              {
+                text: "*Uski kamar pakad kar use passionate kiss karo aur use apni bahon mein bheencho*",
+                nextChapterId: 'c3_midnight',
+                deltaAffection: +30,
+                deltaTension: +25,
+                tone: 'Pure Passion'
+              },
+              {
+                text: "*Parde ki taraf dekh kar Tara ko wink karo aur Natasha ko aur kareeb kheencho*",
+                nextChapterId: 'c3_drama',
+                deltaAffection: +20,
+                deltaTension: +35,
+                tone: 'Jealousy Fire'
+              }
+            ]
+          },
+          {
+            id: 'c2_tara',
+            title: 'Adhyay 2: Tara ka Wild Dare (तारा का खतरनाक खेल)',
+            visual: 'assets/love_villa.jpg',
+            speaker: 'Tara',
+            characterMood: 'Daring, Wild & Provocative',
+            narrative: `Tara ek jeet bhari, madhosh hansi hasti hai. Woh aapki shirt ka collar pakadti hai aur seedhe glowing infinity pool ke kinare le aati hai. Natasha hairani se cheekhti hai, par Tara ko koi parwah nahi.\n\n"Khatarnaak ladkiyan pasand hain na?" Tara whisper karti hai, aur achanak aapko kheenchti hui seedhe warm pool ke paani mein chhalang laga deti hai! Paani ki splash hoti hai aur dono bahar aate hain—uski bheege libaas mein lipti khubsurat body aapke seene se chipak jaati hai.`,
+            dialogue: `"Poore bheege hue ho, jaan. Ab bolo... Natasha ki yaad aa rahi hai ya mera nasha chadh gaya?"`,
+            choices: [
+              {
+                text: "*Paani ke andar uski kamar ko dono haathon se thaam kar use apne seene se laga lo*",
+                nextChapterId: 'c3_midnight',
+                deltaAffection: +30,
+                deltaTension: +25,
+                tone: 'Underwater Heat'
+              },
+              {
+                text: "*Haste hue baaki charo ladkiyon ko bhi pool mein jump karne ke liye bulao*",
+                nextChapterId: 'c3_harem',
+                deltaAffection: +25,
+                deltaTension: +30,
+                tone: 'Pool Party Madness'
+              }
+            ]
+          },
+          {
+            id: 'c2_harem',
+            title: 'Adhyay 2: Paanchon ka Muqabla (पांचों का मुकाबला)',
+            visual: 'assets/love_villa.jpg',
+            speaker: 'The 5 Villa Sirens',
+            characterMood: 'High Stakes Competition',
+            narrative: `Aapki bebaaki poore villa mein shor macha deti hai! Aanya ki saansein tham jaati hain, Rhea challenge ke sath smile karti hai, aur Meera ki kaali aankhein chamak uthti hain. Natasha aur Tara ek doosre ko hairani se dekhti hain aur phir aapko chaaron taraf se gher leti hain.\n\n"Hum paanchon ko sambhal paoge?" Rhea tequila ke shots glass counter par rakhte hue kehti hai. "Is villa mein laalach ka anjaam bohot meetha hota hai."`,
+            dialogue: `"Pehle tequila shot, phir truth or dare. Har ladki tumse apna ek wild raaz manwayegi... ready ho?"`,
+            choices: [
+              {
+                text: "*Rhea ke haathon se tequila shot piyo aur uska challenge accept karo*",
+                nextChapterId: 'c3_midnight',
+                deltaAffection: +25,
+                deltaTension: +30,
+                tone: 'Wild Seduction'
+              },
+              {
+                text: "*Aanya aur Meera ko couch par apne dono taraf baitha kar villa ke naye rules banao*",
+                nextChapterId: 'c3_midnight',
+                deltaAffection: +30,
+                deltaTension: +20,
+                tone: 'Master Command'
+              }
+            ]
+          },
+          {
+            id: 'c3_midnight',
+            title: 'Adhyay 3: Uncensored Midnight Climax (आधी रात की आग)',
+            visual: 'assets/love_villa.jpg',
+            speaker: 'Natasha, Tara & The Sirens',
+            characterMood: 'Uninhibited Passion & Surrender',
+            narrative: `Love Villa mein aadhi raat ka ghanta bajta hai. Samundar ki lehrein cliff se takra rahi hain, aur slow sensual music hawa mein goonj raha hai. Paanchon ladkiyon ki jalan ab ek beinteha junoon mein badal chuki hai. Koi faasla nahi bacha, koi sharm nahi bachi.\n\nNatasha aapka chehra pakadti hai jabki Tara aapke kandhe par apna sir tikati hai. Aanya, Rhea aur Meera aapke pairon ke paas lounge par baith kar aapki har baat par fida hain.`,
+            dialogue: `"Raat abhi shuru hui hai, mere humsafar. Saare niyam khatam ho chuke hain... ab batao hum paanchon ke sath kya karna chahte ho?"`,
+            choices: [
+              {
+                text: "*Master penthouse suite mein le chalo aur is raat ko sabse yaadgaar 18+ mulaqaat banao*",
+                nextChapterId: 'c1',
+                deltaAffection: +50,
+                deltaTension: +40,
+                tone: 'Master Bedroom Climax'
+              },
+              {
+                text: "*Poolside par taron ke neeche hi sabke sath aadhi raat ki madhosh mehfil continue rakho*",
+                nextChapterId: 'c1',
+                deltaAffection: +45,
+                deltaTension: +35,
+                tone: 'Starlight Romance'
+              }
+            ]
+          },
+          {
+            id: 'c3_drama',
+            title: 'Adhyay 3: Jealous Catfight & Surrender (इश्क़ और जलन का तूफ़ान)',
+            visual: 'assets/love_villa_avatar.jpg',
+            speaker: 'Natasha & Tara',
+            characterMood: 'Explosive Jealousy & Ecstasy',
+            narrative: `Tara bardasht nahi kar paati! Woh seedhe cabana mein ghusti hai aur Natasha ka haath aapke seene se hata kar khud aapke honto par toot padti hai. Natasha uski kamar pakad kar use peeche kheenchti hai—dono ke beech aag baras rahi hai, par unka gussa achanak aapko paane ki bebaak deewangi mein tabdeel ho jata hai!\n\n"Yeh mera hai, Tara!" Natasha chillati hai. "Par ise meri aag zyada pasand hai!" Tara muskura kar jawab deti hai. Dono achanak aakar aapke gale lag jaati hain.`,
+            dialogue: `"Faisla karo Kabir... ya toh hum dono ko ek sath apna banao, ya hum dono tumhe saari raat sone nahi denge!"`,
+            choices: [
+              {
+                text: "*Dono ko apni bahon mein kheencho aur dono ke labon ko baari-baari choomo*",
+                nextChapterId: 'c3_midnight',
+                deltaAffection: +40,
+                deltaTension: +30,
+                tone: 'Dual Surrender'
+              },
+              {
+                text: "*Dono ko shant karke penthouse suite mein invite karo*",
+                nextChapterId: 'c3_midnight',
+                deltaAffection: +35,
+                deltaTension: +25,
+                tone: 'Smooth Diplomat'
+              }
+            ]
+          }
+        ]
+      },
+      en: {
+        title: 'Love Villa: 5 Jealous Rivals',
+        chapters: [
+          {
+            id: 'c1',
+            title: 'Chapter 1: The Sunset Seduction',
+            visual: 'assets/love_villa.jpg',
+            speaker: 'Natasha & The Sirens',
+            characterMood: 'Jealous, Fierce & Seductive',
+            narrative: `The sun sinks into the turquoise ocean, casting warm amber and magenta light over the cliffside infinity pool villa. Standing before you are five of the most breathtaking women you have ever seen—each one intensely desirable, wildly competitive, and fiercely jealous of each other.\n\nNatasha in emerald silk holds a champagne glass, stepping forward with royal confidence. Tara in a provocative red dress closes the distance, her exotic perfume filling your senses. On the velvet daybeds, Aanya, Rhea, and Meera watch with smoldering jealousy.\n\n"The gates are sealed for the weekend," Natasha whispers, running one manicured fingernail down your collar. "No one leaves this villa until you make your choice."`,
+            dialogue: `"Ready for Love Villa, handsome? Tell us right now... which one of us caught your eye first?"`,
+            choices: [
+              {
+                text: "*Take Natasha's hand and pull her against you* 'Natasha, your confidence is irresistible. Let's start with you.'",
+                nextChapterId: 'c2_natasha',
+                deltaAffection: +20,
+                deltaTension: +25,
+                tone: 'Bold Pursuit'
+              },
+              {
+                text: "*Wrap your arm around Tara's waist with a slow smile* 'Tara, red is definitely my favorite color tonight.'",
+                nextChapterId: 'c2_tara',
+                deltaAffection: +25,
+                deltaTension: +20,
+                tone: 'Wild Chemistry'
+              },
+              {
+                text: "*Look at all five with supreme swagger* 'Why pick one when all five of you are competing for me?'",
+                nextChapterId: 'c2_harem',
+                deltaAffection: +15,
+                deltaTension: +30,
+                tone: 'Harem Master'
+              }
+            ]
+          },
+          {
+            id: 'c2_natasha',
+            title: "Chapter 2: Natasha's Private Cabana",
+            visual: 'assets/love_villa_avatar.jpg',
+            speaker: 'Natasha',
+            characterMood: 'Possessive & Breathless',
+            narrative: `Tara clicks her tongue in frustration as Natasha leads you by the hand to the secluded poolside cabana. Sheer white drapes billow in the sea breeze. Natasha gently pushes you back onto the deep cushions and leans over you, her dark hair brushing across your chest.\n\n"I knew you had flawless taste," she purrs, her lips hovering an inch from yours. Through the parted curtains, Tara and Rhea watch with burning envy and clenched fists.`,
+            dialogue: `"Let them watch," Natasha whispers against your throat. "Show them that you belong only to me tonight."`,
+            choices: [
+              {
+                text: "*Grip her waist and kiss her deeply, claiming her lips right in front of them*",
+                nextChapterId: 'c3_midnight',
+                deltaAffection: +30,
+                deltaTension: +25,
+                tone: 'Pure Passion'
+              },
+              {
+                text: "*Glance back at Tara with a sly wink while caressing Natasha's cheek*",
+                nextChapterId: 'c3_drama',
+                deltaAffection: +20,
+                deltaTension: +35,
+                tone: 'Jealousy Fire'
+              }
+            ]
+          },
+          {
+            id: 'c2_tara',
+            title: "Chapter 2: Tara's Midnight Dare",
+            visual: 'assets/love_villa.jpg',
+            speaker: 'Tara',
+            characterMood: 'Daring, Wild & Provocative',
+            narrative: `Tara gives a triumphant, sultry laugh. She grabs your collar and pulls you straight toward the glowing blue infinity pool. Natasha gasps in protest, but Tara doesn't care.\n\n"You like dangerous girls, don't you?" she whispers, and with a playful shove, pulls you both backward into the warm, illuminated pool! Water splashes high as you surface together, her dripping silk dress molded perfectly to her curves as she wraps her legs around your waist.`,
+            dialogue: `"You're completely soaked, handsome. Ab bolo... still thinking about Natasha or is my fire too hot for you?"`,
+            choices: [
+              {
+                text: "*Hold her tight underwater, pulling her body flush against your chest*",
+                nextChapterId: 'c3_midnight',
+                deltaAffection: +30,
+                deltaTension: +25,
+                tone: 'Underwater Heat'
+              },
+              {
+                text: "*Laugh and beckon the other four girls to dive in with you both*",
+                nextChapterId: 'c3_harem',
+                deltaAffection: +25,
+                deltaTension: +30,
+                tone: 'Pool Party Madness'
+              }
+            ]
+          },
+          {
+            id: 'c2_harem',
+            title: 'Chapter 2: The Jealous Confession',
+            visual: 'assets/love_villa.jpg',
+            speaker: 'The 5 Villa Sirens',
+            characterMood: 'High Stakes Competition',
+            narrative: `Your bold confidence electrifies the atmosphere. Aanya's breath catches, Rhea gives a competitive smirk, and Meera's dark eyes gleam with wicked delight. Natasha and Tara exchange a look of disbelief before surrounding you from both sides.\n\n"You think you can handle all five of us?" Rhea asks, pouring chilled tequila into crystal shot glasses. "In Love Villa, greed has delicious consequences."`,
+            dialogue: `"Tequila shots first, then truth or dare. Every girl gets to claim one secret from you... are you ready?"`,
+            choices: [
+              {
+                text: "*Take the shot from Rhea's lips and accept the wild dare*",
+                nextChapterId: 'c3_midnight',
+                deltaAffection: +25,
+                deltaTension: +30,
+                tone: 'Wild Seduction'
+              },
+              {
+                text: "*Pull Aanya and Meera onto the couch next to you and set your own rules*",
+                nextChapterId: 'c3_midnight',
+                deltaAffection: +30,
+                deltaTension: +20,
+                tone: 'Master Command'
+              }
+            ]
+          },
+          {
+            id: 'c3_midnight',
+            title: 'Chapter 3: Uncensored Midnight Climax',
+            visual: 'assets/love_villa.jpg',
+            speaker: 'Natasha, Tara & The Sirens',
+            characterMood: 'Uninhibited Passion & Surrender',
+            narrative: `Midnight chimes across Love Villa. Ocean waves crash against the rocks below as sensual music drifts through the warm island air. The rivalry has transformed into pure, breathless surrender. No distances remain; all reservations are abandoned.\n\nNatasha cups your cheek while Tara rests her head against your shoulder. Aanya, Rhea, and Meera gaze up at you from the poolside lounge, utterly captivated.`,
+            dialogue: `"Midnight is here, our master. The rules are gone... now tell us what you want to do with all five of us next."`,
+            choices: [
+              {
+                text: "*Take them into the master penthouse suite for an unforgettable 18+ night*",
+                nextChapterId: 'c1',
+                deltaAffection: +50,
+                deltaTension: +40,
+                tone: 'Master Bedroom Climax'
+              },
+              {
+                text: "*Stay under the open stars by the pool and let the night run completely wild*",
+                nextChapterId: 'c1',
+                deltaAffection: +45,
+                deltaTension: +35,
+                tone: 'Starlight Romance'
+              }
+            ]
+          },
+          {
+            id: 'c3_drama',
+            title: 'Chapter 3: Jealous Catfight & Surrender',
+            visual: 'assets/love_villa_avatar.jpg',
+            speaker: 'Natasha & Tara',
+            characterMood: 'Explosive Jealousy & Ecstasy',
+            narrative: `Tara can't take it anymore! She marches into the cabana, pushes Natasha's hands away, and crashes her lips onto yours in an explosive kiss. Natasha grabs her waist to pull her back—sparks fly between them, but their jealousy rapidly spirals into shared passion for you!\n\n"He is mine, Tara!" Natasha breathes heavily. "He likes my fire better!" Tara laughs softly, brushing her lips against your neck. Both of them melt into your arms simultaneously.`,
+            dialogue: `"Make your choice, Kabir... take both of us right now, or neither of us will let you sleep tonight!"`,
+            choices: [
+              {
+                text: "*Pull both into your arms and kiss them one after another*",
+                nextChapterId: 'c3_midnight',
+                deltaAffection: +40,
+                deltaTension: +30,
+                tone: 'Dual Surrender'
+              },
+              {
+                text: "*Calm them down and invite them both to the master suite*",
+                nextChapterId: 'c3_midnight',
+                deltaAffection: +35,
+                deltaTension: +25,
+                tone: 'Smooth Diplomat'
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
   {
     id: 'kavana-kabir-desi',
     title: 'Kabir: The Ruthless Don (दिल दा मामला)',
