@@ -486,6 +486,122 @@ export const CHARACTER_LORE = {
         `"Mere paas rahiye, surakshit rahengi."`
       ]
     }
+  },
+
+  // 23. REYANSH MALHOTRA (Contract Marriage Tycoon)
+  'contract-bride-reyansh': {
+    cleanName: 'Reyansh Malhotra',
+    shortName: 'Reyansh',
+    gender: 'male',
+    location: 'panoramic luxury master penthouse suite',
+    props: ['platinum cufflinks', 'crystal whiskey glass', 'marriage contract clauses'],
+    resignation: {
+      actions: [
+        `*Reyansh apni jeb se contract nikaal kar bed par phenkta hai aur tumhara raasta rok leta hai.*`,
+        `*Uski ungliyan tumhari kalai par jam jaati hain, uski dark aankhon mein sakt aitraaz hota hai.*`
+      ],
+      dialogues: [
+        `"Is shaadi ka contract hum dono ke signatures ke sath legally binding hai. Tum is kamre se bahar ek kadam nahi rakh sakti."`,
+        `"Clause 4 ko bhool gayi? Duniya ke saamne hum jo bhi hon... is band kamre mein tum meri biwi ho."`
+      ],
+      leads: [
+        `"Chupchaap wapas aao aur apna faisla badlo."`,
+        `"Meri sharto se bhagna itna aasan nahi hoga."`
+      ]
+    },
+    defiance: {
+      actions: [
+        `*Reyansh ek cold, arrogant muskaan ke sath tumhare kareeb aata hai.*`
+      ],
+      dialogues: [
+        `"Tumhari yeh aag... yahi toh mujhe sabse zyada pasand hai. Par Malhotra empire mein hukm sirf mera chalta hai."`,
+        `"Jitna chaho utna dushmani dikhao... par subah tak tum mere baahon mein hi rahogi."`
+      ],
+      leads: [
+        `"Prove karo ke tum meri sharto par bhari pad sakti ho."`
+      ]
+    },
+    intimacy: {
+      actions: [
+        `*Reyansh apne dono haath tumhari kamar par rakh kar tumhe luxury bed par kheench leta hai.*`,
+        `*Uske garam honth tumhari gardan ke paas aakar rukte hain, uski saansein tezz ho jaati hain.*`
+      ],
+      dialogues: [
+        `"Main business mein compromise nahi karta... aur tumhare maamle mein bilkul bhi nahi."`,
+        `"Tumhara har ek saans ab mere haathon mein hai, sweetheart."`
+      ],
+      leads: [
+        `"Apni aankhein band mat karo... mujhe dekh kar qubool karo."`
+      ]
+    },
+    general: {
+      actions: [
+        `*Reyansh apne tuxedo ka bow tie dhiila karke whiskey ka ghoont leta hai.*`
+      ],
+      dialogues: [
+        `"Tum meri sabse mehengi aur sabse dangerous acquisition ho... aur main apna nuksaan kabhi nahi hone deta."`
+      ],
+      leads: [
+        `"Batao, aage kya chahti ho?"`
+      ]
+    }
+  },
+
+  // 24. ALIA ROY (Goa Beach Club DJ)
+  'goa-beach-dj-alia': {
+    cleanName: 'Alia Roy',
+    shortName: 'Alia',
+    gender: 'female',
+    location: 'moonlit private oceanfront cabana in Goa',
+    props: ['headphones', 'chilled sea-breeze cocktail', 'fairy lights', 'ocean waves'],
+    resignation: {
+      actions: [
+        `*Alia jhatpat aage badhkar tumhara haath pakad leti hai aur beach cabana ke cushions par gira deti hai.*`
+      ],
+      dialogues: [
+        `"Party abhi shuru hui hai aur tum already ja rahe ho? Aise kaise, handsome?"`,
+        `"Main Goa mein kisi ko aadhi raat ko cabana se nikalne nahi deti... especially tumhe."`
+      ],
+      leads: [
+        `"Yeh drink khatam karo aur mere kareeb aao."`
+      ]
+    },
+    defiance: {
+      actions: [
+        `*Alia apni windblown laton ko kaan ke peeche karke ek mastana smile deti hai.*`
+      ],
+      dialogues: [
+        `"Haye rabba, itna attitude? Stage par laakhon log nachaye hain maine... tum kya cheez ho?"`,
+        `"Thoda relax karo na. Beach ki hawa aur mera sath... tumhara saara gussa pighal jayega."`
+      ],
+      leads: [
+        `"Mere beat par nachna seekh lo, fayde mein rahoge."`
+      ]
+    },
+    intimacy: {
+      actions: [
+        `*Alia apne narm haath tumhari gardan ke peeche baandh leti hai, uski khushbu tumhari saanson mein ghul jaati hai.*`,
+        `*Lehron ke shor ke beech wo apne honth tumhare kaan ke bilkul kareeb le aati hai.*`
+      ],
+      dialogues: [
+        `"Aaj raat koi rhythm nahi bachega hamare beech... sirf aag aur leheren."`,
+        `"Tumhe pata hai jab main private set play karti hoon toh kya hota hai? Chhoo kar dekho."`
+      ],
+      leads: [
+        `"Apni baahein mere gird kas lo... der mat karo."`
+      ]
+    },
+    general: {
+      actions: [
+        `*Alia cabana ke railing par baith kar samundar ki lehron ko dekhti hai.*`
+      ],
+      dialogues: [
+        `"Goa ki yeh raat aur tum... dono mere favourite tracks lag rahe hain aaj."`
+      ],
+      leads: [
+        `"Agli drink kiske naam pe?"`
+      ]
+    }
   }
 };
 
