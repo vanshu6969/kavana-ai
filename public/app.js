@@ -19,94 +19,52 @@ import {
   VERIFIED_TMDB_STORIES 
 } from './tmdb-service.js';
 
-// Prepend user's saved custom TMDb stories from localStorage
-try {
-  const savedCustom = getSavedCustomTMDbStories();
-  if (savedCustom && savedCustom.length > 0) {
-    savedCustom.forEach(story => {
-      if (!KAVANA_STORIES.some(s => s.id === story.id || (story.tmdbId && s.tmdbId === story.tmdbId))) {
-        KAVANA_STORIES.unshift(story);
-      }
-    });
-  }
-} catch (e) {
-  console.warn('Could not load custom TMDb stories:', e);
-}
-
 // Persistent Chat Sessions & Message History
 export function getChatSessions() {
   try {
+    // Migration: One-time wipe of dummy mock sessions if user never messaged them
+    if (localStorage.getItem('kavana_sessions_v5_clean') !== 'true') {
+      localStorage.setItem('kavana_sessions_v5_clean', 'true');
+      const raw = localStorage.getItem('kavana_chat_sessions');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          // Keep ONLY sessions where the user actually sent at least one message
+          const userOnly = parsed.filter(s => {
+            try {
+              const hRaw = localStorage.getItem(`kavana_chat_hist_${s.id}`);
+              if (hRaw) {
+                const hist = JSON.parse(hRaw);
+                return Array.isArray(hist) && hist.some(m => m.sender === 'user');
+              }
+            } catch(e) {}
+            return false;
+          });
+          localStorage.setItem('kavana_chat_sessions', JSON.stringify(userOnly));
+          return userOnly;
+        }
+      }
+      return [];
+    }
+
     const raw = localStorage.getItem('kavana_chat_sessions');
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed)) {
+        // Filter out any stale movie-based sessions from user's cache
+        const nonMovie = parsed.filter(s => 
+          !s.id.includes('mirzapur') && 
+          !s.id.includes('peaky') && 
+          !s.id.includes('queen-of-tears') && 
+          !s.id.includes('tmdb')
+        );
+        return nonMovie;
+      }
     }
   } catch (e) {
     console.warn('Error reading chat sessions:', e);
   }
-  // Default VIP Companions if none started yet
-  return [
-    {
-      id: 'mirzapur-kaleen-bhaiya',
-      name: 'Akhandanand Tripathi (Kaleen Bhaiya)',
-      title: 'Mirzapur: Purvanchal Kingpin',
-      avatar: 'https://image.tmdb.org/t/p/w780/1rxLUFVrtTo82OxhbDXJDiJVkwL.jpg',
-      category: 'Crime & Syndicate',
-      userRole: "Rival Gangster's Enforcer",
-      userGoal: 'Negotiate your survival or dethrone the King of Mirzapur',
-      lastMessage: "Baithiye. Mirzapur ki hawa mein ya toh darr chalta hai, ya Tripathi parivaar ka sikka...",
-      timestamp: Date.now() - 60000 * 5,
-      unread: false
-    },
-    {
-      id: 'queen-of-tears',
-      name: 'Baek Hyun-woo',
-      title: 'Queen of Tears: Chaebol Marriage',
-      avatar: 'https://image.tmdb.org/t/p/w780/dzq83RHwQcnP6WGJ6YkenIqeaa5.jpg',
-      category: 'Romance & Drama',
-      userRole: 'Hong Hae-in (Queens Group Heiress)',
-      userGoal: 'Reignite lost passion or execute your secret divorce strategy',
-      lastMessage: "*Pulls you into the penthouse balcony* Let's stop lying to each other...",
-      timestamp: Date.now() - 60000 * 30,
-      unread: false
-    },
-    {
-      id: 'kabir',
-      name: 'Kabir Oberoi',
-      title: 'The Desi Mafia Don',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80',
-      category: 'Desi Romance & Don',
-      userRole: 'Captive Heiress / Defiant Partner',
-      userGoal: 'Tame the ruthless don',
-      lastMessage: "Tumhe lagta hai tum mere qaid se bach sakti ho? *Smiles dangerously*",
-      timestamp: Date.now() - 60000 * 120,
-      unread: false
-    },
-    {
-      id: 'peaky-blinders',
-      name: 'Thomas Shelby',
-      title: 'Peaky Blinders: Birmingham Empire',
-      avatar: 'https://image.tmdb.org/t/p/w780/hkBaDkMWbLaf8B1rWsKXqgughpw.jpg',
-      category: 'Crime & Syndicate',
-      userRole: 'Undercover Operative / Seductive Informant',
-      userGoal: 'Gain Tommy’s trust or betray the Shelby family',
-      lastMessage: "*Lights a cigarette in the smoke-filled Garrison office* In the bleak midwinter...",
-      timestamp: Date.now() - 60000 * 360,
-      unread: false
-    },
-    {
-      id: 'valeria',
-      name: 'Valeria Vane',
-      title: 'Shadow Mage Dynasty',
-      avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&auto=format&fit=crop&q=80',
-      category: 'Dark Fantasy 18+',
-      userRole: 'Apprentice / Blood Partner',
-      userGoal: 'Unlock forbidden arcana',
-      lastMessage: "*Traces a glowing rune across your palm* Magic requires sacrifice...",
-      timestamp: Date.now() - 60000 * 1440,
-      unread: false
-    }
-  ];
+  return []; // Return empty array if user has not started any chats yet!
 }
 
 export function saveChatSessions(sessions) {
@@ -160,27 +118,16 @@ const state = {
   currentView: 'stories-explore', // Clean modern cinema platform default
   activeLang: localStorage.getItem('kavana_lang') || 'hinglish',
   activeStory: KAVANA_STORIES[0],
-  activeScenario: KAVANA_STORIES.find(s => s.id === initialSavedSessions[0]?.id) || initialSavedSessions[0] || KAVANA_STORIES[0],
+  activeScenario: initialSavedSessions.length > 0 ? (KAVANA_STORIES.find(s => s.id === initialSavedSessions[0]?.id) || initialSavedSessions[0]) : null,
   searchQuery: '',
   activeChapterId: 'c1',
-  activeChatPartnerId: localStorage.getItem('kavana_last_chat_id') || initialSavedSessions[0]?.id || 'mirzapur-kaleen-bhaiya',
+  activeChatPartnerId: initialSavedSessions.length > 0 ? (localStorage.getItem('kavana_last_chat_id') || initialSavedSessions[0]?.id) : null,
   credits: parseInt(localStorage.getItem('kavana_coins') || '500', 10),
   activeCategory: 'all',
   mobileChatView: 'list', // 'list' shows all conversations roster on mobile, 'conversation' shows active chat
   userGender: localStorage.getItem('kavana_user_gender') || 'male',
   
-  // Dance Studio
-  activeDancerId: 'kabir',
-  activeDanceRoutine: 'bhangra',
-  isDancing: false,
-  danceInterval: null,
-
-  characterState: {
-    kabir: { affection: 65, tension: 90, intimacyLevel: '🔥 Fever Pitch (Extreme 18+)' },
-    valeria: { affection: 55, tension: 80, intimacyLevel: '🔥 Fever Pitch (Extreme 18+)' },
-    lucian: { affection: 50, tension: 85, intimacyLevel: '⚡ High Sexual Tension' }
-  },
-
+  characterState: {},
   chatHistory: {},
   smartReplies: {},
   storyBranches: {},
@@ -337,31 +284,69 @@ export function showToast({ title, message, type = 'info', retryAction = null, d
   if (duration > 0) setTimeout(removeToast, duration);
 }
 
-// Tab & View Router
-function switchView(viewName) {
-  if (viewName === 'home-web') {
-    viewName = 'stories-explore';
+// Update Chat Badge Counts
+export function updateChatBadges() {
+  const sessions = getChatSessions();
+  const count = sessions.length;
+  
+  const navBadge = document.getElementById('nav-chats-count');
+  if (navBadge) {
+    if (count > 0) {
+      navBadge.textContent = count;
+      navBadge.style.display = 'inline-flex';
+    } else {
+      navBadge.style.display = 'none';
+    }
   }
+
+  const dockBadge = document.getElementById('dock-chats-badge');
+  if (dockBadge) {
+    dockBadge.style.display = count > 0 ? 'block' : 'none';
+  }
+}
+
+// Tab & View Router: Home, Explore, Search, Chat
+function switchView(viewName) {
+  // Normalize alias names
+  if (viewName === 'stories-explore') viewName = 'explore';
+  if (viewName === 'character-chat' || viewName === 'chats') viewName = 'chat';
+
+  // Valid views: 'home', 'explore', 'search', 'chat'
+  if (!['home', 'explore', 'search', 'chat'].includes(viewName)) {
+    viewName = 'home';
+  }
+
   state.currentView = viewName;
   playChime(600);
 
   // Update Nav Links & Mobile Dock
   document.querySelectorAll('.kavana-nav-link, .nav-btn, .mobile-nav-item, .mobile-dock-btn').forEach(btn => {
-    if (btn.dataset.view === viewName) btn.classList.add('active');
-    else btn.classList.remove('active');
+    const bView = btn.dataset.view;
+    if (bView === viewName || (viewName === 'explore' && bView === 'stories-explore') || (viewName === 'chat' && bView === 'character-chat')) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
   });
 
   const appContainer = document.getElementById('main-app-container');
   if (appContainer) appContainer.style.display = 'block';
 
   document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-  document.getElementById(`view-${viewName}`)?.classList.add('active');
 
-  if (viewName === 'stories-explore') renderExploreFeed();
-  else if (viewName === 'story-reader') renderStoryReader();
-  else if (viewName === 'character-chat') renderChatView();
-  else if (viewName === 'dance-studio') renderDanceStudio();
+  // Target view mapping
+  const targetId = viewName === 'chat' ? 'view-character-chat' : `view-${viewName}`;
+  const targetEl = document.getElementById(targetId);
+  if (targetEl) {
+    targetEl.classList.add('active');
+  }
 
+  if (viewName === 'home') renderHomeView();
+  else if (viewName === 'explore') renderExploreFeed();
+  else if (viewName === 'search') renderSearchView();
+  else if (viewName === 'chat') renderChatView();
+
+  updateChatBadges();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -449,7 +434,75 @@ export function openStoryInReader(story) {
   renderStoryReader();
 }
 
-// Render Explore Stories Feed (105+ Stories)
+// Reusable Cinema Story Card Component
+function createStoryCardElement(story) {
+  const card = document.createElement('div');
+  card.className = 'story-card';
+
+  const rating = story.rating || story.imdbRating || '4.9';
+  const posterUrl = story.avatar || story.cover;
+
+  card.innerHTML = `
+    <div class="story-card-poster">
+      <img src="${posterUrl}" alt="${story.title}" loading="lazy" onerror="this.src='assets/poster_love_villa.jpg'">
+      <div class="poster-gradient-fade"></div>
+      <div class="poster-top-badges">
+        <span class="card-rating-badge">★ ${rating}</span>
+        <span class="card-quality-badge">18+ CHAT</span>
+      </div>
+      <div class="card-hover-actions">
+        <button class="btn-card-action primary btn-play-story">💬 Chat Story</button>
+      </div>
+      <div class="mobile-poster-play-badge">💬</div>
+    </div>
+    <div class="story-card-body">
+      <h3 class="card-title-text">${story.title}</h3>
+      <p class="card-character-sub">${story.characterName || 'Lead Character'} • ${story.category || 'Stories'}</p>
+      <div class="card-tags-row">
+        ${(story.tags || []).slice(0, 2).map(t => `<span class="card-tag-pill">${t}</span>`).join('')}
+        <span class="card-plays-tag">🔥 ${(story.playerCount ? (story.playerCount / 1000).toFixed(0) + 'K' : '150K')}</span>
+      </div>
+      <div class="mobile-card-quick-actions">
+        <button class="mobile-quick-btn play btn-play-story-mobile" type="button" style="width: 100%;">💬 Chat Story</button>
+      </div>
+    </div>
+  `;
+
+  card.querySelector('.btn-play-story')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    launchScenarioChat(story);
+  });
+
+  card.querySelector('.btn-play-story-mobile')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    launchScenarioChat(story);
+  });
+
+  card.addEventListener('click', () => {
+    launchScenarioChat(story);
+  });
+
+  return card;
+}
+
+// 1. Render Home View (Spotlight & Trending Stories)
+function renderHomeView() {
+  setupHeroCarousel();
+  const trendingGrid = document.getElementById('home-trending-grid');
+  if (trendingGrid) {
+    trendingGrid.innerHTML = '';
+    const trending = KAVANA_STORIES.slice(0, 4);
+    trending.forEach(story => {
+      trendingGrid.appendChild(createStoryCardElement(story));
+    });
+  }
+
+  document.getElementById('btn-home-view-all-explore')?.addEventListener('click', () => {
+    switchView('explore');
+  });
+}
+
+// 2. Render Explore Stories Feed (Full Catalog & Filters)
 function renderExploreFeed() {
   const grid = document.getElementById('kavana-stories-grid');
   if (!grid) return;
@@ -461,26 +514,22 @@ function renderExploreFeed() {
   const filtered = KAVANA_STORIES.filter(s => {
     // 1. Category check
     let catMatch = true;
-    if (cat === 'tmdb') {
-      catMatch = Boolean(s.isCustomTMDb || s.tmdbId || (s.tags || []).some(t => t.toLowerCase().includes('tmdb')));
-    } else if (cat === 'pakistani') {
-      catMatch = s.category?.toLowerCase().includes('pakistan') || (s.tags || []).some(t => t.toLowerCase().includes('pakistan'));
-    } else if (cat === 'trending') {
-      catMatch = (s.playerCount || 0) > 30000 || (s.tags || []).some(t => t.toLowerCase().includes('trending') || t.toLowerCase().includes('top') || t.toLowerCase().includes('verified'));
-    } else if (cat === 'drama') {
-      catMatch = s.category?.toLowerCase().includes('drama') || (s.tags || []).some(t => t.toLowerCase().includes('drama') || t.toLowerCase().includes('marriage'));
-    } else if (cat === 'spicy') {
+    if (cat === 'spicy') {
       catMatch = s.category?.toLowerCase().includes('spicy') || (s.tags || []).some(t => t.toLowerCase().includes('18+') || t.toLowerCase().includes('spicy'));
+    } else if (cat === 'harem') {
+      catMatch = s.category?.toLowerCase().includes('harem') || s.category?.toLowerCase().includes('rival') || (s.tags || []).some(t => t.toLowerCase().includes('harem') || t.toLowerCase().includes('rival'));
     } else if (cat === 'mafia') {
-      catMatch = s.category?.toLowerCase().includes('mafia') || s.genre?.toLowerCase().includes('mafia') || (s.tags || []).some(t => t.toLowerCase().includes('mafia') || t.toLowerCase().includes('billionaire') || t.toLowerCase().includes('crime'));
+      catMatch = s.category?.toLowerCase().includes('mafia') || s.category?.toLowerCase().includes('billionaire') || (s.tags || []).some(t => t.toLowerCase().includes('mafia') || t.toLowerCase().includes('billionaire') || t.toLowerCase().includes('don') || t.toLowerCase().includes('ceo'));
+    } else if (cat === 'forbidden') {
+      catMatch = s.category?.toLowerCase().includes('forbidden') || (s.tags || []).some(t => t.toLowerCase().includes('forbidden') || t.toLowerCase().includes('secret') || t.toLowerCase().includes('step') || t.toLowerCase().includes('marriage'));
+    } else if (cat === 'royalty' || cat === 'badboy') {
+      catMatch = s.category?.toLowerCase().includes('royalty') || s.category?.toLowerCase().includes('bad boy') || (s.tags || []).some(t => t.toLowerCase().includes('royalty') || t.toLowerCase().includes('prince') || t.toLowerCase().includes('bad boy') || t.toLowerCase().includes('alpha'));
     } else if (cat === 'fantasy') {
-      catMatch = s.category?.toLowerCase().includes('fantasy') || s.genre?.toLowerCase().includes('fantasy') || (s.tags || []).some(t => t.toLowerCase().includes('fantasy') || t.toLowerCase().includes('vampire') || t.toLowerCase().includes('magic') || t.toLowerCase().includes('dune'));
+      catMatch = s.category?.toLowerCase().includes('fantasy') || (s.tags || []).some(t => t.toLowerCase().includes('fantasy') || t.toLowerCase().includes('magic') || t.toLowerCase().includes('demon') || t.toLowerCase().includes('yandere'));
+    } else if (cat === 'college') {
+      catMatch = s.category?.toLowerCase().includes('college') || s.category?.toLowerCase().includes('roommate') || (s.tags || []).some(t => t.toLowerCase().includes('college') || t.toLowerCase().includes('roommate') || t.toLowerCase().includes('neighbor'));
     } else if (cat === 'desi') {
-      catMatch = s.category?.toLowerCase().includes('desi') || (s.tags || []).some(t => t.toLowerCase().includes('punjabi') || t.toLowerCase().includes('desi') || t.toLowerCase().includes('hinglish') || t.toLowerCase().includes('bollywood'));
-    } else if (cat === 'anime') {
-      catMatch = s.category?.toLowerCase().includes('anime') || (s.tags || []).some(t => t.toLowerCase().includes('anime') || t.toLowerCase().includes('cyberpunk') || t.toLowerCase().includes('manga') || t.toLowerCase().includes('hunter'));
-    } else if (cat === 'thriller') {
-      catMatch = s.category?.toLowerCase().includes('thriller') || (s.tags || []).some(t => t.toLowerCase().includes('thriller') || t.toLowerCase().includes('detective') || t.toLowerCase().includes('crime') || t.toLowerCase().includes('chaos'));
+      catMatch = s.category?.toLowerCase().includes('desi') || (s.tags || []).some(t => t.toLowerCase().includes('desi') || t.toLowerCase().includes('punjabi') || t.toLowerCase().includes('hinglish'));
     }
 
     if (!catMatch) return false;
@@ -505,31 +554,18 @@ function renderExploreFeed() {
     countBadge.textContent = `${filtered.length} Scenarios`;
   }
 
-  // Update Spotlight Hero Banner
-  const spotlightStory = state.activeStory || filtered[0] || KAVANA_STORIES[0];
-  const heroBanner = document.getElementById('hero-banner');
-  const heroTitle = document.getElementById('hero-title-text');
-  const heroDesc = document.getElementById('hero-desc-text');
-  if (heroBanner && spotlightStory) {
-    heroBanner.style.backgroundImage = `url('${spotlightStory.cover || spotlightStory.avatar}')`;
-    if (heroTitle) heroTitle.textContent = spotlightStory.title;
-    if (heroDesc) heroDesc.textContent = spotlightStory.summary;
-  }
-
   if (filtered.length === 0) {
     grid.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
         <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🔍</div>
         <h3 style="color: #fff; margin-bottom: 0.5rem;">No scenarios match "${state.searchQuery}"</h3>
-        <p style="font-size: 0.88rem;">Try searching for "Mirzapur", "Dune", "Shelby", or adapt a new title.</p>
+        <p style="font-size: 0.88rem;">Try choosing another category or clearing filters.</p>
         <button class="btn-secondary-mini" id="btn-reset-filters" style="margin-top: 1rem; padding: 0.6rem 1.25rem;">Show All Stories</button>
       </div>
     `;
     grid.querySelector('#btn-reset-filters')?.addEventListener('click', () => {
       state.searchQuery = '';
       state.activeCategory = 'all';
-      const input = document.getElementById('stories-search-input');
-      if (input) input.value = '';
       document.querySelectorAll('#category-pills-container .cat-pill').forEach(p => {
         if (p.dataset.category === 'all') p.classList.add('active');
         else p.classList.remove('active');
@@ -540,69 +576,104 @@ function renderExploreFeed() {
   }
 
   filtered.forEach(story => {
-    const card = document.createElement('div');
-    card.className = 'story-card';
+    grid.appendChild(createStoryCardElement(story));
+  });
+}
 
-    const rating = story.imdbRating || '9.6';
-    const posterUrl = story.avatar || story.cover;
-    const isTmdb = Boolean(story.tmdbId || story.isCustomTMDb);
+// 3. Render Dedicated Search View
+function renderSearchView(explicitQuery = null) {
+  const input = document.getElementById('main-search-input');
+  const clearBtn = document.getElementById('btn-clear-main-search');
+  const grid = document.getElementById('search-results-grid');
+  const meta = document.getElementById('search-results-meta');
+  const countText = document.getElementById('search-results-count-text');
 
-    card.innerHTML = `
-      <div class="story-card-poster">
-        <img src="${posterUrl}" alt="${story.title}" loading="lazy" onerror="this.src='${story.cover || 'assets/sanctum.jpg'}'">
-        <div class="poster-gradient-fade"></div>
-        <div class="poster-top-badges">
-          <span class="card-rating-badge">★ ${rating}</span>
-          ${isTmdb ? `<span class="card-quality-badge">CINEMA</span>` : `<span class="card-quality-badge">4K UHD</span>`}
-        </div>
-        <div class="card-hover-actions">
-          <button class="btn-card-action primary btn-play-story">▶ Play Story</button>
-          <button class="btn-card-action secondary btn-read-story">📖 Read Novel</button>
-        </div>
-        <div class="mobile-poster-play-badge">▶</div>
-      </div>
-      <div class="story-card-body">
-        <h3 class="card-title-text">${story.title}</h3>
-        <p class="card-character-sub">${story.characterName || 'Lead Character'} • ${story.category || 'Cinema'}</p>
-        <div class="mobile-card-quick-actions">
-          <button class="mobile-quick-btn play btn-play-story-mobile" type="button">▶ Play</button>
-          <button class="mobile-quick-btn read btn-read-story-mobile" type="button">📖 Read</button>
-        </div>
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  if (explicitQuery !== null && input) {
+    input.value = explicitQuery;
+  }
+
+  const query = (input ? input.value : (explicitQuery || '')).trim().toLowerCase();
+
+  if (clearBtn && input) {
+    clearBtn.style.display = input.value ? 'grid' : 'none';
+  }
+
+  const filtered = query
+    ? KAVANA_STORIES.filter(s => {
+        const matchTitle = (s.title || '').toLowerCase().includes(query);
+        const matchChar = (s.characterName || '').toLowerCase().includes(query);
+        const matchRole = (s.userRole || '').toLowerCase().includes(query);
+        const matchDesc = (s.summary || '').toLowerCase().includes(query);
+        const matchTag = (s.tags || []).some(t => t.toLowerCase().includes(query));
+        return matchTitle || matchChar || matchRole || matchDesc || matchTag;
+      })
+    : KAVANA_STORIES;
+
+  if (meta && countText) {
+    meta.style.display = 'block';
+    countText.textContent = query ? `Found ${filtered.length} scenarios for "${query}"` : `Showing all ${filtered.length} scenarios`;
+  }
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🔍</div>
+        <h3 style="color: #fff; margin-bottom: 0.5rem;">No scenarios found for "${query}"</h3>
+        <p style="font-size: 0.88rem;">Try searching for "Aryan", "Kabir", "Love Villa", or "Mafia".</p>
       </div>
     `;
+    return;
+  }
 
-    card.querySelector('.btn-play-story')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      launchScenarioChat(story);
-    });
-
-    card.querySelector('.btn-read-story')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openStoryInReader(story);
-    });
-
-    card.querySelector('.btn-play-story-mobile')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      launchScenarioChat(story);
-    });
-
-    card.querySelector('.btn-read-story-mobile')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openStoryInReader(story);
-    });
-
-    card.addEventListener('click', () => {
-      state.activeStory = story;
-      state.activeScenario = story;
-      if (heroBanner) {
-        heroBanner.style.backgroundImage = `url('${story.cover || story.avatar}')`;
-      }
-      if (heroTitle) heroTitle.textContent = story.title;
-      if (heroDesc) heroDesc.textContent = story.summary;
-    });
-
-    grid.appendChild(card);
+  filtered.forEach(story => {
+    grid.appendChild(createStoryCardElement(story));
   });
+}
+
+// Hero Carousel Switcher
+let heroSpotlightIndex = 0;
+function setupHeroCarousel() {
+  const prevBtn = document.getElementById('btn-hero-prev');
+  const nextBtn = document.getElementById('btn-hero-next');
+  const featuredList = KAVANA_STORIES.slice(0, 6);
+
+  function applyHeroSlide(idx) {
+    if (!featuredList.length) return;
+    heroSpotlightIndex = (idx + featuredList.length) % featuredList.length;
+    const s = featuredList[heroSpotlightIndex];
+    state.activeStory = s;
+    state.activeScenario = s;
+
+    const heroBanner = document.getElementById('hero-banner');
+    const heroTitle = document.getElementById('hero-title-text');
+    const heroDesc = document.getElementById('hero-desc-text');
+    const heroRating = document.getElementById('hero-rating-badge');
+    const heroPlays = document.getElementById('hero-plays-badge');
+
+    if (heroBanner) heroBanner.style.backgroundImage = `url('${s.cover || s.avatar}')`;
+    if (heroTitle) heroTitle.textContent = s.title;
+    if (heroDesc) heroDesc.textContent = s.summary;
+    if (heroRating) heroRating.textContent = `★ ${s.rating || '4.9'} Rating`;
+    if (heroPlays) heroPlays.textContent = `🔥 ${s.playerCount ? (s.playerCount/1000).toFixed(0) + 'K PLAYS' : '184K PLAYS'}`;
+
+    const dotsContainer = document.getElementById('hero-carousel-dots');
+    if (dotsContainer) {
+      dotsContainer.innerHTML = '';
+      featuredList.forEach((item, i) => {
+        const dot = document.createElement('div');
+        dot.className = `hero-dot ${i === heroSpotlightIndex ? 'active' : ''}`;
+        dot.addEventListener('click', () => applyHeroSlide(i));
+        dotsContainer.appendChild(dot);
+      });
+    }
+  }
+
+  prevBtn?.addEventListener('click', () => applyHeroSlide(heroSpotlightIndex - 1));
+  nextBtn?.addEventListener('click', () => applyHeroSlide(heroSpotlightIndex + 1));
+  applyHeroSlide(0);
 }
 
 // ========================================================
@@ -614,35 +685,8 @@ function renderExploreFeed() {
 function getLoreChapterTitle(story, chNum, lang) {
   const isHinglish = lang === 'hinglish' || lang === 'hindi' || lang === 'urdu';
   const isPunjabi = lang === 'punjabi';
-  const titleLower = (story.title || '').toLowerCase();
 
-  if (titleLower.includes('queen of tears')) {
-    if (chNum === 1) return isHinglish ? 'Queens Penthouse Ka Faisla' : (isPunjabi ? 'ਸ਼ਾਹੀ ਮਹਿਲ ਦਾ ਫੈਸਲਾ' : 'The Chaebol Ultimatum');
-    if (chNum === 2) return isHinglish ? 'Aansu Aur Chhupa Ishq' : (isPunjabi ? 'ਹੰਝੂ ਤੇ ਲੁਕਿਆ ਪਿਆਰ' : 'Behind The Cold Smile');
-    return isHinglish ? 'Aakhri Daao Aur Junoon' : (isPunjabi ? 'ਅਣਖ ਤੇ ਇਸ਼ਕ' : 'The High Stakes Surrender');
-  }
-  if (titleLower.includes('mirzapur')) {
-    if (chNum === 1) return isHinglish ? 'Purvanchal Ki Gaddi' : (isPunjabi ? 'ਮਿਰਜ਼ਾਪੁਰ ਦੀ ਗੱਦੀ' : 'The Purvanchal Kingpin');
-    if (chNum === 2) return isHinglish ? 'Tripathi Parivaar Ka Dabdaba' : (isPunjabi ? 'ਤ੍ਰਿਪਾਠੀ ਖਾਨਦਾਨ ਦਾ ਰੋਹਬ' : 'The Iron Grip of Mirzapur');
-    return isHinglish ? 'Goli Aur Sikka' : (isPunjabi ? 'ਖੂਨ ਤੇ ਤਖ਼ਤ' : 'Blood & The Throne');
-  }
-  if (titleLower.includes('peaky blinders')) {
-    if (chNum === 1) return isHinglish ? 'Garrison Ki Raat' : (isPunjabi ? 'ਗੈਰੀਸਨ ਦੀ ਰਾਤ' : 'Smoke & Crimson in Small Heath');
-    if (chNum === 2) return isHinglish ? 'Shelby Empire Ka Hukumat' : (isPunjabi ? 'ਸ਼ੈਲਬੀ ਖਾਨਦਾਨ ਦੀ ਹਕੂਮਤ' : 'No Limits in Birmingham');
-    return isHinglish ? 'In The Bleak Midwinter' : (isPunjabi ? 'ਆਖ਼ਰੀ ਬਾਜ਼ੀ' : 'The King of Small Heath');
-  }
-  if (titleLower.includes('john wick')) {
-    if (chNum === 1) return isHinglish ? 'The Continental Ka Farmaan' : (isPunjabi ? 'ਹਾਈ ਟੇਬਲ ਦਾ ਹੁਕਮ' : 'The Continental Contract');
-    if (chNum === 2) return isHinglish ? 'Baba Yaga Ka Gussa' : (isPunjabi ? 'ਬਾਬਾ ਯਾਗਾ ਦੀ ਦਹਿਸ਼ਤ' : 'Seven Million Bounty');
-    return isHinglish ? 'High Table Ka Khel' : (isPunjabi ? 'ਮੌਤ ਦਾ ਤਾਂਡਵ' : 'Honor and Blood Oath');
-  }
-  if (titleLower.includes('dune')) {
-    if (chNum === 1) return isHinglish ? 'Arrakis Ki Ret Aur Aag' : (isPunjabi ? 'ਰੇਤ ਦਾ ਤੂਫ਼ਾਨ' : 'Whispers of Sietch Tabr');
-    if (chNum === 2) return isHinglish ? 'Muad\'Dib Ki Bhavishyavani' : (isPunjabi ? 'ਭਵਿੱਖਬਾਣੀ ਦਾ ਸੱਚ' : 'The Power of the Voice');
-    return isHinglish ? 'Desert Power' : (isPunjabi ? 'ਰੇਗਿਸਤਾਨ ਦੀ ਤਾਕਤ' : 'The Holy War Awakens');
-  }
-
-  // General procedural titles based on chapter progression
+  // Procedural titles based on chapter progression
   if (chNum === 1) {
     return isHinglish ? 'Pehla Aamna-Saamna' : (isPunjabi ? 'ਪਹਿਲੀ ਟੱਕਰ' : 'The Unbroken Encounter');
   } else if (chNum === 2) {
@@ -1072,18 +1116,21 @@ export function deleteChatSession(sessionId, e) {
   sessions = sessions.filter(s => s.id !== sessionId);
   saveChatSessions(sessions);
 
-  // If deleted session was active, switch to next available or default
+  // If deleted session was active, switch to next available or clean empty
   if (state.activeChatPartnerId === sessionId) {
     if (sessions.length > 0) {
       switchChatSession(sessions[0].id);
     } else {
-      const defaults = getChatSessions();
-      saveChatSessions(defaults);
-      switchChatSession(defaults[0].id);
+      state.activeChatPartnerId = null;
+      state.activeScenario = null;
+      try { localStorage.removeItem('kavana_last_chat_id'); } catch(e){}
+      renderChatView();
+      renderChatRoster();
     }
   } else {
     renderChatRoster();
   }
+  updateChatBadges();
   showToast({ title: 'Chat Removed', message: 'Conversation removed from active list.', type: 'info' });
 }
 
@@ -1112,7 +1159,7 @@ export function renderNewChatDirectory(filterText = '') {
   const items = [];
   const seenIds = new Set();
 
-  // 1. Add all KAVANA_STORIES (48+ cinema, romance, mafia, thriller)
+  // 1. Add all KAVANA_STORIES
   KAVANA_STORIES.forEach(story => {
     if (!story.id || seenIds.has(story.id)) return;
     seenIds.add(story.id);
@@ -1142,7 +1189,7 @@ export function renderNewChatDirectory(filterText = '') {
     container.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem; color: var(--kavana-text-dim);">
         <p style="font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--kavana-text-main);">No companions found matching "${query}"</p>
-        <span style="font-size: 0.85rem;">Try searching for "Mirzapur", "Queen of Tears", "Mafia", "Romance", or "Boss"</span>
+        <span style="font-size: 0.85rem;">Try searching for "Love Villa", "Aryan", "Kabir", "Roommates", or "Priya"</span>
       </div>
     `;
     return;
@@ -1186,6 +1233,24 @@ export function renderChatRoster(filterText = '') {
   // 1. Render Left Sidebar Desktop Roster
   if (rosterList) {
     rosterList.innerHTML = '';
+
+    if (sessions.length === 0) {
+      rosterList.innerHTML = `
+        <div class="empty-chat-state" style="padding: 2.5rem 1rem;">
+          <div class="empty-chat-state-icon" style="font-size: 2.2rem;">💬</div>
+          <h4 style="font-size: 1rem; color: #fff; margin-bottom: 0.35rem;">No Active Chats</h4>
+          <p style="font-size: 0.8rem; color: #94a3b8; line-height: 1.45; margin-bottom: 1.25rem;">
+            Choose any story from the feed to launch your private 18+ uncensored roleplay.
+          </p>
+          <button class="empty-chat-action-btn" id="btn-roster-browse" type="button" style="font-size: 0.82rem; padding: 0.45rem 1.1rem;">
+            ✦ Browse Stories
+          </button>
+        </div>
+      `;
+      document.getElementById('btn-roster-browse')?.addEventListener('click', () => switchView('stories-explore'));
+      return;
+    }
+
     const filtered = query
       ? sessions.filter(s => 
           s.name.toLowerCase().includes(query) || 
@@ -1199,7 +1264,7 @@ export function renderChatRoster(filterText = '') {
         <div style="padding: 2rem 1rem; text-align: center; color: var(--kavana-text-dim); font-size: 0.85rem;">
           No matching chats found.<br>
           <button class="btn-new-chat-pill" id="btn-empty-new-chat" style="margin-top: 0.75rem;" type="button">
-            ✦ Browse Companions
+            ✦ Browse Directory
           </button>
         </div>
       `;
@@ -1299,6 +1364,22 @@ export function renderChatRoster(filterText = '') {
 // Render Chat View
 function renderChatView() {
   const sessions = getChatSessions();
+  updateChatBadges();
+
+  const emptyView = document.getElementById('chat-empty-view');
+  const activeView = document.getElementById('chat-active-view');
+
+  if (sessions.length === 0 || !state.activeChatPartnerId) {
+    if (emptyView) emptyView.style.display = 'flex';
+    if (activeView) activeView.style.display = 'none';
+    document.getElementById('btn-chat-empty-browse')?.addEventListener('click', () => switchView('stories-explore'));
+    renderChatRoster();
+    return;
+  }
+
+  if (emptyView) emptyView.style.display = 'none';
+  if (activeView) activeView.style.display = 'flex';
+
   const charId = state.activeChatPartnerId;
   const currentSession = sessions.find(s => s.id === charId);
   const scenario = state.activeScenario || currentSession;
@@ -1363,6 +1444,12 @@ function renderChatView() {
   const intTag = document.getElementById('chat-intimacy-tag');
   if (intTag) intTag.textContent = charState.intimacyLevel;
 
+  // Update Live Affection HUD Meter
+  const affFill = document.getElementById('chat-affection-fill');
+  const affPct = document.getElementById('chat-affection-pct');
+  if (affFill) affFill.style.width = `${charState.affection || 65}%`;
+  if (affPct) affPct.textContent = `${charState.affection || 65}%`;
+
   // Update Sticky Role Banner & User Gender Controls
   const roleBanner = document.getElementById('chat-role-banner');
   const roleUserTitle = document.getElementById('chat-role-user-title');
@@ -1392,20 +1479,44 @@ function renderChatView() {
     };
   }
 
+  // HTML-escaping helper for security (CodeRabbit standard)
+  const escapeHtml = (str) => {
+    return (str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  };
+
   const area = document.getElementById('chat-messages-area');
   if (area) {
     area.innerHTML = '';
+    const partnerName = scenario?.characterName || scenario?.name || char.name;
+
     history.forEach((msg) => {
-      const bubble = document.createElement('div');
-      bubble.className = `chat-bubble ${msg.sender}`;
-      let text = (msg.text || '').replace(/\*(.*?)\*/g, '<em>*$1*</em>');
-      bubble.innerHTML = text;
-      area.appendChild(bubble);
+      const isAi = msg.sender === 'ai';
+      const wrap = document.createElement('div');
+      wrap.className = `chat-bubble-wrap ${isAi ? 'ai' : 'user'}`;
+
+      const timeStr = formatChatTime(msg.time || Date.now());
+      const safe = escapeHtml(msg.text || '');
+      const formatted = safe.replace(/\*(.*?)\*/g, '<em>*$1*</em>');
+
+      wrap.innerHTML = `
+        <div class="chat-bubble-meta-row">
+          <span class="chat-bubble-sender-name">${isAi ? partnerName : 'You'}</span>
+          <span class="chat-bubble-timestamp">${timeStr}</span>
+        </div>
+        <div class="chat-bubble ${isAi ? 'ai' : 'user'}">${formatted}</div>
+      `;
+
+      area.appendChild(wrap);
     });
     area.scrollTop = area.scrollHeight;
   }
 
-  // Permanently remove any quick dialogue / canned reply chips bar
+  // Quick responses removed per user request - clean up any lingering elements
   const existingRepliesBar = document.getElementById('chat-quick-replies-bar');
   if (existingRepliesBar && existingRepliesBar.parentNode) {
     existingRepliesBar.parentNode.removeChild(existingRepliesBar);
@@ -1465,12 +1576,18 @@ async function sendChatMessage(text) {
   const partnerName = state.activeScenario?.characterName || state.activeScenario?.name || CHARACTERS[charId]?.name || 'Companion';
   const area = document.getElementById('chat-messages-area');
   const typing = document.createElement('div');
-  typing.className = 'chat-bubble ai thinking-bubble';
+  typing.className = 'chat-bubble-wrap ai';
   typing.innerHTML = `
-    <div class="thinking-dots">
-      <span></span><span></span><span></span>
+    <div class="chat-bubble-meta-row">
+      <span class="chat-bubble-sender-name">${partnerName}</span>
+      <span class="chat-bubble-timestamp">Just now</span>
     </div>
-    <em>${partnerName} is thinking...</em>
+    <div class="chat-bubble ai thinking-bubble">
+      <div class="thinking-dots">
+        <span></span><span></span><span></span>
+      </div>
+      <em>${partnerName} is thinking...</em>
+    </div>
   `;
   area?.appendChild(typing);
   if (area) area.scrollTop = area.scrollHeight;
@@ -1518,9 +1635,14 @@ async function sendChatMessage(text) {
 // Dance Studio
 function renderDanceStudio() {
   const dancerId = state.activeDancerId || 'kabir';
-  const char = CHARACTERS[dancerId] || CHARACTERS.kabir;
+  const matchedStory = KAVANA_STORIES.find(s => s.id === dancerId || s.id.includes(dancerId) || (s.characterName && s.characterName.toLowerCase().includes(dancerId)));
+  const char = CHARACTERS[dancerId] || (matchedStory ? {
+    name: matchedStory.characterName || matchedStory.title,
+    image: matchedStory.avatar || matchedStory.cover,
+    title: matchedStory.title
+  } : CHARACTERS.kabir);
   const dancerImg = document.getElementById('dance-dancer-img');
-  if (dancerImg) dancerImg.src = char.image;
+  if (dancerImg) dancerImg.src = char.image || 'assets/poster_kabir_mafia.jpg';
 
   const banner = document.getElementById('dance-banner-style');
   if (banner) banner.textContent = `${char.name} • ${state.activeDanceRoutine.toUpperCase()} DANCE`;
@@ -1568,10 +1690,10 @@ function triggerDanceAnimation() {
 
 // Initialize Application
 function initApp() {
-  // Brand Click -> Return to Cinema Explore
+  // Brand Click -> Return to Home
   document.getElementById('nav-brand')?.addEventListener('click', (e) => {
     e.preventDefault();
-    switchView('stories-explore');
+    switchView('home');
   });
 
   // Top Nav Links & Mobile Dock
@@ -1579,7 +1701,7 @@ function initApp() {
     btn.addEventListener('click', () => {
       const view = btn.dataset.view;
       if (view) {
-        if (view === 'character-chat') {
+        if (view === 'character-chat' || view === 'chat') {
           state.mobileChatView = 'list';
         }
         switchView(view);
@@ -1589,22 +1711,59 @@ function initApp() {
 
   // Spotlight Hero Action Buttons
   document.getElementById('btn-hero-play')?.addEventListener('click', () => {
-    openStoryInReader(state.activeStory || KAVANA_STORIES[0]);
+    launchScenarioChat(state.activeStory || KAVANA_STORIES[0]);
   });
 
   document.getElementById('btn-hero-chat')?.addEventListener('click', () => {
     launchScenarioChat(state.activeStory || KAVANA_STORIES[0]);
   });
 
-  document.getElementById('btn-hero-dance')?.addEventListener('click', () => {
-    state.activeDancerId = (state.activeStory || KAVANA_STORIES[0])?.characterId || 'kabir';
-    switchView('dance-studio');
-  });
+  // Setup Dynamic Hero Carousel Controls
+  setupHeroCarousel();
 
-  // Footer explore link
+  // Footer navigation links
+  document.getElementById('footer-link-home')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    switchView('home');
+  });
   document.getElementById('footer-link-explore')?.addEventListener('click', (e) => {
     e.preventDefault();
-    switchView('stories-explore');
+    switchView('explore');
+  });
+  document.getElementById('footer-link-search')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    switchView('search');
+  });
+  document.getElementById('footer-link-chats')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    switchView('chat');
+  });
+
+  // Dedicated Search Page Inputs & Tag Chips
+  const mainSearchInput = document.getElementById('main-search-input');
+  const clearMainSearchBtn = document.getElementById('btn-clear-main-search');
+
+  mainSearchInput?.addEventListener('input', (e) => {
+    renderSearchView(e.target.value);
+  });
+
+  clearMainSearchBtn?.addEventListener('click', () => {
+    if (mainSearchInput) mainSearchInput.value = '';
+    renderSearchView('');
+  });
+
+  document.querySelectorAll('.search-tag-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const tag = chip.dataset.query || chip.textContent.trim();
+      if (mainSearchInput) mainSearchInput.value = tag;
+      renderSearchView(tag);
+    });
+  });
+
+  // Mobile Bottom Dock Settings Button
+  document.getElementById('dock-btn-settings')?.addEventListener('click', () => {
+    updateSettingsVisibility();
+    settingsModal?.classList.add('active');
   });
 
   // Language Dropdown
@@ -1823,12 +1982,17 @@ function initApp() {
   if (apiKeyInput) apiKeyInput.value = currentSettings.apiKey;
   if (endpointInput) endpointInput.value = currentSettings.customEndpoint;
 
+  const uncensoredToggle = document.getElementById('setting-uncensored-toggle');
+  if (uncensoredToggle) {
+    uncensoredToggle.checked = localStorage.getItem('kavana_18plus_unfiltered') !== 'false';
+  }
+
   function updateSettingsVisibility() {
     const val = providerSelect?.value;
     if (val === 'gemini' || val === 'groq' || val === 'openrouter') {
       apiKeyGroup.style.display = 'block';
       endpointGroup.style.display = 'none';
-    } else if (val === 'ollama') {
+    } else if (val === 'ollama' || val === 'custom') {
       apiKeyGroup.style.display = 'none';
       endpointGroup.style.display = 'block';
     } else {
@@ -1850,12 +2014,38 @@ function initApp() {
       apiKey: apiKeyInput?.value?.trim(),
       customEndpoint: endpointInput?.value?.trim()
     });
+    if (uncensoredToggle) {
+      localStorage.setItem('kavana_18plus_unfiltered', uncensoredToggle.checked ? 'true' : 'false');
+    }
     settingsModal?.classList.remove('active');
     showToast({
       title: 'Preferences Saved',
-      message: `Using ${providerSelect?.options[providerSelect.selectedIndex].text}`,
+      message: `Using ${providerSelect?.options[providerSelect.selectedIndex].text} • 18+ Uncensored: ${uncensoredToggle?.checked ? 'ON' : 'OFF'}`,
       type: 'success'
     });
+  });
+
+  // 18+ Age Verification Gate Check
+  const ageGateModal = document.getElementById('modal-age-gate');
+  if (ageGateModal && localStorage.getItem('kavana_age_verified') !== 'true') {
+    ageGateModal.classList.add('active');
+    ageGateModal.style.display = 'flex';
+  }
+  document.getElementById('btn-accept-age-gate')?.addEventListener('click', () => {
+    localStorage.setItem('kavana_age_verified', 'true');
+    if (ageGateModal) {
+      ageGateModal.classList.remove('active');
+      ageGateModal.style.display = 'none';
+    }
+    playChime(650);
+    showToast({
+      title: 'Age Verified',
+      message: 'Welcome to Kavana AI. 18+ Uncensored Mode is active.',
+      type: 'success'
+    });
+  });
+  document.getElementById('btn-decline-age-gate')?.addEventListener('click', () => {
+    window.location.href = 'https://www.google.com';
   });
 
   // Novel Generator Form
@@ -2115,7 +2305,7 @@ function initApp() {
 
   // Initial State: Start directly on modern Cinema Platform
   updateCoins(0);
-  switchView('stories-explore');
+  switchView('home');
 }
 
 if (document.readyState === 'loading') {

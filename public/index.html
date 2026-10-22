@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KAVANA AI • Premium Cinema & Interactive 18+ Novels</title>
-  <meta name="description" content="Step into legendary cinema scenarios and unfiltered adult interactive novels. Play and chat with AI companions in Punjabi, Hinglish, and English.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>KAVANA AI • Premium Uncensored 18+ Interactive Stories & Roleplay</title>
+  <meta name="description" content="Step into original adult interactive stories, passionate romance, and intense character roleplay. Chat with AI companions in Hinglish, Punjabi, and English.">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,33 +26,25 @@
         <span class="brand-dot"></span>
       </a>
 
-      <!-- Center Nav Tabs -->
+      <!-- Center Nav Tabs: Home, Explore, Search, Chat -->
       <nav class="nav-center" aria-label="Main Navigation">
-        <button class="nav-btn active" data-view="stories-explore">
-          <span>Cinema</span>
+        <button class="nav-btn active" data-view="home" id="nav-btn-home">
+          <span>🏠 Home</span>
         </button>
-        <button class="nav-btn" data-view="story-reader">
-          <span>Read</span>
+        <button class="nav-btn" data-view="explore" id="nav-btn-explore">
+          <span>✨ Explore</span>
         </button>
-        <button class="nav-btn" data-view="character-chat">
-          <span>18+ Chat</span>
+        <button class="nav-btn" data-view="search" id="nav-btn-search">
+          <span>🔍 Search</span>
         </button>
-        <button class="nav-btn" data-view="dance-studio">
-          <span>Dance</span>
-        </button>
-        <button class="nav-btn" data-view="generator-studio">
-          <span>Create</span>
+        <button class="nav-btn" data-view="chat" id="nav-btn-chat">
+          <span>💬 Chat</span>
+          <span class="nav-badge-count" id="nav-chats-count" style="display: none;">0</span>
         </button>
       </nav>
 
       <!-- Right Header Actions -->
       <div class="header-actions">
-        <!-- Professional Cinema Title Import Button -->
-        <button class="btn-tmdb-pill" id="btn-header-add-tmdb" title="Import Movie or Series">
-          <span class="tmdb-pill-icon">✦</span>
-          <span>Import Title</span>
-        </button>
-
         <!-- Dialect Selector -->
         <select class="header-lang-select" id="app-language-select" aria-label="Language Dialect">
           <option value="hinglish" selected>Hinglish</option>
@@ -68,29 +60,9 @@
         </button>
 
         <!-- Settings -->
-        <button class="icon-circle-btn" id="btn-settings-modal" title="Settings & LLM API">
+        <button class="icon-circle-btn" id="btn-settings-modal" title="Settings & 18+ Uncensored Mode">
           ⚙️
         </button>
-
-        <!-- Hidden Compatibility Elements for app.js -->
-        <div style="display: none;">
-          <div id="btn-wallet-modal">
-            <span id="user-credits-counter">500 Coins</span>
-            <button class="coin-add-plus">+</button>
-          </div>
-          <button id="nav-open-tmdb"></button>
-          <button id="btn-cta-get-app"></button>
-          <button id="btn-hero-launch-app"></button>
-          <button id="btn-hero-explore-novels"></button>
-          <button id="btn-hero-open-dance"></button>
-          <button id="btn-banner-open-tmdb"></button>
-          <button id="btn-hero-dance"></button>
-          <button id="btn-explore-open-tmdb"></button>
-          <button id="btn-mockup-tab-explore"></button>
-          <button id="btn-mockup-tab-reader"></button>
-          <button id="btn-mockup-tab-chat"></button>
-          <button id="btn-mockup-tab-dance"></button>
-        </div>
       </div>
     </div>
   </header>
@@ -101,69 +73,81 @@
   <!-- 2. MAIN APPLICATION VIEWS -->
   <main class="kavana-main-app" id="main-app-container">
 
-    <!-- VIEW 1: CINEMA EXPLORE FEED (Default Landing) -->
-    <section class="view-section active" id="view-stories-explore">
-      
+    <!-- VIEW 1: HOME (Cinema Showcase & Trending Stories) -->
+    <section class="view-section active" id="view-home">
       <!-- Premium Cinematic Spotlight Hero Banner -->
-      <div class="cinema-spotlight-hero" id="hero-banner">
+      <div class="cinema-spotlight-hero" id="hero-banner" style="background-image: url('assets/poster_love_villa.jpg');">
         <div class="hero-backdrop-glow"></div>
+
+        <!-- Carousel Navigation Arrows -->
+        <button class="hero-carousel-arrow prev" id="btn-hero-prev" title="Previous Spotlight" aria-label="Previous Story">‹</button>
+        <button class="hero-carousel-arrow next" id="btn-hero-next" title="Next Spotlight" aria-label="Next Story">›</button>
+
         <div class="hero-spotlight-content">
           <div class="hero-meta-row">
-            <span class="badge-accent">🎬 FEATURED SPOTLIGHT</span>
-            <span class="badge-quality">4K UHD</span>
-            <span class="badge-rating">★ 9.6 IMDb</span>
+            <span class="badge-quality">UNCENSORED 18+</span>
+            <span class="badge-rating" id="hero-rating-badge">★ 4.9 Rating</span>
+            <span class="badge-quality" style="background: rgba(229, 9, 20, 0.2); border-color: rgba(229, 9, 20, 0.4); color: #ff6b72;" id="hero-plays-badge">🔥 184K PLAYS</span>
           </div>
 
           <h1 class="hero-headline" id="hero-title-text">
-            Mirzapur: Kaleen Bhaiya's Purvanchal
+            Love Villa: 5 Jealous Rivals
           </h1>
 
           <p class="hero-synopsis" id="hero-desc-text">
-            Step into the haveli sanctum. Akhandanand Tripathi sips tea with chilling calmness while deciding whether you leave as an ally or end up buried in Purvanchal. Uncensored adult roleplay in fluent Hinglish.
+            Trapped in a sun-soaked Goa luxury penthouse with 5 gorgeous contestants—Natasha, Tara, Aanya, Rhea, and Meera. High jealousy, intense late-night temptations, and passionate uncensored roleplay.
           </p>
 
           <div class="hero-button-group">
             <button class="btn-hero-primary" id="btn-hero-play">
-              <span>▶</span> Play Story
+              <span>💬</span> Start Story Chat
             </button>
             <button class="btn-hero-glass" id="btn-hero-chat">
-              <span>💬</span> Roleplay Chat
+              <span>▶</span> Chat Now
             </button>
           </div>
         </div>
+
+        <!-- Carousel Dots Indicator -->
+        <div class="hero-carousel-dots" id="hero-carousel-dots"></div>
       </div>
 
-      <!-- Minimal Search & Filter Bar -->
-      <div class="feed-controls-bar">
-        <div class="search-box">
-          <span class="search-icon">🔍</span>
-          <input 
-            type="text" 
-            id="stories-search-input" 
-            class="search-input-field" 
-            placeholder="Search titles, characters, or genres (Mirzapur, Dune, Gojo, Shelby)..."
-            autocomplete="off"
-          >
-          <button class="search-clear-btn" id="btn-clear-search" style="display: none;">✕</button>
+      <!-- Home Trending Stories Row -->
+      <div class="section-heading-row">
+        <div>
+          <h2 class="section-title">🔥 Trending Stories</h2>
+          <p class="section-subtitle">Top played adult interactive roleplay scenarios this week</p>
         </div>
+        <button class="btn-text-link" id="btn-home-view-all-explore">View All 22 Stories &rarr;</button>
+      </div>
+      <div class="stories-feed-grid trending-grid" id="home-trending-grid">
+        <!-- Injected dynamically by app.js -->
+      </div>
+    </section>
 
+    <!-- VIEW 2: EXPLORE (Full Catalog & Tropes) -->
+    <section class="view-section" id="view-explore">
+      <div class="section-heading-row" style="margin-bottom: 1.25rem;">
+        <div>
+          <h2 class="section-title">✨ Explore Scenarios</h2>
+          <p class="section-subtitle">Browse full library of interactive romance & uncensored roleplay</p>
+        </div>
         <div class="catalog-counter-pill" id="stories-count-badge">
-          33 Scenarios
+          22 Scenarios
         </div>
       </div>
 
       <!-- Sleek Horizontal Category Filters -->
       <div class="category-pills-bar" id="category-pills-container">
-        <button class="cat-pill active" data-category="all">✨ All</button>
-        <button class="cat-pill" data-category="tmdb">🎬 Cinema Originals</button>
-        <button class="cat-pill" data-category="trending">🔥 Trending</button>
-        <button class="cat-pill" data-category="anime">🎌 Anime & Manga</button>
-        <button class="cat-pill" data-category="mafia">🕶️ Crime & Syndicate</button>
-        <button class="cat-pill" data-category="pakistani">🇵🇰 Pakistani Drama</button>
-        <button class="cat-pill" data-category="spicy">🔞 Mature 18+</button>
+        <button class="cat-pill active" data-category="all">✨ All Stories</button>
+        <button class="cat-pill" data-category="spicy">🔥 Spicy 18+</button>
+        <button class="cat-pill" data-category="harem">💋 Harem & Rivals</button>
+        <button class="cat-pill" data-category="mafia">🕶️ Mafia & Billionaires</button>
+        <button class="cat-pill" data-category="forbidden">💔 Forbidden Desires</button>
+        <button class="cat-pill" data-category="badboy">😈 Bad Boys & Royalty</button>
         <button class="cat-pill" data-category="fantasy">🔮 Dark Fantasy</button>
-        <button class="cat-pill" data-category="drama">💔 Drama</button>
-        <button class="cat-pill" data-category="thriller">⚡ Suspense</button>
+        <button class="cat-pill" data-category="college">🏫 College & Roommates</button>
+        <button class="cat-pill" data-category="desi">🌶️ Desi Romance</button>
       </div>
 
       <!-- Curated Cinema Cards Grid -->
@@ -172,96 +156,47 @@
       </div>
     </section>
 
-    <!-- VIEW 2: VISUAL NOVEL READER -->
-    <section class="view-section" id="view-story-reader">
-      <div class="reader-workspace">
+    <!-- VIEW 3: SEARCH (Instant Search & Tags) -->
+    <section class="view-section" id="view-search">
+      <div class="search-page-header">
+        <h2 class="section-title">🔍 Search Stories & Companions</h2>
+        <p class="section-subtitle">Find your favorite characters, tropes, and scenarios instantly</p>
         
-        <!-- Stage Canvas -->
-        <div class="story-stage-canvas" id="story-canvas">
-          <div class="stage-backdrop" id="stage-backdrop-img"></div>
-          <div class="stage-ambient-overlay"></div>
-
-          <div class="stage-header-bar">
-            <div class="stage-title-tag" id="current-scene-title">Chapter 1: Trapped in the Penthouse</div>
-            <div class="stage-header-right">
-              <button class="btn-dance-mini" id="btn-quick-dance" title="Character Motion Studio">🎭 Animate</button>
-              <div class="stage-character-badge" id="current-char-badge">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80" alt="Character" class="char-tiny-avatar" id="stage-char-avatar">
-                <span class="char-mood-text" id="stage-char-mood">Dominant & Desi Boss</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="reader-dialogue-box">
-            <div class="dialogue-speaker-name" id="scene-speaker-name">
-              <span>✦</span> Kabir Oberoi
-            </div>
-            <div class="dialogue-prose" id="scene-prose-text">Loading chapter...</div>
-            <div class="dialogue-direct-speech" id="scene-dialogue-text" style="display: none;"></div>
-            <div class="choices-container" id="scene-choices-container"></div>
-            
-            <div class="reader-custom-action-wrap" id="reader-custom-action-wrap">
-              <input type="text" class="reader-custom-input" id="reader-custom-action-input" placeholder="✦ Or type custom action (e.g. *confront them with the truth*)..." autocomplete="off">
-              <button type="button" class="btn-custom-action-submit" id="btn-submit-custom-action">
-                <span>Act ➔</span>
-              </button>
-            </div>
-          </div>
+        <div class="search-box-large">
+          <span class="search-icon-large">🔍</span>
+          <input 
+            type="text" 
+            id="main-search-input" 
+            class="search-input-large" 
+            placeholder="Search characters (Aryan, Kabir, Natasha), tropes, or settings..." 
+            autocomplete="off"
+          >
+          <button class="search-clear-btn-large" id="btn-clear-main-search" style="display: none;">✕</button>
         </div>
 
-        <!-- Minimal Side Companion Drawer -->
-        <aside class="story-side-panel">
-          <div class="minimal-glass-card">
-            <div class="card-header-row">
-              <span class="card-sub-kicker">Companion</span>
-              <span class="badge-mini" id="side-char-category">Desi Mafia</span>
-            </div>
-            
-            <div class="companion-portrait-frame">
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=780&auto=format&fit=crop&q=85" alt="Character" class="character-showcase-avatar" id="side-char-portrait">
-            </div>
-            
-            <h3 class="character-details-name" id="side-char-name">Kabir Oberoi</h3>
-            <p class="character-details-title" id="side-char-title">The Desi Mafia Kingpin</p>
+        <!-- Popular Quick Search Tags -->
+        <div class="search-tags-row">
+          <span class="search-tags-label">Quick Search:</span>
+          <button class="search-tag-chip" data-query="Aryan">Aryan Singhania</button>
+          <button class="search-tag-chip" data-query="Love Villa">Love Villa</button>
+          <button class="search-tag-chip" data-query="Kabir">Kabir Oberoi</button>
+          <button class="search-tag-chip" data-query="Natasha">Natasha</button>
+          <button class="search-tag-chip" data-query="Mafia">Mafia</button>
+          <button class="search-tag-chip" data-query="Roommates">Roommates</button>
+          <button class="search-tag-chip" data-query="Spicy">Spicy 18+</button>
+        </div>
+      </div>
 
-            <div class="meter-group">
-              <div class="meter-labels">
-                <span>Affection</span>
-                <span id="label-affection">65%</span>
-              </div>
-              <div class="meter-bar">
-                <div class="meter-fill affection" id="fill-affection" style="width: 65%;"></div>
-              </div>
-            </div>
-
-            <div class="meter-group">
-              <div class="meter-labels">
-                <span>Intimacy</span>
-                <span id="label-tension">90%</span>
-              </div>
-              <div class="meter-bar">
-                <div class="meter-fill tension" id="fill-tension" style="width: 90%;"></div>
-              </div>
-            </div>
-
-            <div class="companion-btn-stack">
-              <button class="btn-primary-mini" id="btn-jump-to-chat">
-                💬 Open Roleplay Chat
-              </button>
-              <button class="btn-secondary-mini" id="btn-side-dance">
-                🎭 Character Studio
-              </button>
-              <button class="btn-secondary-mini" id="btn-restart-story">
-                ↺ Restart Chapter
-              </button>
-            </div>
-          </div>
-        </aside>
-
+      <!-- Search Results Grid -->
+      <div class="search-results-meta" id="search-results-meta" style="display: none;">
+        <span id="search-results-count-text">Found 0 stories</span>
+      </div>
+      <div class="stories-feed-grid" id="search-results-grid">
+        <!-- Rendered dynamically by app.js -->
       </div>
     </section>
 
-    <!-- VIEW 3: 18+ ROLEPLAY CHAT -->
+    <!-- VIEW 4: 18+ ROLEPLAY CHAT (Also aliased as view-chat) -->
     <section class="view-section" id="view-character-chat">
       <div class="chat-workspace">
         
@@ -292,204 +227,82 @@
         <!-- Main Chat Area -->
         <div class="chat-main-pane">
           
-          <!-- Chat Top Header -->
-          <div class="chat-pane-header">
-            <div class="chat-header-left" style="display: flex; align-items: center; gap: 0.5rem; min-width: 0;">
-              <button class="btn-chat-mobile-back" id="btn-chat-mobile-back" type="button" title="Back to All Chats">
-                <span class="back-arrow">←</span>
-                <span class="back-text">Chats</span>
-              </button>
-              <div class="chat-partner-info">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80" alt="Avatar" class="chat-partner-avatar" id="chat-partner-avatar">
-                <div style="min-width: 0;">
-                  <h3 class="chat-header-name" id="chat-partner-name">Kabir Oberoi</h3>
-                  <span class="chat-header-sub" id="chat-partner-archetype">Desi Romance & Don</span>
+          <!-- Empty Chat Welcome Overlay -->
+          <div class="empty-chat-state" id="chat-empty-view" style="display: none;">
+            <div class="empty-chat-state-icon">💬</div>
+            <h3 class="empty-chat-state-title">No Active Conversation</h3>
+            <p class="empty-chat-state-desc">
+              You haven't chatted with any story character yet. Choose any story persona to start your private 18+ uncensored roleplay.
+            </p>
+            <button class="empty-chat-action-btn" id="btn-chat-empty-browse" type="button">
+              <span>✦</span> Browse Stories
+            </button>
+          </div>
+
+          <!-- Active Conversation View Container -->
+          <div class="chat-active-view-container" id="chat-active-view" style="display: flex; flex-direction: column; height: 100%; min-width: 0; width: 100%;">
+            <!-- Chat Top Header -->
+            <div class="chat-pane-header">
+              <div class="chat-header-left" style="display: flex; align-items: center; gap: 0.5rem; min-width: 0;">
+                <button class="btn-chat-mobile-back" id="btn-chat-mobile-back" type="button" title="Back to All Chats">
+                  <span class="back-arrow">←</span>
+                  <span class="back-text">Chats</span>
+                </button>
+                <div class="chat-partner-info">
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80" alt="Avatar" class="chat-partner-avatar" id="chat-partner-avatar">
+                  <div style="min-width: 0;">
+                    <h3 class="chat-header-name" id="chat-partner-name">Kabir Oberoi</h3>
+                    <span class="chat-header-sub" id="chat-partner-archetype">Desi Romance & Don</span>
+                  </div>
                 </div>
+              </div>
+
+              <div class="chat-header-actions">
+                <!-- Live Affection Gauge -->
+                <div class="chat-affection-hud" title="Affection Level with Companion">
+                  <span class="hud-heart">❤️</span>
+                  <div class="hud-meter-track">
+                    <div class="hud-meter-fill" id="chat-affection-fill" style="width: 70%;"></div>
+                  </div>
+                  <span class="hud-val" id="chat-affection-pct">70%</span>
+                </div>
+                <span class="intimacy-tag" id="chat-intimacy-tag">🔥 18+ Uncensored</span>
               </div>
             </div>
 
-            <div class="chat-header-actions">
-              <button class="btn-dance-mini" id="btn-chat-dance" title="Character Motion Studio">🎭 Animate</button>
-              <span class="intimacy-tag" id="chat-intimacy-tag">🔥 Unrestricted</span>
-            </div>
-          </div>
-
-          <!-- Role Banner -->
-          <div class="chat-role-banner" id="chat-role-banner">
-            <div class="role-desc">
-              <span>🎭 Persona: <strong id="chat-role-user-title">Protagonist</strong></span>
-              <span class="role-divider">•</span>
-              <span id="chat-role-user-goal">Objective: Shape the narrative</span>
-            </div>
-            <div class="chat-role-right-controls">
-              <button class="btn-gender-toggle" id="btn-user-gender-toggle" title="Toggle your gender (AI grammar adapts)">👨 You: Male</button>
-              <button class="btn-restart-mini" id="btn-restart-chat-scenario" title="Restart Scenario">↺</button>
-            </div>
-          </div>
-
-          <!-- Messages Scroll Area -->
-          <div class="chat-messages-area" id="chat-messages-area"></div>
-
-          <!-- Input Bar -->
-          <form class="chat-input-bar" id="chat-form">
-            <input 
-              type="text" 
-              class="chat-input-field" 
-              id="chat-user-input" 
-              placeholder="Reply in English, Hinglish, or Punjabi (use *actions*)..." 
-              autocomplete="off"
-              required
-            >
-            <button type="submit" class="btn-send-message" id="btn-send-message">
-              <span>Send</span> <span>➔</span>
-            </button>
-          </form>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- VIEW 4: DANCE STUDIO -->
-    <section class="view-section" id="view-dance-studio">
-      <div class="dance-studio-workspace">
-        <div class="dance-header-bar">
-          <div>
-            <h2 class="dance-title">💃 Make Them Dance</h2>
-            <p class="dance-sub">Choose a character and choreography to trigger live animated routines.</p>
-          </div>
-          <button class="btn-primary-mini" id="btn-trigger-dance-animation">
-            ▶ Play Routine
-          </button>
-        </div>
-
-        <div class="dance-stage-layout">
-          <div class="dancer-frame" id="dancer-figure">
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=780&auto=format&fit=crop&q=85" alt="Dancer" class="dancer-character-image" id="dance-dancer-img">
-            <div class="dance-sparkles">✨</div>
-            <div class="dance-music-notes">🎵 🎶 💃</div>
-            <div class="dance-style-banner" id="dance-banner-style">Bhangra & Bollywood Passion</div>
-          </div>
-
-          <div class="dance-controls-card">
-            <h4 class="settings-group-title">Select Character</h4>
-            <div class="dance-pick-row">
-              <button class="choice-btn dancer-pick active" data-dancer="kabir">Kabir</button>
-              <button class="choice-btn dancer-pick" data-dancer="valeria">Valeria</button>
-              <button class="choice-btn dancer-pick" data-dancer="lucian">Lucian</button>
+            <!-- Role Banner -->
+            <div class="chat-role-banner" id="chat-role-banner">
+              <div class="role-desc">
+                <span>🎭 Persona: <strong id="chat-role-user-title">Protagonist</strong></span>
+                <span class="role-divider">•</span>
+                <span id="chat-role-user-goal">Objective: Shape the narrative</span>
+              </div>
+              <div class="chat-role-right-controls">
+                <button class="btn-gender-toggle" id="btn-user-gender-toggle" title="Toggle your gender (AI grammar adapts)">👨 You: Male</button>
+                <button class="btn-restart-mini" id="btn-restart-chat-scenario" title="Restart Scenario">↺</button>
+              </div>
             </div>
 
-            <h4 class="settings-group-title" style="margin-top: 1.25rem;">Choreography Routine</h4>
-            <div class="dance-routine-stack">
-              <button class="choice-btn dance-routine-btn active" data-routine="bhangra">
-                <span>🥁 High-Energy Bhangra / Dhol</span>
+            <!-- Messages Scroll Area -->
+            <div class="chat-messages-area" id="chat-messages-area"></div>
+
+            <!-- Input Bar -->
+            <form class="chat-input-bar" id="chat-form">
+              <input 
+                type="text" 
+                class="chat-input-field" 
+                id="chat-user-input" 
+                placeholder="Reply in English, Hinglish, or Punjabi (use *actions*)..." 
+                autocomplete="off"
+                required
+              >
+              <button type="submit" class="btn-send-message" id="btn-send-message">
+                <span>Send</span> <span>➔</span>
               </button>
-              <button class="choice-btn dance-routine-btn" data-routine="tango">
-                <span>🌹 Sensual 18+ Slow Tango</span>
-              </button>
-              <button class="choice-btn dance-routine-btn" data-routine="club">
-                <span>⚡ Neon Cyber Hip-Hop</span>
-              </button>
-            </div>
+            </form>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- VIEW 5: NOVEL GENERATOR STUDIO -->
-    <section class="view-section" id="view-generator-studio">
-      <div class="creator-workspace">
-        <div class="creator-form-card">
-          <div class="card-header-row">
-            <h3 class="creator-card-title">Novel Creator Studio</h3>
-            <span class="badge-accent">AI Powered</span>
-          </div>
-
-          <form id="story-generator-form">
-            <div class="form-group">
-              <label class="form-label" for="gen-language">Dialect & Language</label>
-              <select class="form-select" id="gen-language">
-                <option value="hinglish">🇮🇳 Hinglish (Hindi + English Dialogue)</option>
-                <option value="punjabi">☬ Punjabi (ਪੰਜਾਬੀ / Roman Punjabi)</option>
-                <option value="en">🇬🇧 English</option>
-                <option value="hindi">🇮🇳 Hindi (हिन्दी)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="gen-genre">Genre</label>
-              <select class="form-select" id="gen-genre">
-                <option value="Desi Romance & Mafia">Desi Romance & Mafia</option>
-                <option value="Dark Fantasy Romance">Dark Fantasy Romance</option>
-                <option value="Royalty & Bad Boy">Royalty & Bad Boy</option>
-                <option value="College Rivals">College Rivals With Benefits</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="gen-tone">Maturity Tone</label>
-              <select class="form-select" id="gen-tone">
-                <option value="Uncensored 18+ Passionate">🔞 Uncensored 18+ (Unfiltered)</option>
-                <option value="Seductive Slow-Burn">Seductive Slow-Burn</option>
-                <option value="Teekha & Domineering">Teekha & Domineering</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="gen-desires">Scenario Premise</label>
-              <textarea 
-                class="form-textarea" 
-                id="gen-desires" 
-                placeholder="E.g., Rain-soaked Punjab farmhouse, power cuts out, high physical tension, confession of forbidden desire..."
-              ></textarea>
-            </div>
-
-            <button type="submit" class="btn-primary-mini" id="btn-generate-story" style="width: 100%; padding: 0.85rem;">
-              <span>⚡ Generate Interactive Novel</span>
-            </button>
-          </form>
-        </div>
-
-        <div class="creator-pipeline-card" id="pipeline-tracker-panel">
-          <div class="card-header-row">
-            <h4 class="creator-card-title">Generation Pipeline</h4>
-            <span id="pipeline-status-tag" style="font-size: 0.8rem; color: var(--text-muted);">Idle</span>
-          </div>
-
-          <div class="pipeline-step-item" id="step-1">
-            <span class="step-num">1</span>
-            <div class="step-meta">
-              <h5>Drafting Narrative</h5>
-              <p>Authentic bilingual prose with character emotion and dialogue.</p>
-            </div>
-          </div>
-          <div class="pipeline-step-item" id="step-2">
-            <span class="step-num">2</span>
-            <div class="step-meta">
-              <h5>Composing Scene Atmosphere</h5>
-              <p>Cinematic scene background and mood styling.</p>
-            </div>
-          </div>
-          <div class="pipeline-step-item" id="step-3">
-            <span class="step-num">3</span>
-            <div class="step-meta">
-              <h5>Branching Decisions</h5>
-              <p>Formulating consequence choices and tension meters.</p>
-            </div>
-          </div>
-          <div class="pipeline-step-item" id="step-4">
-            <span class="step-num">4</span>
-            <div class="step-meta">
-              <h5>Finalizing State</h5>
-              <p>Saving novel arc to memory for instant playthrough.</p>
-            </div>
-          </div>
-
-          <div id="pipeline-success-actions" style="display: none; margin-top: 1rem;">
-            <button class="btn-hero-primary" id="btn-view-generated-story" style="width: 100%;">
-              ✨ Play Newly Created Novel
-            </button>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -504,8 +317,10 @@
         <span class="footer-copy">© 2026 Kavana AI. All rights reserved.</span>
       </div>
       <div class="footer-links-side">
+        <a href="#home" class="footer-item-link" id="footer-link-home">Home</a>
         <a href="#explore" class="footer-item-link" id="footer-link-explore">Explore</a>
-        <a href="#tmdb" class="footer-item-link" id="btn-hero-open-tmdb">Import TMDb</a>
+        <a href="#search" class="footer-item-link" id="footer-link-search">Search</a>
+        <a href="#chat" class="footer-item-link" id="footer-link-chats">Chat</a>
         <a href="https://heykavana.com/policies/privacy-policy" target="_blank" class="footer-item-link">Privacy</a>
         <a href="https://heykavana.com/policies/terms-of-service" target="_blank" class="footer-item-link">Terms</a>
       </div>
@@ -513,150 +328,27 @@
   </footer>
 
   <!-- 4. SLEEK MOBILE BOTTOM DOCK -->
-  <nav class="mobile-mini-dock" aria-label="Mobile Navigation">
-    <button class="mobile-dock-btn active" data-view="stories-explore">
-      <span class="dock-icon">🎬</span>
-      <span>Cinema</span>
+  <nav class="mobile-bottom-dock" aria-label="Mobile Navigation">
+    <button class="mobile-dock-btn active" data-view="home" id="mobile-dock-home">
+      <span class="dock-icon">🏠</span>
+      <span class="dock-label">Home</span>
     </button>
-    <button class="mobile-dock-btn" data-view="story-reader">
-      <span class="dock-icon">📖</span>
-      <span>Novels</span>
+    <button class="mobile-dock-btn" data-view="explore" id="mobile-dock-explore">
+      <span class="dock-icon">✨</span>
+      <span class="dock-label">Explore</span>
     </button>
-    <button class="mobile-dock-btn tmdb-highlight" id="mobile-open-tmdb">
-      <span class="dock-icon">✦</span>
-      <span>Import</span>
+    <button class="mobile-dock-btn" data-view="search" id="mobile-dock-search">
+      <span class="dock-icon">🔍</span>
+      <span class="dock-label">Search</span>
     </button>
-    <button class="mobile-dock-btn" data-view="character-chat">
+    <button class="mobile-dock-btn" data-view="chat" id="mobile-dock-chat">
       <span class="dock-icon">💬</span>
-      <span>Chat</span>
-    </button>
-    <button class="mobile-dock-btn" data-view="dance-studio">
-      <span class="dock-icon">🎭</span>
-      <span>Studio</span>
+      <span class="dock-label">Chat</span>
+      <span class="dock-badge-dot" id="dock-chats-badge" style="display: none;"></span>
     </button>
   </nav>
 
-  <!-- 5. TMDb IMPORT MODAL -->
-  <div class="modal-backdrop" id="modal-tmdb-importer">
-    <div class="modal-card tmdb-modal-card">
-      <div class="modal-header">
-        <div class="tmdb-modal-title-wrap">
-          <div class="tmdb-badge-pill">✦ CINEMA ADAPTATION STUDIO</div>
-          <h3>Adapt Any Film or Series</h3>
-        </div>
-        <button class="modal-close" id="btn-close-tmdb-modal">&times;</button>
-      </div>
-
-      <p class="modal-description">
-        Search any movie or show by title or enter its TMDb reference. Kavana will automatically compose an authentic, interactive scenario with character dialogue and branching decisions.
-      </p>
-
-      <!-- TMDb Search Bar -->
-      <div class="tmdb-search-box-row">
-        <div class="search-box" style="flex: 1;">
-          <span class="search-icon">🔍</span>
-          <input 
-            type="text" 
-            id="tmdb-query-input" 
-            class="search-input-field" 
-            placeholder="Enter title (e.g. Mirzapur, Succession, Dune, Queen of Tears) or ID..."
-          >
-        </div>
-        <select class="form-select" id="tmdb-media-type-select" style="width: auto; min-width: 110px;">
-          <option value="auto">Auto-Detect</option>
-          <option value="tv">TV Series</option>
-          <option value="movie">Movie</option>
-        </select>
-        <button class="btn-primary-mini" id="btn-fetch-tmdb-data">
-          <span>Search Title</span>
-        </button>
-      </div>
-
-      <!-- Quick 1-Click Presets -->
-      <div class="tmdb-presets-container">
-        <span class="tmdb-presets-label">Featured Cinema Titles:</span>
-        <div class="tmdb-presets-scroll">
-          <button class="tmdb-preset-chip" data-id="215720" data-type="tv">👑 Queen of Tears</button>
-          <button class="tmdb-preset-chip" data-id="76331" data-type="tv">💼 Succession</button>
-          <button class="tmdb-preset-chip" data-id="1378537" data-type="tv">👑 Mirzapur</button>
-          <button class="tmdb-preset-chip" data-id="60574" data-type="tv">🚬 Peaky Blinders</button>
-          <button class="tmdb-preset-chip" data-id="438631" data-type="movie">🏜️ Dune</button>
-          <button class="tmdb-preset-chip" data-id="1399" data-type="tv">🐉 Game of Thrones</button>
-          <button class="tmdb-preset-chip" data-id="1396" data-type="tv">🧪 Breaking Bad</button>
-          <button class="tmdb-preset-chip" data-id="155" data-type="movie">🦇 The Dark Knight</button>
-          <button class="tmdb-preset-chip" data-id="550" data-type="movie">🥊 Fight Club</button>
-          <button class="tmdb-preset-chip" data-id="71446" data-type="tv">🎭 Money Heist</button>
-        </div>
-      </div>
-
-      <!-- Live Preview Container -->
-      <div id="tmdb-preview-card" class="tmdb-preview-box" style="display: none;">
-        <div class="tmdb-preview-backdrop">
-          <img src="" id="tmdb-preview-backdrop-img" alt="Backdrop">
-          <div class="tmdb-preview-overlay"></div>
-        </div>
-
-        <div class="tmdb-preview-content">
-          <div class="tmdb-preview-poster-wrap">
-            <img src="" id="tmdb-preview-poster-img" alt="Poster" class="tmdb-preview-poster">
-          </div>
-
-          <div class="tmdb-preview-details">
-            <div class="tmdb-preview-badge-row">
-              <span class="tmdb-verified-badge">✓ Verified Cinema Reference</span>
-              <span class="tmdb-rating-badge" id="tmdb-preview-rating">★ 9.0</span>
-            </div>
-
-            <h4 class="tmdb-preview-title" id="tmdb-preview-title-text">Media Title</h4>
-            <p class="tmdb-preview-tagline" id="tmdb-preview-tagline-text">Media Tagline</p>
-            <p class="tmdb-preview-overview" id="tmdb-preview-overview-text">Overview synopsis...</p>
-
-            <div class="tmdb-cast-section">
-              <span class="tmdb-cast-label">Featured Characters & Cast:</span>
-              <div class="tmdb-cast-chips" id="tmdb-preview-cast-container"></div>
-            </div>
-
-            <!-- Customization Settings -->
-            <div class="tmdb-customize-grid">
-              <div class="form-group">
-                <label class="form-label" for="tmdb-custom-char-name">Character Companion</label>
-                <input type="text" class="form-input" id="tmdb-custom-char-name" placeholder="Character Name">
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="tmdb-custom-user-role">Your Role</label>
-                <input type="text" class="form-input" id="tmdb-custom-user-role" placeholder="e.g. Rival Boss, Undercover Agent">
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="tmdb-custom-user-goal">Your Objective</label>
-                <input type="text" class="form-input" id="tmdb-custom-user-goal" placeholder="e.g. Seduce or eliminate">
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="tmdb-custom-language">Dialogue Dialect</label>
-                <select class="form-select" id="tmdb-custom-language">
-                  <option value="hinglish">🇮🇳 Hinglish</option>
-                  <option value="punjabi">☬ Punjabi</option>
-                  <option value="en">🇬🇧 English</option>
-                  <option value="hindi">🇮🇳 Hindi</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="tmdb-modal-actions">
-              <button class="btn-primary-mini" id="btn-convert-and-launch-tmdb" style="padding: 0.75rem 1.5rem;">
-                ✦ Adapt & Play Scenario
-              </button>
-              <button class="btn-secondary-mini" id="btn-cancel-tmdb-preview">
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- 6. SETTINGS & LLM CONFIG MODAL -->
+  <!-- 5. SETTINGS & LLM CONFIG MODAL -->
   <div class="modal-backdrop" id="modal-settings">
     <div class="modal-card">
       <div class="modal-header">
@@ -667,9 +359,11 @@
       <div class="form-group">
         <label class="form-label" for="setting-llm-mode">AI Storytelling Model</label>
         <select class="form-select" id="setting-llm-mode">
-          <option value="local">⚡ Kavana Dynamic Rule Engine (Ultra-Fast, Offline)</option>
-          <option value="gemini">✨ Google Gemini Pro (Real API Key)</option>
-          <option value="openrouter">🌐 OpenRouter AI (DeepSeek, Claude, Llama 3)</option>
+          <option value="local">⚡ Kavana Dynamic Rule Engine (Ultra-Fast, Zero-Config)</option>
+          <option value="openrouter">🌐 OpenRouter Uncensored (MythoMax 13B, Llama 3, DeepSeek)</option>
+          <option value="groq">⚡ Groq Cloud (Llama 3.3 70B Versatile - Instant Speed)</option>
+          <option value="gemini">✨ Google Gemini Flash / Pro (Google AI Studio)</option>
+          <option value="ollama">🦙 Local Ollama / LM Studio (localhost:11434)</option>
           <option value="custom">🛠️ Custom OpenAI-Compatible Endpoint</option>
         </select>
       </div>
@@ -681,7 +375,15 @@
 
       <div class="form-group" id="group-custom-endpoint" style="display: none;">
         <label class="form-label" for="setting-custom-endpoint">Custom Base URL</label>
-        <input type="text" class="form-input" id="setting-custom-endpoint" placeholder="https://api.openai.com/v1">
+        <input type="text" class="form-input" id="setting-custom-endpoint" placeholder="http://localhost:11434/v1/chat/completions">
+      </div>
+
+      <div class="form-group" style="display: flex; align-items: center; justify-content: space-between; margin-top: 1.25rem; padding: 0.85rem 1rem; background: rgba(229, 9, 20, 0.08); border: 1px solid rgba(229, 9, 20, 0.25); border-radius: var(--radius-md);">
+        <div>
+          <div style="font-weight: 700; font-size: 0.88rem; color: #fff;">🔞 18+ Uncensored Mode</div>
+          <div style="font-size: 0.74rem; color: var(--text-muted);">Enable unfiltered mature dialogue, intense romantic chemistry & spicy roleplay.</div>
+        </div>
+        <input type="checkbox" id="setting-uncensored-toggle" checked style="accent-color: var(--kavana-crimson); width: 18px; height: 18px; cursor: pointer;">
       </div>
 
       <div class="modal-actions" style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
@@ -690,7 +392,27 @@
     </div>
   </div>
 
-  <!-- Modal: Browse Companions & Start New Chat -->
+  <!-- 6. 18+ MATURE CONTENT AGE VERIFICATION GATE -->
+  <div class="modal-backdrop" id="modal-age-gate" style="display: none;">
+    <div class="modal-card" style="max-width: 440px; text-align: center; padding: 2.25rem 1.75rem;">
+      <div style="font-size: 3.2rem; line-height: 1; margin-bottom: 0.75rem;">🔞</div>
+      <div class="tmdb-badge-pill" style="margin: 0 auto 0.75rem auto; display: inline-flex;">MATURE AUDIENCES ONLY</div>
+      <h3 style="font-size: 1.35rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; font-family: var(--font-display);">Age Verification Notice</h3>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.55; margin-bottom: 1.75rem;">
+        Kavana AI features unfiltered original interactive stories, passionate romance, and intense character roleplay scenarios intended strictly for individuals aged 18 and older.
+      </p>
+      <div style="display: flex; gap: 0.75rem; justify-content: center;">
+        <button class="btn-primary-mini" id="btn-accept-age-gate" style="padding: 0.8rem 1.6rem; font-size: 0.9rem;">
+          ✦ I am 18 or Older • Enter
+        </button>
+        <button class="btn-secondary-mini" id="btn-decline-age-gate" style="padding: 0.8rem 1.25rem; font-size: 0.9rem;">
+          Exit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. MODAL: BROWSE COMPANIONS & START NEW CHAT -->
   <div class="modal-backdrop" id="modal-new-chat">
     <div class="modal-card new-chat-modal-card">
       <div class="modal-header">
@@ -701,11 +423,11 @@
         <button class="modal-close" id="btn-close-new-chat">&times;</button>
       </div>
       <p class="modal-description">
-        Choose any companion or cinema protagonist from the catalog to launch a private interactive chat. All conversations are saved to your active chats.
+        Choose any companion or original protagonist from the catalog to launch a private interactive chat.
       </p>
       <div class="search-box" style="margin: 0.5rem 0 1rem 0;">
         <span class="search-icon">🔍</span>
-        <input type="text" id="new-chat-search-input" class="search-input-field" placeholder="Search by companion name, show, or role...">
+        <input type="text" id="new-chat-search-input" class="search-input-field" placeholder="Search by companion name or role (Natasha, Aryan, Kabir, Priya)...">
       </div>
       <div class="new-chat-grid" id="new-chat-companions-grid">
         <!-- Rendered dynamically from stories & characters -->
@@ -713,12 +435,58 @@
     </div>
   </div>
 
-  <!-- Hidden dummy wallet modal for app.js references -->
-  <div id="modal-wallet" style="display: none;">
-    <button id="btn-close-wallet"></button>
-    <button id="btn-done-wallet"></button>
-    <button id="btn-add-100-credits"></button>
-    <button id="btn-add-500-credits"></button>
+  <!-- Hidden Compatibility Elements for legacy references (Zero runtime errors) -->
+  <div style="display: none;" aria-hidden="true">
+    <div id="btn-wallet-modal"><span id="user-credits-counter">500 Coins</span><button class="coin-add-plus">+</button></div>
+    <div id="modal-wallet"><button id="btn-close-wallet"></button><button id="btn-done-wallet"></button><button id="btn-add-100-credits"></button><button id="btn-add-500-credits"></button></div>
+    <div id="view-story-reader"></div>
+    <div id="view-dance-studio"></div>
+    <div id="view-generator-studio"></div>
+    <div id="modal-tmdb-importer"></div>
+    <button id="btn-header-create-story"></button>
+    <button id="mobile-create-story"></button>
+    <button id="btn-hero-dance"></button>
+    <button id="btn-quick-dance"></button>
+    <button id="btn-side-dance"></button>
+    <button id="btn-chat-dance"></button>
+    <button id="btn-jump-to-chat"></button>
+    <button id="btn-restart-story"></button>
+    <button id="btn-submit-custom-action"></button>
+    <button id="btn-trigger-dance-animation"></button>
+    <button id="btn-generate-story"></button>
+    <button id="btn-view-generated-story"></button>
+    <button id="nav-open-tmdb"></button>
+    <button id="btn-header-add-tmdb"></button>
+    <button id="btn-hero-open-tmdb"></button>
+    <button id="btn-banner-open-tmdb"></button>
+    <button id="btn-explore-open-tmdb"></button>
+    <button id="mobile-open-tmdb"></button>
+    <button id="btn-close-tmdb-modal"></button>
+    <button id="btn-cancel-tmdb-preview"></button>
+    <button id="btn-fetch-tmdb-data"></button>
+    <button id="btn-convert-and-launch-tmdb"></button>
+    <button id="btn-cta-get-app"></button>
+    <button id="btn-hero-launch-app"></button>
+    <button id="btn-hero-explore-novels"></button>
+    <button id="btn-hero-open-dance"></button>
+    <button id="btn-mockup-tab-explore"></button>
+    <button id="btn-mockup-tab-reader"></button>
+    <button id="btn-mockup-tab-chat"></button>
+    <button id="btn-mockup-tab-dance"></button>
+    <span id="label-affection"></span>
+    <span id="label-tension"></span>
+    <div id="fill-affection"></div>
+    <div id="fill-tension"></div>
+    <div id="side-char-portrait"></div>
+    <div id="side-char-name"></div>
+    <div id="side-char-title"></div>
+    <div id="side-char-category"></div>
+    <div id="current-scene-title"></div>
+    <div id="scene-speaker-name"></div>
+    <div id="scene-prose-text"></div>
+    <div id="scene-dialogue-text"></div>
+    <div id="scene-choices-container"></div>
+    <div id="mobile-chat-roster"></div>
   </div>
 
   <!-- Toast Notification Container -->

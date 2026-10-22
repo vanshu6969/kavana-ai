@@ -225,7 +225,49 @@ export const CHARACTERS = {
   }
 };
 
-export const KAVANA_STORIES = [
+// Auto-populate all 22 Kavana original characters from catalog
+if (Array.isArray(KAVANA_STORIES_CATALOG)) {
+  KAVANA_STORIES_CATALOG.forEach(story => {
+    if (!CHARACTERS[story.id]) {
+      const cleanName = (story.characterName || story.title || 'Companion').replace(/\s*\([^)]*\)/g, '').trim();
+      CHARACTERS[story.id] = {
+        id: story.id,
+        gender: story.gender || 'female',
+        name: cleanName,
+        fullName: story.characterName || story.title,
+        title: story.title,
+        archetype: story.category || 'Spicy 18+',
+        category: story.category || 'Spicy 18+',
+        image: story.avatar || story.cover || 'assets/lucian.jpg',
+        cover: story.cover || story.avatar || 'assets/lucian.jpg',
+        personality: story.systemPersona || story.summary,
+        intimacyLevel: story.initialMood || '🔥 Fever Pitch (Extreme 18+)',
+        baseAffection: 60,
+        baseTension: 80,
+        greetings: {
+          en: story.openingHook,
+          hinglish: story.openingHook
+        }
+      };
+    }
+  });
+}
+
+// Clean character display name helper (strips parentheticals like "(Billionaire CEO)")
+export function getCleanCharacterName(rawName = '', charId = '') {
+  if (!rawName && charId) {
+    const fromCat = KAVANA_STORIES_CATALOG?.find(s => s.id === charId || s.id.includes(charId));
+    if (fromCat) rawName = fromCat.characterName;
+    else if (CHARACTERS[charId]) rawName = CHARACTERS[charId].name;
+  }
+  if (!rawName) return 'Companion';
+  let clean = rawName.replace(/\s*\([^)]*\)/g, '').trim();
+  if (/sirens|villa/i.test(clean)) return 'Natasha';
+  if (/maya & chloe/i.test(clean)) return 'Rhea';
+  return clean;
+}
+
+const BASE_CORE_STORIES = [
   {
     id: 'love-villa-5-rivals',
     gender: 'female',
@@ -925,9 +967,20 @@ export const KAVANA_STORIES = [
         ]
       }
     }
-  },
-  ...KAVANA_STORIES_CATALOG
+  }
 ];
+
+// Attach pre-written multi-lingual chapters to catalog items
+const kabirItem = KAVANA_STORIES_CATALOG.find(s => s.id === 'kabir' || s.id === 'kabir-oberoi');
+if (kabirItem && BASE_CORE_STORIES[0]) {
+  kabirItem.languages = BASE_CORE_STORIES[0].languages;
+}
+const valeriaItem = KAVANA_STORIES_CATALOG.find(s => s.id === 'valeria' || s.id === 'valeria-vane');
+if (valeriaItem && BASE_CORE_STORIES[1]) {
+  valeriaItem.languages = BASE_CORE_STORIES[1].languages;
+}
+
+export const KAVANA_STORIES = KAVANA_STORIES_CATALOG;
 
 /**
  * Detect language of user message with high precision
@@ -966,8 +1019,11 @@ export function detectLanguage(text) {
 export function detectCharacterGender(characterId, scenario = null, char = null) {
   if (scenario?.gender) return scenario.gender.toLowerCase();
   if (char?.gender) return char.gender.toLowerCase();
+  if (characterId && CHARACTERS[characterId]?.gender) return CHARACTERS[characterId].gender.toLowerCase();
+  const catalogStory = KAVANA_STORIES_CATALOG?.find(s => s.id === characterId || s.id.includes(characterId));
+  if (catalogStory?.gender) return catalogStory.gender.toLowerCase();
   if (characterId === 'valeria' || characterId === 'natasha') return 'female';
-  if (characterId === 'lucian' || characterId === 'kabir') return 'male';
+  if (characterId === 'lucian' || characterId === 'kabir' || characterId === 'aryan') return 'male';
 
   const textToScan = [
     scenario?.characterName || '',
@@ -980,12 +1036,17 @@ export function detectCharacterGender(characterId, scenario = null, char = null)
     char?.personality || ''
   ].join(' ').toLowerCase();
 
-  const femaleRegex = /\b(female|woman|girl|sirens|bombshell|seductress|temptress|heiress|queen|princess|begum|rani|madame|lady|she|her|herself|valeria|natasha|tara|aanya|rhea|meera|maddy|wednesday|rhaenyra|sharjeena|meerab|khirad|kashaf|shibra|jiya|hala|priya|alisha|ria|sofia|elena|seraphina|vivienne|padmini|noor|zoya|anjali|aaliya|mehrunnisa|saba|sameera|dua|miraal|zara|kiran|mahira|naina|pooja|simran|ananya|deepika|katrina|alia|kareena|shraddha|kiara|kriti|donna|mikasa|yor|anya|makima|power|nezuko|cha hae-in|miss|mrs|sister|mother|wife|daughter|bhabhi)\b/i;
+  const femaleRegex = /\b(female|woman|girl|sirens|bombshell|seductress|temptress|heiress|queen|princess|begum|rani|madame|lady|she|her|herself|valeria|natasha|tara|aanya|rhea|meera|maddy|wednesday|rhaenyra|sharjeena|meerab|khirad|kashaf|shibra|jiya|hala|priya|alisha|ria|sofia|elena|seraphina|vivienne|padmini|noor|zoya|anjali|aaliya|mehrunnisa|saba|sameera|dua|miraal|zara|kiran|mahira|naina|pooja|simran|ananya|deepika|katrina|alia|kareena|shraddha|kiara|kriti|donna|mikasa|yor|anya|makima|nezuko|cha hae-in|miss|mrs|sister|mother|wife|daughter|bhabhi)\b/gi;
   
-  const maleRegex = /\b(male|man|boy|king|prince|lord|brother|father|husband|son|master|bachelor|bad boy|don|mafia|he|him|his|himself|kabir|lucian|john|wick|paul|atreides|shelby|thomas|tripathi|kaleen|bhaiya|murtasim|parizaad|hadi|aryan|vito|corleone|gojo|megumi|levi|draken|mikey|sebastian|lu chen|harvey|specter|daemon|joker|batman|superman|spiderman|tony|stark|thor|loki|sherlock|mr|sir)\b/i;
+  const maleRegex = /\b(male|man|boy|king|prince|lord|brother|father|husband|son|master|bachelor|bad boy|don|mafia|he|him|his|himself|kabir|lucian|john|wick|paul|atreides|shelby|thomas|tripathi|kaleen|bhaiya|murtasim|parizaad|hadi|aryan|vito|corleone|gojo|megumi|levi|draken|mikey|sebastian|lu chen|harvey|specter|daemon|joker|batman|superman|spiderman|tony|stark|thor|loki|sherlock|mr|sir)\b/gi;
 
-  if (femaleRegex.test(textToScan)) return 'female';
-  if (maleRegex.test(textToScan)) return 'male';
+  const femaleCount = (textToScan.match(femaleRegex) || []).length;
+  const maleCount = (textToScan.match(maleRegex) || []).length;
+
+  if (maleCount > femaleCount) return 'male';
+  if (femaleCount > maleCount) return 'female';
+  if (maleCount > 0) return 'male';
+  if (femaleCount > 0) return 'female';
 
   return 'female';
 }
