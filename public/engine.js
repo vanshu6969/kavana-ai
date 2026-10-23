@@ -4,7 +4,8 @@
  * Character dynamics, "Make Them Dance" dance animations, and branching narratives.
  */
 
-import { KAVANA_STORIES_CATALOG } from './stories-catalog.js';
+import * as StoryCatalogModule from './stories-catalog.js';
+export const KAVANA_STORIES_CATALOG = StoryCatalogModule.KAVANA_STORIES_CATALOG || StoryCatalogModule.KAVANA_ORIGINAL_STORIES || StoryCatalogModule.KAVANA_STORIES || StoryCatalogModule.default || [];
 
 export const LANGUAGES = {
   en: { code: 'en', name: 'English', flag: '🇬🇧' },
