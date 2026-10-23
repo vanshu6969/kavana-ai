@@ -329,6 +329,13 @@ function switchView(viewName) {
     }
   });
 
+  // Mobile conversation full screen mode
+  if (viewName === 'chat' && state.mobileChatView === 'conversation') {
+    document.body.classList.add('in-conversation');
+  } else {
+    document.body.classList.remove('in-conversation');
+  }
+
   const appContainer = document.getElementById('main-app-container');
   if (appContainer) appContainer.style.display = 'block';
 
@@ -420,6 +427,9 @@ export function launchScenarioChat(story) {
   }
 
   state.mobileChatView = 'conversation';
+  document.body.classList.add('in-conversation');
+  const workspace = document.querySelector('.chat-workspace');
+  if (workspace) workspace.dataset.mobileView = 'conversation';
   switchView('character-chat');
   renderChatView();
 }
@@ -485,9 +495,45 @@ function createStoryCardElement(story) {
   return card;
 }
 
+// Render VIP Story Characters Carousel on Home
+function renderHomeStoryTray() {
+  const tray = document.getElementById('home-story-personas-tray');
+  if (!tray) return;
+  tray.innerHTML = '';
+
+  const seen = new Set();
+  const topStories = [];
+  for (const s of KAVANA_STORIES) {
+    const key = (s.characterName || s.title).trim();
+    if (!seen.has(key) && s.avatar) {
+      seen.add(key);
+      topStories.push(s);
+      if (topStories.length >= 14) break;
+    }
+  }
+
+  topStories.forEach(story => {
+    const item = document.createElement('div');
+    item.className = 'story-avatar-item';
+    const shortName = story.characterName ? story.characterName.split(' ')[0] : story.title.split(' ')[0];
+    item.innerHTML = `
+      <div class="avatar-ring-wrap">
+        <img src="${story.avatar}" alt="${story.characterName || story.title}" class="story-avatar-img" loading="lazy" onerror="this.onerror=null;this.src='assets/love_villa.jpg';">
+      </div>
+      <span class="story-avatar-name">${shortName}</span>
+    `;
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      launchScenarioChat(story);
+    });
+    tray.appendChild(item);
+  });
+}
+
 // 1. Render Home View (Spotlight & Trending Stories)
 function renderHomeView() {
   setupHeroCarousel();
+  renderHomeStoryTray();
   const trendingGrid = document.getElementById('home-trending-grid');
   if (trendingGrid) {
     trendingGrid.innerHTML = '';
@@ -497,9 +543,11 @@ function renderHomeView() {
     });
   }
 
-  document.getElementById('btn-home-view-all-explore')?.addEventListener('click', () => {
-    switchView('explore');
-  });
+  const viewAllBtn = document.getElementById('btn-home-view-all-explore');
+  if (viewAllBtn) {
+    viewAllBtn.textContent = `View All ${KAVANA_STORIES.length} Scenarios →`;
+    viewAllBtn.onclick = () => switchView('explore');
+  }
 }
 
 // 2. Render Explore Stories Feed (Full Catalog & Filters)
@@ -1072,6 +1120,9 @@ function renderStoryReader() {
 export function switchChatSession(sessionId) {
   if (!sessionId) return;
   state.mobileChatView = 'conversation';
+  document.body.classList.add('in-conversation');
+  const workspace = document.querySelector('.chat-workspace');
+  if (workspace) workspace.dataset.mobileView = 'conversation';
   const sessions = getChatSessions();
   const session = sessions.find(s => s.id === sessionId);
   const matchedStory = KAVANA_STORIES.find(s => s.id === sessionId);
@@ -1223,9 +1274,44 @@ export function renderNewChatDirectory(filterText = '') {
       }
     };
   });
+// Render Quick Story Characters Tray in Chat Roster
+function renderRosterQuickPersonas() {
+  const tray = document.getElementById('roster-quick-personas-tray');
+  if (!tray) return;
+  tray.innerHTML = '';
+
+  const seen = new Set();
+  const topChars = [];
+  for (const s of KAVANA_STORIES) {
+    const key = (s.characterName || s.title).trim();
+    if (!seen.has(key) && s.avatar) {
+      seen.add(key);
+      topChars.push(s);
+      if (topChars.length >= 12) break;
+    }
+  }
+
+  topChars.forEach(story => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'roster-persona-chip';
+    const shortName = story.characterName ? story.characterName.split(' ')[0] : story.title.split(' ')[0];
+    btn.innerHTML = `
+      <div class="roster-persona-ring">
+        <img src="${story.avatar}" alt="${shortName}" loading="lazy" onerror="this.onerror=null;this.src='assets/love_villa.jpg';">
+      </div>
+      <span class="roster-persona-name">${shortName}</span>
+    `;
+    btn.onclick = (e) => {
+      e.preventDefault();
+      launchScenarioChat(story);
+    };
+    tray.appendChild(btn);
+  });
 }
 
 export function renderChatRoster(filterText = '') {
+  renderRosterQuickPersonas();
   const rosterList = document.getElementById('chat-roster-list');
   const sessions = getChatSessions();
   const query = (filterText || '').toLowerCase().trim();
@@ -1397,6 +1483,12 @@ function renderChatView() {
     workspace.dataset.mobileView = state.mobileChatView || 'list';
   }
 
+  if (state.mobileChatView === 'conversation') {
+    document.body.classList.add('in-conversation');
+  } else {
+    document.body.classList.remove('in-conversation');
+  }
+
   // Mobile Back Button: Return from conversation to chats list
   const mobileBackBtn = document.getElementById('btn-chat-mobile-back');
   if (mobileBackBtn) {
@@ -1404,6 +1496,7 @@ function renderChatView() {
       e.preventDefault();
       e.stopPropagation();
       state.mobileChatView = 'list';
+      document.body.classList.remove('in-conversation');
       if (workspace) workspace.dataset.mobileView = 'list';
       renderChatRoster();
     };

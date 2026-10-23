@@ -112,13 +112,24 @@
         <div class="hero-carousel-dots" id="hero-carousel-dots"></div>
       </div>
 
+      <!-- KAVANA STORY PERSONAS AVATAR TRAY -->
+      <div class="kavana-stories-tray-section" id="kavana-home-tray">
+        <div class="tray-header-row">
+          <div class="tray-title"><span>✦ VIP STORY CHARACTERS</span></div>
+          <span class="tray-subtitle">Tap to Chat Instantly</span>
+        </div>
+        <div class="stories-avatar-tray" id="home-story-personas-tray">
+          <!-- Populated dynamically by app.js -->
+        </div>
+      </div>
+
       <!-- Home Trending Stories Row -->
       <div class="section-heading-row">
         <div>
           <h2 class="section-title">🔥 Trending Stories</h2>
           <p class="section-subtitle">Top played adult interactive roleplay scenarios this week</p>
         </div>
-        <button class="btn-text-link" id="btn-home-view-all-explore">View All 32 Stories &rarr;</button>
+        <button class="btn-text-link" id="btn-home-view-all-explore">View All 105 Scenarios &rarr;</button>
       </div>
       <div class="stories-feed-grid trending-grid" id="home-trending-grid">
         <!-- Injected dynamically by app.js -->
@@ -133,7 +144,7 @@
           <p class="section-subtitle">Browse full library of interactive romance & uncensored roleplay</p>
         </div>
         <div class="catalog-counter-pill" id="stories-count-badge">
-          32 Scenarios
+          105 Scenarios
         </div>
       </div>
 
@@ -212,6 +223,14 @@
             <div class="roster-search-wrap">
               <span class="roster-search-icon">🔍</span>
               <input type="text" id="roster-search-input" class="roster-search-input" placeholder="Search chats..." autocomplete="off">
+            </div>
+          </div>
+
+          <!-- Quick Personas Tray in Roster for Instant Chat Selection -->
+          <div class="roster-quick-personas-section" id="roster-quick-personas-section">
+            <div class="roster-quick-personas-title"><span>✦ Quick Start Roleplay</span></div>
+            <div class="roster-quick-personas-tray" id="roster-quick-personas-tray">
+              <!-- Populated dynamically by app.js -->
             </div>
           </div>
 
@@ -296,8 +315,8 @@
                 autocomplete="off"
                 required
               >
-              <button type="submit" class="btn-send-message" id="btn-send-message">
-                <span>Send</span> <span>➔</span>
+              <button type="submit" class="btn-send-message" id="btn-send-message" aria-label="Send message">
+                <span class="btn-send-label">Send</span> <span class="btn-send-icon">➔</span>
               </button>
             </form>
           </div>

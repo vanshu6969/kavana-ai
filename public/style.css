@@ -3197,33 +3197,116 @@ body {
     padding: 0.4rem 0.5rem;
   }
 
-  /* 7. 18+ Roleplay Chat Workspace on Mobile */
+  /* 7. 18+ Roleplay Chat Workspace on Mobile (Overhauled & Glitch-Free) */
   .chat-workspace {
     position: relative;
-    height: calc(100dvh - 120px);
-    min-height: 520px;
-    border-radius: var(--radius-lg);
+    height: calc(100dvh - 128px);
+    min-height: 480px;
+    border-radius: var(--radius-xl);
     display: flex;
     overflow: hidden;
+    background: rgba(12, 14, 20, 0.7);
+    border: 1px solid var(--border-subtle);
   }
 
-  /* List View: show roster full width */
+  /* Chat Roster (List Mode on Mobile) */
   .chat-workspace:not([data-mobile-view="conversation"]) .chat-roster-sidebar {
     display: flex !important;
     width: 100% !important;
     max-width: 100% !important;
     height: 100% !important;
     border-right: none !important;
-    background: rgba(10, 12, 18, 0.95);
-    padding: 1rem 0.85rem;
-    overflow-y: auto;
+    background: rgba(10, 12, 18, 0.96) !important;
+    padding: 0.85rem 0.75rem !important;
+    overflow-y: auto !important;
+    flex-direction: column !important;
   }
 
   .chat-workspace:not([data-mobile-view="conversation"]) .chat-main-pane {
     display: none !important;
   }
 
-  /* Conversation View: show active chat full width */
+  /* Roster Quick Personas Horizontal Tray */
+  .roster-quick-personas-section {
+    padding: 0.45rem 0 0.85rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 0.75rem;
+  }
+
+  .roster-quick-personas-title {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--kavana-gold);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .roster-quick-personas-tray {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.35rem;
+  }
+
+  .roster-quick-personas-tray::-webkit-scrollbar {
+    display: none;
+  }
+
+  .roster-persona-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    padding: 0;
+    outline: none;
+    transition: transform 0.2s ease;
+  }
+
+  .roster-persona-chip:active {
+    transform: scale(0.92);
+  }
+
+  .roster-persona-ring {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    padding: 2px;
+    background: linear-gradient(135deg, #e50914, #ff3366, #d4af37);
+    box-shadow: 0 4px 12px rgba(229, 9, 20, 0.35);
+  }
+
+  .roster-persona-ring img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #0a0c12;
+  }
+
+  .roster-persona-name {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #e2e8f0;
+    max-width: 54px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+
+  /* Full Screen Conversation Mode for Mobile */
   .chat-workspace[data-mobile-view="conversation"] .chat-roster-sidebar {
     display: none !important;
   }
@@ -3233,152 +3316,272 @@ body {
     width: 100% !important;
     max-width: 100% !important;
     height: 100% !important;
+    flex-direction: column !important;
+    background: #080a0f !important;
   }
 
-  .mobile-chat-companion-strip {
+  /* Full Viewport Conversation Lock when body.in-conversation */
+  body.in-conversation {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  body.in-conversation .kavana-header {
     display: none !important;
   }
 
-  /* Permanently hide quick replies */
-  .chat-quick-replies-bar,
-  .quick-reply-chip {
+  body.in-conversation .mobile-bottom-dock {
     display: none !important;
   }
-    border: none;
-    display: flex;
-    flex-direction: column;
+
+  body.in-conversation .kavana-mini-footer {
+    display: none !important;
+  }
+
+  body.in-conversation .kavana-main-app {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  body.in-conversation #view-character-chat {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    z-index: 2000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #080a0f !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-radius: 0 !important;
+  }
+
+  body.in-conversation .chat-workspace {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: #080a0f !important;
+    display: flex !important;
+    flex-direction: column !important;
+    z-index: 2000 !important;
+  }
+
+  body.in-conversation .chat-pane-header {
+    flex-shrink: 0 !important;
+    padding: calc(env(safe-area-inset-top, 0px) + 0.55rem) 0.75rem 0.55rem 0.75rem !important;
+    background: rgba(12, 14, 20, 0.98) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    z-index: 50 !important;
+    gap: 0.5rem;
+  }
+
+  body.in-conversation .btn-chat-mobile-back {
+    display: inline-flex !important;
     align-items: center;
-    gap: 0.2rem;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 1.25rem;
     cursor: pointer;
     flex-shrink: 0;
-    outline: none;
+    transition: transform 0.15s ease, background 0.15s ease;
   }
 
-  .m-avatar-ring {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    padding: 2px;
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    transition: all 0.2s ease;
+  body.in-conversation .btn-chat-mobile-back:active {
+    transform: scale(0.9);
+    background: rgba(255, 255, 255, 0.2);
   }
 
-  .mobile-companion-pill.active .m-avatar-ring {
-    border-color: var(--kavana-crimson);
-    box-shadow: 0 0 10px var(--kavana-crimson-glow);
-    transform: scale(1.06);
+  body.in-conversation .btn-chat-mobile-back .back-text {
+    display: none !important;
   }
 
-  .m-avatar-ring img {
-    width: 100%;
-    height: 100%;
+  body.in-conversation .chat-partner-info {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-width: 0;
+    flex: 1;
+  }
+
+  body.in-conversation .chat-partner-avatar {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
     border-radius: 50%;
     object-fit: cover;
+    border: 2px solid var(--kavana-crimson);
+    box-shadow: 0 0 10px var(--kavana-crimson-glow);
   }
 
-  .m-live-dot {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: #10b981;
-    border: 2px solid #080a0f;
-  }
-
-  .m-comp-label {
-    font-size: 0.65rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    max-width: 50px;
+  body.in-conversation .chat-header-name {
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: #fff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin: 0;
   }
 
-  .mobile-companion-pill.active .m-comp-label {
-    color: #ffffff;
-    font-weight: 700;
-  }
-
-  .chat-pane-header {
-    padding: 0.55rem 0.75rem;
-  }
-
-  .chat-partner-avatar {
-    width: 32px;
-    height: 32px;
-  }
-
-  .chat-header-name {
-    font-size: 0.86rem;
-  }
-
-  .chat-header-sub {
-    font-size: 0.68rem;
-  }
-
-  .intimacy-tag {
-    font-size: 0.64rem;
-    padding: 0.18rem 0.45rem;
-  }
-
-  .chat-role-banner {
-    padding: 0.35rem 0.75rem;
-    font-size: 0.7rem;
-  }
-
-  .role-desc {
-    max-width: calc(100% - 135px);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .btn-gender-toggle {
+  body.in-conversation .chat-header-sub {
     font-size: 0.66rem;
-    padding: 0.15rem 0.45rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .chat-messages-area {
-    padding: 0.65rem;
-    gap: 0.55rem;
-  }
-
-  .chat-bubble {
-    max-width: 88%;
-    font-size: 0.85rem;
-    padding: 0.6rem 0.85rem;
-    border-radius: var(--radius-md);
-  }
-
-  .chat-quick-replies-bar {
-    padding: 0.35rem 0.65rem;
+  body.in-conversation .chat-header-actions {
+    display: flex;
+    align-items: center;
     gap: 0.35rem;
+    flex-shrink: 0;
   }
 
-  .quick-reply-chip {
-    font-size: 0.72rem;
-    padding: 0.3rem 0.7rem;
+  body.in-conversation .intimacy-tag {
+    display: none !important;
   }
 
-  .chat-input-bar {
-    padding: 0.55rem 0.65rem;
+  body.in-conversation .chat-affection-hud {
+    padding: 0.2rem 0.5rem;
+    gap: 0.35rem;
+    border-radius: var(--radius-full);
+  }
+
+  body.in-conversation .hud-meter-track {
+    width: 38px;
+    height: 5px;
+  }
+
+  body.in-conversation .chat-role-banner {
+    flex-shrink: 0 !important;
+    padding: 0.35rem 0.75rem !important;
+    background: rgba(229, 9, 20, 0.08) !important;
+    border-bottom: 1px solid rgba(229, 9, 20, 0.18) !important;
+    font-size: 0.7rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
     gap: 0.4rem;
-    background: rgba(8, 10, 16, 0.95);
   }
 
-  .chat-input-field {
-    font-size: 16px; /* prevents iOS Safari auto zoom */
-    padding: 0.55rem 0.85rem;
+  body.in-conversation .chat-role-banner .role-desc {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 110px);
   }
 
-  .btn-send-message {
-    padding: 0 0.95rem;
-    font-size: 0.8rem;
-    min-height: 38px;
+  body.in-conversation .chat-messages-area {
+    flex: 1 1 auto !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 0.85rem 0.75rem !important;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  body.in-conversation .chat-bubble {
+    max-width: 86% !important;
+    font-size: 0.88rem !important;
+    line-height: 1.45 !important;
+    padding: 0.65rem 0.9rem !important;
+    border-radius: 16px !important;
+  }
+
+  body.in-conversation .chat-bubble.ai {
+    border-bottom-left-radius: 4px !important;
+    background: rgba(20, 24, 34, 0.9) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+
+  body.in-conversation .chat-bubble.user {
+    border-bottom-right-radius: 4px !important;
+    background: linear-gradient(135deg, #e50914, #c40812) !important;
+    color: #fff !important;
+  }
+
+  body.in-conversation .chat-input-bar {
+    flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.55rem 0.75rem calc(0.55rem + env(safe-area-inset-bottom, 0px)) 0.75rem !important;
+    background: rgba(10, 12, 18, 0.98) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    z-index: 50 !important;
+  }
+
+  body.in-conversation .chat-input-field {
+    flex: 1 !important;
+    height: 42px !important;
+    border-radius: 9999px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    color: #fff !important;
+    padding: 0 1rem !important;
+    font-size: 16px !important;
+    outline: none !important;
+  }
+
+  body.in-conversation .chat-input-field:focus {
+    border-color: var(--kavana-crimson) !important;
+    box-shadow: 0 0 12px var(--kavana-crimson-glow) !important;
+  }
+
+  body.in-conversation .btn-send-message {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    border-radius: 50% !important;
+    background: var(--kavana-crimson) !important;
+    color: #fff !important;
+    border: none !important;
+    display: grid !important;
+    place-items: center !important;
+    cursor: pointer !important;
+    font-size: 1.15rem !important;
+    padding: 0 !important;
+    box-shadow: 0 4px 14px var(--kavana-crimson-glow) !important;
+    flex-shrink: 0 !important;
+    transition: transform 0.15s ease !important;
+  }
+
+  body.in-conversation .btn-send-message:active {
+    transform: scale(0.9) !important;
+  }
+
+  body.in-conversation .btn-send-message .btn-send-label {
+    display: none !important;
   }
 
   /* 8. Dance Studio on Mobile */
@@ -3561,6 +3764,29 @@ body {
 .hero-carousel-arrow.prev { left: 1rem; }
 .hero-carousel-arrow.next { right: 1rem; }
 
+@media (max-width: 768px) {
+  .hero-carousel-arrow {
+    top: 1rem;
+    transform: none;
+    width: 34px;
+    height: 34px;
+    font-size: 1.15rem;
+    background: rgba(12, 14, 20, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  .hero-carousel-arrow.prev {
+    left: auto;
+    right: 3.4rem;
+  }
+  .hero-carousel-arrow.next {
+    right: 0.85rem;
+  }
+  .hero-carousel-dots {
+    bottom: 0.85rem;
+    right: 0.85rem;
+  }
+}
+
 .hero-carousel-dots {
   position: absolute;
   bottom: 1.25rem;
@@ -3597,6 +3823,32 @@ body {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
   box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.75);
+}
+
+@media (max-width: 768px) {
+  .kavana-stories-tray-section {
+    margin-bottom: 1.35rem;
+    padding: 0.85rem 0.65rem;
+    border-radius: var(--radius-lg);
+  }
+  .tray-title {
+    font-size: 0.78rem;
+  }
+  .tray-subtitle {
+    font-size: 0.7rem;
+  }
+  .stories-avatar-tray {
+    gap: 0.85rem;
+    padding-bottom: 0.35rem;
+  }
+  .avatar-ring-wrap {
+    width: 56px;
+    height: 56px;
+  }
+  .story-avatar-name {
+    font-size: 0.68rem;
+    max-width: 60px;
+  }
 }
 
 .tray-header-row {
