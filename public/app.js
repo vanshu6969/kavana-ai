@@ -1274,6 +1274,8 @@ export function renderNewChatDirectory(filterText = '') {
       }
     };
   });
+}
+
 // Render Quick Story Characters Tray in Chat Roster
 function renderRosterQuickPersonas() {
   const tray = document.getElementById('roster-quick-personas-tray');
