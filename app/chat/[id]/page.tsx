@@ -388,6 +388,7 @@ export default function ChatScreen() {
           >
             <X size={18} />
           </button>
+        </div>
         {/* Sessions list */}
         <div className="flex-1 overflow-y-auto space-y-2 pr-1 scrollbar-none">
           {sessions.map((sess) => {
