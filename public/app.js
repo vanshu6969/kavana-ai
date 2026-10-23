@@ -124,7 +124,8 @@ const state = {
   activeChatPartnerId: initialSavedSessions.length > 0 ? (localStorage.getItem('kavana_last_chat_id') || initialSavedSessions[0]?.id) : null,
   credits: parseInt(localStorage.getItem('kavana_coins') || '500', 10),
   activeCategory: 'all',
-  mobileChatView: 'list', // 'list' shows all conversations roster on mobile, 'conversation' shows active chat
+  chatViewMode: 'list', // 'list' shows all conversations directory, 'conversation' shows active chat
+  mobileChatView: 'list', // sync with chatViewMode
   userGender: localStorage.getItem('kavana_user_gender') || 'male',
   
   characterState: {},
@@ -329,8 +330,8 @@ function switchView(viewName) {
     }
   });
 
-  // Mobile conversation full screen mode
-  if (viewName === 'chat' && state.mobileChatView === 'conversation') {
+  // Conversation full screen mode
+  if (viewName === 'chat' && (state.chatViewMode === 'conversation' || state.mobileChatView === 'conversation')) {
     document.body.classList.add('in-conversation');
   } else {
     document.body.classList.remove('in-conversation');
@@ -426,10 +427,14 @@ export function launchScenarioChat(story) {
     };
   }
 
+  state.chatViewMode = 'conversation';
   state.mobileChatView = 'conversation';
   document.body.classList.add('in-conversation');
   const workspace = document.querySelector('.chat-workspace');
-  if (workspace) workspace.dataset.mobileView = 'conversation';
+  if (workspace) {
+    workspace.dataset.chatView = 'conversation';
+    workspace.dataset.mobileView = 'conversation';
+  }
   switchView('character-chat');
   renderChatView();
 }
@@ -1119,10 +1124,14 @@ function renderStoryReader() {
 
 export function switchChatSession(sessionId) {
   if (!sessionId) return;
+  state.chatViewMode = 'conversation';
   state.mobileChatView = 'conversation';
   document.body.classList.add('in-conversation');
   const workspace = document.querySelector('.chat-workspace');
-  if (workspace) workspace.dataset.mobileView = 'conversation';
+  if (workspace) {
+    workspace.dataset.chatView = 'conversation';
+    workspace.dataset.mobileView = 'conversation';
+  }
   const sessions = getChatSessions();
   const session = sessions.find(s => s.id === sessionId);
   const matchedStory = KAVANA_STORIES.find(s => s.id === sessionId);
@@ -1167,7 +1176,7 @@ export function deleteChatSession(sessionId, e) {
   sessions = sessions.filter(s => s.id !== sessionId);
   saveChatSessions(sessions);
 
-  // If deleted session was active, switch to next available or clean empty
+  // If deleted session was active, switch to next available or clean reset to list mode
   if (state.activeChatPartnerId === sessionId) {
     if (sessions.length > 0) {
       switchChatSession(sessions[0].id);
@@ -1175,8 +1184,15 @@ export function deleteChatSession(sessionId, e) {
       state.activeChatPartnerId = null;
       state.activeScenario = null;
       try { localStorage.removeItem('kavana_last_chat_id'); } catch(e){}
+      state.chatViewMode = 'list';
+      state.mobileChatView = 'list';
+      document.body.classList.remove('in-conversation');
+      const workspace = document.querySelector('.chat-workspace');
+      if (workspace) {
+        workspace.dataset.chatView = 'list';
+        workspace.dataset.mobileView = 'list';
+      }
       renderChatView();
-      renderChatRoster();
     }
   } else {
     renderChatRoster();
@@ -1507,9 +1523,9 @@ function renderChatView() {
   // Initialize character state
   if (!state.characterState[charId]) {
     state.characterState[charId] = {
-      affection: 50,
+      affection: scenario?.initialAffection || 84,
       tension: 75,
-      intimacyLevel: scenario?.initialMood || '⚡ High Sexual Tension'
+      intimacyLevel: scenario?.initialMood || '⚡ High Tension (Uncensored)'
     };
   }
   const charState = state.characterState[charId];
@@ -1526,9 +1542,16 @@ function renderChatView() {
   // Update Roster Sidebar and Mobile Strip
   renderChatRoster();
 
-  // Update Main Chat Pane Header
+  // 1. Cinematic Character Backdrop Layer
+  const backdrop = document.getElementById('chat-backdrop-art');
+  const partnerAvatar = scenario?.avatar || scenario?.cover || char.image || 'assets/lucian.jpg';
+  if (backdrop) {
+    backdrop.style.backgroundImage = `url('${partnerAvatar}')`;
+  }
+
+  // 2. Update Main Chat Pane Header
   const avatar = document.getElementById('chat-partner-avatar');
-  if (avatar) avatar.src = scenario?.avatar || char.image;
+  if (avatar) avatar.src = partnerAvatar;
 
   const activeSpeaker = resolveActiveSpeakerName(scenario, '', history);
   const isMulti = scenario && (/sirens|villa/i.test(scenario.id || '') || /roommate/i.test(scenario.id || '') || /&|,|\band\b/i.test(scenario.characterName || ''));
@@ -1536,7 +1559,7 @@ function renderChatView() {
   const nameEl = document.getElementById('chat-partner-name');
   if (nameEl) {
     if (isMulti) {
-      nameEl.innerHTML = `<span style="color: var(--kavana-crimson);">${activeSpeaker}</span> <span style="font-size: 0.85em; opacity: 0.75; font-weight: 500;">(${scenario.title.split('(')[0].trim()})</span>`;
+      nameEl.innerHTML = `<span style="color: var(--kavana-crimson);">${activeSpeaker}</span> <span style="font-size: 0.82em; opacity: 0.75; font-weight: 500;">(${scenario.title.split('(')[0].trim()})</span>`;
     } else {
       nameEl.textContent = scenario?.characterName || scenario?.name || char.name;
     }
@@ -1545,22 +1568,26 @@ function renderChatView() {
   const archEl = document.getElementById('chat-partner-archetype');
   if (archEl) {
     if (isMulti) {
-      archEl.textContent = `Talking directly to ${activeSpeaker} • 18+ Uncensored`;
+      archEl.textContent = `Talking directly to ${activeSpeaker} • Active`;
     } else {
-      archEl.textContent = scenario?.title ? `🎬 ${scenario.title}` : `${char.archetype} • 18+ Uncensored`;
+      archEl.textContent = scenario?.title ? `🎬 ${scenario.title}` : `${char.archetype} • Active`;
     }
   }
 
   const intTag = document.getElementById('chat-intimacy-tag');
   if (intTag) intTag.textContent = charState.intimacyLevel;
 
-  // Update Live Affection HUD Meter
+  // 3. Glowing Affinity & Affection HUD Meter
+  const currentAff = typeof charState.affection === 'number' ? charState.affection : 84;
+  const currentLevel = Math.min(10, Math.max(1, Math.floor(currentAff / 20) + 1));
+  const affLevelEl = document.getElementById('chat-affinity-level');
   const affFill = document.getElementById('chat-affection-fill');
   const affPct = document.getElementById('chat-affection-pct');
-  if (affFill) affFill.style.width = `${charState.affection || 65}%`;
-  if (affPct) affPct.textContent = `${charState.affection || 65}%`;
+  if (affLevelEl) affLevelEl.textContent = currentLevel;
+  if (affFill) affFill.style.width = `${Math.min(100, Math.max(5, currentAff))}%`;
+  if (affPct) affPct.textContent = `(${currentAff}%)`;
 
-  // Update Sticky Role Banner & User Gender Controls
+  // 4. Update Sticky Role Banner & User Gender Controls
   const roleBanner = document.getElementById('chat-role-banner');
   const roleUserTitle = document.getElementById('chat-role-user-title');
   const roleUserGoal = document.getElementById('chat-role-user-goal');
@@ -1599,39 +1626,124 @@ function renderChatView() {
       .replace(/'/g, '&#039;');
   };
 
+  // 5. Render Messages Feed
   const area = document.getElementById('chat-messages-area');
   if (area) {
     area.innerHTML = '';
     const partnerName = scenario?.characterName || scenario?.name || char.name;
 
-    history.forEach((msg) => {
+    history.forEach((msg, idx) => {
       const isAi = msg.sender === 'ai';
+      const text = (msg.text || '').trim();
+
+      // Check for standalone narrator box (action only without dialogue quotes)
+      const isNarratorBox = isAi && idx === 0 && text.startsWith('*') && text.endsWith('*') && !text.includes('"');
+
+      if (isNarratorBox) {
+        const narrCard = document.createElement('div');
+        narrCard.className = 'narrator-event-card';
+        narrCard.innerHTML = `<em>${escapeHtml(text)}</em>`;
+        area.appendChild(narrCard);
+        return;
+      }
+
       const wrap = document.createElement('div');
       wrap.className = `chat-bubble-wrap ${isAi ? 'ai' : 'user'}`;
 
       const timeStr = formatChatTime(msg.time || Date.now());
-      const safe = escapeHtml(msg.text || '');
+      const safe = escapeHtml(text);
       const formatted = safe.replace(/\*(.*?)\*/g, '<em>*$1*</em>');
       const senderLabel = isAi ? (msg.character || (isMulti ? activeSpeaker : partnerName)) : 'You';
 
-      wrap.innerHTML = `
-        <div class="chat-bubble-meta-row">
-          <span class="chat-bubble-sender-name">${senderLabel}</span>
-          <span class="chat-bubble-timestamp">${timeStr}</span>
-        </div>
-        <div class="chat-bubble ${isAi ? 'ai' : 'user'}">${formatted}</div>
-      `;
+      if (isAi) {
+        wrap.innerHTML = `
+          <div class="chat-bubble-meta-row">
+            <span class="chat-bubble-sender-name">${senderLabel}</span>
+            <span class="chat-bubble-timestamp">${timeStr}</span>
+          </div>
+          <div class="chat-bubble-body-row">
+            <img src="${partnerAvatar}" class="chat-bubble-avatar-mini" alt="${senderLabel}">
+            <div class="chat-bubble ai">${formatted}</div>
+          </div>
+        `;
+      } else {
+        wrap.innerHTML = `
+          <div class="chat-bubble-meta-row">
+            <span class="chat-bubble-sender-name">You</span>
+            <span class="chat-bubble-timestamp">${timeStr}</span>
+          </div>
+          <div class="chat-bubble user">${formatted}</div>
+        `;
+      }
 
       area.appendChild(wrap);
     });
     area.scrollTop = area.scrollHeight;
   }
 
-  // Quick responses removed per user request - clean up any lingering elements
-  const existingRepliesBar = document.getElementById('chat-quick-replies-bar');
-  if (existingRepliesBar && existingRepliesBar.parentNode) {
-    existingRepliesBar.parentNode.removeChild(existingRepliesBar);
+  // 6. Render Dynamic Player Choices (Smart Replies)
+  renderSmartReplyChoices(charId, history, scenario);
+}
+
+// Dynamic Player Choice Buttons (Smart Replies) Generator
+function renderSmartReplyChoices(charId, history, scenario) {
+  const container = document.getElementById('chat-dynamic-choices');
+  const pillsRow = document.getElementById('choices-pills-row');
+  if (!container || !pillsRow) return;
+
+  if (state.isAiTyping) {
+    container.style.display = 'none';
+    return;
   }
+
+  const lastAiMsg = [...(history || [])].reverse().find(m => m.sender === 'ai');
+  const lastText = (lastAiMsg?.text || '').toLowerCase();
+
+  let choices = [];
+
+  if (lastText.includes('quiet') || lastText.includes('view') || lastText.includes('move')) {
+    choices = [
+      { tag: 'FLIRT', type: 'flirt', text: `Careful? I was just trying to see if your magic is as impressive as you claim.` },
+      { tag: 'DOUBT', type: 'cautious', text: `A good partner always keeps their eyes open.` }
+    ];
+  } else if (lastText.includes('balcony') || lastText.includes('door') || lastText.includes('help')) {
+    choices = [
+      { tag: 'HELP', type: 'cautious', text: `*Step forward with a smile* "Sure, let me help you with the door."` },
+      { tag: 'TEASE', type: 'flirt', text: `*Lean closer playfully* "Maybe the door was an excuse to get me inside?"` }
+    ];
+  } else if (lastText.includes('contract') || lastText.includes('quit') || lastText.includes('clause') || lastText.includes('deal')) {
+    choices = [
+      { tag: 'DEAL', type: 'flirt', text: `*Lean across the desk calmly* "State your conditions, then. What's the deal?"` },
+      { tag: 'DEFIANCE', type: 'cautious', text: `*Hold your ground* "I'm not signing anything until I read every single line."` }
+    ];
+  } else if (lastText.includes('drink') || lastText.includes('wine') || lastText.includes('scotch')) {
+    choices = [
+      { tag: 'DRINK', type: 'flirt', text: `*Clink glasses with you* "To an unforgettable evening... what's your first secret?"` },
+      { tag: 'OBSERVE', type: 'cautious', text: `*Take a slow sip* "Careful... you might reveal more than you intended."` }
+    ];
+  } else {
+    choices = [
+      { tag: 'STEP CLOSER', type: 'flirt', text: `*Step closer and hold your gaze* "Tell me what you really want right now."` },
+      { tag: 'SMIRK', type: 'cautious', text: `*Offer a confident smirk* "You started this... now let's see where it leads."` }
+    ];
+  }
+
+  pillsRow.innerHTML = '';
+  choices.forEach(ch => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `choice-pill-btn ${ch.type}`;
+    btn.innerHTML = `<span class="choice-tag">[${ch.tag}]</span> <span>💬 "${escapeHtml(ch.text)}"</span>`;
+    btn.onclick = (e) => {
+      e.preventDefault();
+      const input = document.getElementById('chat-user-input');
+      if (input) input.value = ch.text;
+      sendChatMessage(ch.text);
+    };
+    pillsRow.appendChild(btn);
+  });
+
+  container.style.display = 'flex';
 }
 
 // Dynamic AI Chat Send

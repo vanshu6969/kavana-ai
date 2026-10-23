@@ -260,31 +260,40 @@
           </div>
 
           <!-- Active Conversation View Container -->
-          <div class="chat-active-view-container" id="chat-active-view" style="display: flex; flex-direction: column; height: 100%; min-width: 0; width: 100%;">
+          <div class="chat-active-view-container" id="chat-active-view" style="display: flex; flex-direction: column; height: 100%; min-width: 0; width: 100%; position: relative;">
+            <!-- Cinematic Backdrop Art Layer -->
+            <div class="chat-backdrop-art" id="chat-backdrop-art"></div>
+            <div class="chat-backdrop-overlay"></div>
+
             <!-- Chat Top Header -->
             <div class="chat-pane-header">
-              <div class="chat-header-left" style="display: flex; align-items: center; gap: 0.5rem; min-width: 0;">
-                <button class="btn-chat-mobile-back" id="btn-chat-mobile-back" type="button" title="Back to All Chats">
+              <div class="chat-header-left" style="display: flex; align-items: center; gap: 0.65rem; min-width: 0;">
+                <button class="btn-chat-back btn-chat-mobile-back" id="btn-chat-mobile-back" type="button" title="Back to Chats List">
                   <span class="back-arrow">←</span>
-                  <span class="back-text">Chats</span>
+                  <span class="back-text">Back</span>
                 </button>
                 <div class="chat-partner-info">
                   <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80" alt="Avatar" class="chat-partner-avatar" id="chat-partner-avatar">
                   <div style="min-width: 0;">
-                    <h3 class="chat-header-name" id="chat-partner-name">Kabir Oberoi</h3>
-                    <span class="chat-header-sub" id="chat-partner-archetype">Desi Romance & Don</span>
+                    <div style="display: flex; align-items: center; gap: 0.45rem;">
+                      <h3 class="chat-header-name" id="chat-partner-name">THE SHADOW MAGE</h3>
+                      <span class="chat-online-badge">● Active</span>
+                    </div>
+                    <span class="chat-header-sub" id="chat-partner-archetype">Cyber-Fantasy Roleplay</span>
                   </div>
                 </div>
               </div>
 
               <div class="chat-header-actions">
-                <!-- Live Affection Gauge -->
-                <div class="chat-affection-hud" title="Affection Level with Companion">
-                  <span class="hud-heart">❤️</span>
-                  <div class="hud-meter-track">
-                    <div class="hud-meter-fill" id="chat-affection-fill" style="width: 70%;"></div>
+                <!-- Glowing Affinity HUD Meter -->
+                <div class="chat-affinity-card" id="chat-affinity-card" title="Character Affinity & Progression">
+                  <div class="affinity-pill-top">
+                    <span><span class="affinity-heart-glow">💖</span> Affinity Level <span id="chat-affinity-level">4</span></span>
+                    <span id="chat-affection-pct">(84%)</span>
                   </div>
-                  <span class="hud-val" id="chat-affection-pct">70%</span>
+                  <div class="affinity-progress-track">
+                    <div class="affinity-progress-glow" id="chat-affection-fill" style="width: 84%;"></div>
+                  </div>
                 </div>
                 <span class="intimacy-tag" id="chat-intimacy-tag">🔥 18+ Uncensored</span>
               </div>
@@ -306,18 +315,25 @@
             <!-- Messages Scroll Area -->
             <div class="chat-messages-area" id="chat-messages-area"></div>
 
+            <!-- Dynamic Player Choices (Smart Replies) -->
+            <div class="chat-dynamic-choices" id="chat-dynamic-choices" style="display: none;">
+              <div class="choices-prompt-label">How do you want to respond?</div>
+              <div class="choices-pills-row" id="choices-pills-row"></div>
+            </div>
+
             <!-- Input Bar -->
             <form class="chat-input-bar" id="chat-form">
+              <button type="button" class="chat-input-attach-btn" id="btn-chat-attach" title="Attach Media">📷</button>
               <input 
                 type="text" 
                 class="chat-input-field" 
                 id="chat-user-input" 
-                placeholder="Reply in English, Hinglish, or Punjabi (use *actions*)..." 
+                placeholder="Type your story..." 
                 autocomplete="off"
                 required
               >
               <button type="submit" class="btn-send-message" id="btn-send-message" aria-label="Send message">
-                <span class="btn-send-label">Send</span> <span class="btn-send-icon">➔</span>
+                <span class="btn-send-icon">➔</span>
               </button>
             </form>
           </div>

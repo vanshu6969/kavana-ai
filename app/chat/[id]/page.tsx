@@ -364,7 +364,7 @@ export default function ChatScreen() {
 
   return (
     <div className="w-full h-screen h-[100dvh] flex bg-[#050608] text-white overflow-hidden relative">
-      {/* 1. OPTIONAL TOGGLEABLE LEFT SIDEBAR: Active Stories Drawer */}
+      {/* 1. LEFT SIDEBAR: Active Stories Drawer (Docked on Desktop, Slide-over on Mobile) */}
       {showLeftSidebar && (
         <div
           className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 lg:hidden"
@@ -374,24 +374,20 @@ export default function ChatScreen() {
 
       <aside
         className={`${
-          showLeftSidebar ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 ${
-          showLeftSidebar ? 'fixed inset-y-0 left-0 z-50 w-72 sm:w-80' : 'hidden lg:hidden'
-        } flex flex-col border-r border-white/[0.08] bg-[#0D0E15] p-4 flex-shrink-0 transition-transform duration-200 shadow-2xl`}
+          showLeftSidebar ? 'translate-x-0 fixed inset-y-0 left-0 z-50 w-72 sm:w-80' : '-translate-x-full lg:translate-x-0'
+        } lg:static lg:flex lg:w-80 flex flex-col border-r border-white/[0.08] bg-[#0D0E15] p-4 flex-shrink-0 transition-transform duration-200 shadow-2xl z-20`}
       >
         <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/[0.08]">
           <h3 className="text-xs font-black text-white tracking-wider uppercase flex items-center gap-2">
-            <MessageSquare size={15} className="text-[#FF2E55]" />
+            <MessageSquare size={15} className="text-[#a855f7]" />
             <span>Active Stories</span>
           </h3>
           <button
             onClick={() => setShowLeftSidebar(false)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white active:scale-95 transition-transform"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white active:scale-95 transition-transform lg:hidden"
           >
             <X size={18} />
           </button>
-        </div>
-
         {/* Sessions list */}
         <div className="flex-1 overflow-y-auto space-y-2 pr-1 scrollbar-none">
           {sessions.map((sess) => {
