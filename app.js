@@ -450,7 +450,7 @@ function createStoryCardElement(story) {
   card.className = 'story-card';
 
   const rating = story.rating || story.imdbRating || '4.9';
-  const posterUrl = story.avatar || story.cover;
+  const posterUrl = (story.avatar || story.cover) + '?v=vn_female_v3';
 
   card.innerHTML = `
     <div class="story-card-poster">
@@ -518,7 +518,7 @@ function renderHomeStoryTray() {
     const shortName = story.characterName ? story.characterName.split(' ')[0] : story.title.split(' ')[0];
     item.innerHTML = `
       <div class="avatar-ring-wrap">
-        <img src="${story.avatar}" alt="${story.characterName || story.title}" class="story-avatar-img" loading="lazy" onerror="this.onerror=null;this.src='assets/love_villa.jpg';">
+        <img src="${story.avatar}?v=vn_female_v3" alt="${story.characterName || story.title}" class="story-avatar-img" loading="lazy" onerror="this.onerror=null;this.src='assets/love_villa.jpg';">
       </div>
       <span class="story-avatar-name">${shortName}</span>
     `;
@@ -701,7 +701,7 @@ function setupHeroCarousel() {
     const heroRating = document.getElementById('hero-rating-badge');
     const heroPlays = document.getElementById('hero-plays-badge');
 
-    if (heroBanner) heroBanner.style.backgroundImage = `url('${s.cover || s.avatar || 'assets/love_villa.jpg'}')`;
+    if (heroBanner) heroBanner.style.backgroundImage = `url('${s.cover || s.avatar || 'assets/love_villa.jpg'}?v=vn_female_v3')`;
     if (heroTitle) heroTitle.textContent = s.title;
     if (heroDesc) heroDesc.textContent = s.summary;
     if (heroRating) heroRating.textContent = `★ ${s.rating || '4.9'} Rating`;
@@ -1300,7 +1300,7 @@ function renderRosterQuickPersonas() {
     const shortName = story.characterName ? story.characterName.split(' ')[0] : story.title.split(' ')[0];
     btn.innerHTML = `
       <div class="roster-persona-ring">
-        <img src="${story.avatar}" alt="${shortName}" loading="lazy" onerror="this.onerror=null;this.src='assets/love_villa.jpg';">
+        <img src="${story.avatar}?v=vn_female_v3" alt="${shortName}" loading="lazy" onerror="this.onerror=null;this.src='assets/love_villa.jpg';">
       </div>
       <span class="roster-persona-name">${shortName}</span>
     `;

@@ -246,7 +246,33 @@ export async function generateAIChatReply(characterId, userMessage, history = []
     }
   }
 
-  // 2.5. Zero-Config High-Speed Real-Time LLM (Pollinations AI - Fast POST with 4.5s Timeout)
+  // 2.3. Browser Zero-Config Unlimited LLM (Puter.js free GPT-4o-mini)
+  if (typeof window !== 'undefined' && window.puter && window.puter.ai && typeof window.puter.ai.chat === 'function') {
+    try {
+      const rawCharName = activeSpeaker || activeScenario?.characterName || CHARACTERS[characterId]?.name || 'Companion';
+      const charName = activeSpeaker || getCleanCharacterName(rawCharName, characterId);
+      const systemPrompt = buildSystemPrompt(characterId, effectiveLang, activeScenario?.userRole || 'Partner', activeScenario, detectedUserGender, activeSpeaker);
+
+      const msgs = [{ role: 'system', content: systemPrompt }];
+      (history || []).slice(-4).forEach(m => {
+        msgs.push({ role: m.sender === 'user' ? 'user' : 'assistant', content: m.text });
+      });
+      msgs.push({ role: 'user', content: userMessage });
+
+      const puterRes = await Promise.race([
+        window.puter.ai.chat(msgs, { model: 'gpt-4o-mini' }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Puter timeout')), 6000))
+      ]);
+      const rawText = typeof puterRes === 'string' ? puterRes : (puterRes?.message?.content || puterRes?.text || '');
+      if (rawText && rawText.trim().length > 15) {
+        return parseLLMResponse(rawText, characterId, effectiveLang, charState, activeScenario, detectedUserGender);
+      }
+    } catch (puterErr) {
+      // Proceed to Pollinations or Dynamic Procedural Engine
+    }
+  }
+
+  // 2.5. Zero-Config High-Speed Real-Time LLM (Pollinations AI with 9s Timeout)
   try {
     const rawCharName = activeSpeaker || activeScenario?.characterName || CHARACTERS[characterId]?.name || 'Companion';
     const charName = activeSpeaker || getCleanCharacterName(rawCharName, characterId);
@@ -276,14 +302,14 @@ Keep it vivid, dramatic, and reactive (2 sentences of action, 1-2 sentences of d
     messages.push({ role: 'user', content: userMessage });
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4500);
+    const timeoutId = setTimeout(() => controller.abort(), 9000);
 
     const res = await fetch('https://text.pollinations.ai/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         messages,
-        model: 'openai-fast',
+        model: 'openai',
         seed: Math.floor(Math.random() * 100000)
       }),
       signal: controller.signal
