@@ -36,14 +36,15 @@ export function saveProviderSettings(settings) {
 /**
  * System Prompt Builder for Real LLMs with Strict Gender & Grammar Rules
  */
-export function buildSystemPrompt(characterId, activeLang = 'en', userRole = 'Romantic Partner', activeScenario = null, userGender = 'male') {
+export function buildSystemPrompt(characterId, activeLang = 'en', userRole = 'Romantic Partner', activeScenario = null, userGender = 'male', activeSpeaker = null) {
   const char = CHARACTERS[characterId] || {
     name: activeScenario?.characterName || 'Companion',
     archetype: activeScenario?.category || 'Roleplay Partner',
     personality: activeScenario?.systemPersona || 'Engaging, intense, and dramatic.'
   };
 
-  const charName = activeScenario?.characterName || char.name;
+  const rawCharName = activeSpeaker || activeScenario?.characterName || char.name;
+  const charName = activeSpeaker || getCleanCharacterName(rawCharName, characterId);
   const scenarioTitle = activeScenario?.title || `${charName}'s Scenario`;
   const scenarioPersona = activeScenario?.systemPersona || char.personality;
   const role = activeScenario?.userRole || userRole || 'Partner';
@@ -120,7 +121,7 @@ MANDATORY: End your response with this exact JSON block:
 /**
  * Generate Real Dynamic AI Chat Reply with Gender Intelligence
  */
-export async function generateAIChatReply(characterId, userMessage, history = [], activeLang = 'hinglish', charState = {}, activeScenario = null, userGender = 'male') {
+export async function generateAIChatReply(characterId, userMessage, history = [], activeLang = 'hinglish', charState = {}, activeScenario = null, userGender = 'male', activeSpeaker = null) {
   const settings = getProviderSettings();
   const char = CHARACTERS[characterId] || { name: activeScenario?.characterName || 'Companion' };
 
@@ -146,7 +147,7 @@ export async function generateAIChatReply(characterId, userMessage, history = []
   if (settings.provider === AI_PROVIDERS.GEMINI && settings.apiKey) {
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${settings.model || 'gemini-1.5-flash'}:generateContent?key=${settings.apiKey}`;
-      const systemPrompt = buildSystemPrompt(characterId, effectiveLang, activeScenario?.userRole || 'Partner', activeScenario, detectedUserGender);
+      const systemPrompt = buildSystemPrompt(characterId, effectiveLang, activeScenario?.userRole || 'Partner', activeScenario, detectedUserGender, activeSpeaker);
 
       const contents = [
         { role: 'user', parts: [{ text: `SYSTEM DIRECTIVE:\n${systemPrompt}` }] },
@@ -247,8 +248,8 @@ export async function generateAIChatReply(characterId, userMessage, history = []
 
   // 2.5. Zero-Config High-Speed Real-Time LLM (Pollinations AI - Fast POST with 4.5s Timeout)
   try {
-    const rawCharName = activeScenario?.characterName || CHARACTERS[characterId]?.name || 'Companion';
-    const charName = getCleanCharacterName(rawCharName, characterId);
+    const rawCharName = activeSpeaker || activeScenario?.characterName || CHARACTERS[characterId]?.name || 'Companion';
+    const charName = activeSpeaker || getCleanCharacterName(rawCharName, characterId);
     const charGender = detectCharacterGender(characterId, activeScenario, CHARACTERS[characterId]);
     const isCharFemale = (charGender === 'female');
     const isUserFemale = (detectedUserGender === 'female');
@@ -307,7 +308,7 @@ Keep it vivid, dramatic, and reactive (2 sentences of action, 1-2 sentences of d
   }
 
   // 3. Dynamic Contextual AI Procedural Engine with Full Gender Precision
-  return generateDynamicProceduralTurn(characterId, userMessage, effectiveLang, charState, activeScenario, detectedUserGender);
+  return generateDynamicProceduralTurn(characterId, userMessage, effectiveLang, charState, activeScenario, detectedUserGender, activeSpeaker);
 }
 
 /**
@@ -487,10 +488,10 @@ Do not include any headers or meta text.`;
  * Synthesizes grounded, non-repetitive, situational roleplay responses
  * powered by character lore, entity extraction, and anti-repetition memory.
  */
-export function generateDynamicProceduralTurn(characterId, userMessage, effectiveLang, charState, activeScenario = null, userGender = 'male') {
+export function generateDynamicProceduralTurn(characterId, userMessage, effectiveLang, charState, activeScenario = null, userGender = 'male', activeSpeaker = null) {
   const char = CHARACTERS[characterId] || {};
-  const rawCharName = activeScenario?.characterName || char.name || 'Companion';
-  const cleanName = getCleanCharacterName(rawCharName, characterId);
+  const rawCharName = activeSpeaker || activeScenario?.characterName || char.name || 'Companion';
+  const cleanName = activeSpeaker || getCleanCharacterName(rawCharName, characterId);
   const charGender = detectCharacterGender(characterId, activeScenario, char);
 
   const synth = synthesizeDynamicRoleplayReply({
@@ -500,7 +501,8 @@ export function generateDynamicProceduralTurn(characterId, userMessage, effectiv
     userGender,
     userMessage,
     effectiveLang,
-    activeScenario
+    activeScenario,
+    activeSpeaker
   });
 
   const curAff = (charState && charState.affection) || 65;

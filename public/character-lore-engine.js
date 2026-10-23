@@ -312,15 +312,53 @@ export const CHARACTER_LORE = {
 
   // 5. RHEA KAPOOR & MAYA (Rival Roommates Blackout)
   'rival-roommates-blackout': {
-    cleanName: 'Rhea Kapoor',
-    shortName: 'Rhea',
+    cleanName: 'Maya & Chloe',
+    shortName: 'Maya',
     gender: 'female',
     location: 'Mumbai penthouse during a stormy blackout',
     props: ['single candle', 'soaked oversized t-shirt', 'drawing board', 'balcony rain'],
+    characters: {
+      'Maya': {
+        name: 'Maya',
+        title: 'The Fierce Competitor',
+        actions: [
+          `*Maya mombatti ko utha kar tumhare bilkul kareeb aati hai, uski bheegi zulfon se paani ke qatre tapak rahe hain.*`,
+          `*Maya darwaze ke aage khadi hokar muskuraati hai aur chaabi apni jeb mein daal leti hai.*`,
+          `*Maya tumhare kandhe par haath rakh kar tumhari aankhon mein aankhein daal kar dekhti hai.*`
+        ],
+        dialogues: [
+          `"Chloe se door raho aur mere paas aao... is toofani raat mein hum dono ke beech koi teesra nahi chahiye."`,
+          `"College project par ladaai karte the... par ab andhere mein ladaai nahi, sirf hum dono honge."`,
+          `"Mombatti mere paas hai handsome, aur tumhare paas sirf main hoon. Ab faisla tumhara hai."`
+        ],
+        leads: [
+          `"Idhar aao sofe par, mombatti ek hi hai hamare paas."`,
+          `"Apne haath meri kamar par rakho aur prove karo kaun sa roommate sabse behtar hai."`
+        ]
+      },
+      'Chloe': {
+        name: 'Chloe',
+        title: 'The Seductive Bad Girl',
+        actions: [
+          `*Chloe darwaze se hatkar seedha tumhare sofe par aakar baithti hai aur oversized t-shirt ko halka sa theek karti hai.*`,
+          `*Chloe tumhara haath narm giraft mein leti hai aur tumhare kaan ke paas whisper karti hai.*`,
+          `*Chloe toofan ki tez awaaz sunte hi darr ke bahane tumhari baahon mein simat jaati hai.*`
+        ],
+        dialogues: [
+          `"Maya chahe jo bhi kahe, is kamre mein tumhare sabse zyada kareeb main hoon... aur andhere mein mujhe akela rehna pasand nahi."`,
+          `"Toofan bahar hai par kamre ke andar aag lag chuki hai... mere kareeb aao."`,
+          `"Maya se chori-chhupe jo hota hai, uska maza hi alag hai handsome."`
+        ],
+        leads: [
+          `"Mera haath mat chhodna, bijli ki aawaz se darr lagta hai."`,
+          `"Batao, Maya pasand hai ya Chloe ka ye daring roop?"`
+        ]
+      }
+    },
     resignation: {
       actions: [
-        `*Rhea mombatti ko utha kar tumhare saamne karti hai, bahar toofan aur bijli ki tez awaaz kamre ko hila deti hai.*`,
-        `*Rhea darwaze ke handle par haath rakh kar muskuraati hai aur chaabi apni pocket mein daal leti hai.*`
+        `*Maya mombatti ko utha kar tumhare saamne karti hai, bahar toofan aur bijli ki tez awaaz kamre ko hila deti hai.*`,
+        `*Maya darwaze ke handle par haath rakh kar muskuraati hai aur chaabi apni pocket mein daal leti hai.*`
       ],
       dialogues: [
         `"Kahan ja rahe ho is toofani baarish mein? Mumbai mein flood warning hai aur saari light ja chuki hai... yahin rukna padega."`,
@@ -333,8 +371,8 @@ export const CHARACTER_LORE = {
     },
     defiance: {
       actions: [
-        `*Rhea apni bheegi zulfein peechhe karti hai aur lalkaar bhari nazar se tumhe ghoorti hai.*`,
-        `*Rhea ek kadam aur kareeb aakar tumhari chhati par ungli se chapat lagati hai.*`
+        `*Maya apni bheegi zulfein peechhe karti hai aur lalkaar bhari nazar se tumhe ghoorti hai.*`,
+        `*Chloe ek kadam aur kareeb aakar tumhari chhati par ungli se chapat lagati hai.*`
       ],
       dialogues: [
         `"Yeh mat sochna ki is blackout ki wajah se main tumhari badtameezi bardasht karungi! Mombatti mere paas hai, so play by my rules."`,
@@ -347,8 +385,8 @@ export const CHARACTER_LORE = {
     },
     intimacy: {
       actions: [
-        `*Bijli chamakti hai aur Rhea darr ya bahane se seedha tumhari baahon mein simat jaati hai, uski bheegi khushboo kamre mein chha jaati hai.*`,
-        `*Uski garam saansein tumhari gardan par girti hain jab wo tumhare shirt ke bheege hisse ko pakadti hai.*`
+        `*Bijli chamakti hai aur Maya seedha tumhari baahon mein simat jaati hai, uski bheegi khushboo kamre mein chha jaati hai.*`,
+        `*Chloe ki garam saansein tumhari gardan par girti hain jab wo tumhare shirt ke bheege hisse ko pakadti hai.*`
       ],
       dialogues: [
         `"Hawa bohot thandi hai... par tumhare itne kareeb aane se mere andar aag lag rahi hai."`,
@@ -361,7 +399,7 @@ export const CHARACTER_LORE = {
     },
     general: {
       actions: [
-        `*Rhea mombatti ko dining table par rakhti hai aur towel se apne baal sukhaati hai.*`
+        `*Maya mombatti ko dining table par rakhti hai aur towel se apne baal sukhaati hai.*`
       ],
       dialogues: [
         `"Toofan bahar hai ya hum dono ke beech mein? Kuch samajh nahi aa raha."`
@@ -372,13 +410,99 @@ export const CHARACTER_LORE = {
     }
   },
 
-  // 6. LOVE VILLA SIRENS (Natasha & The 5 Rivals)
+  // 6. LOVE VILLA SIRENS (Natasha, Tara, Aanya, Rhea & Meera)
   'love-villa-5-rivals': {
-    cleanName: 'Natasha & Villa Sirens',
+    cleanName: 'Natasha',
     shortName: 'Natasha',
     gender: 'female',
     location: 'exotic cliffside infinity-pool villa',
     props: ['chilled champagne flute', 'slit red dress', 'infinity pool edge', 'sunset lounge'],
+    characters: {
+      'Natasha': {
+        name: 'Natasha',
+        title: 'The Possessive Supermodel',
+        actions: [
+          `*Natasha chilled champagne ka flute side mein rakhti hai aur possessive nazron se tumhare bilkul kareeb aakar tumhari shirt ka collar chhooti hai.*`,
+          `*Natasha baaqi ladkiyon ko ek ghamand bhari muskaan deti hai aur apna narm haath tumhare seene par tika deti hai.*`,
+          `*Natasha pool ke edge par khadi hokar tumhari aankhon mein dekh kar seductive muskurahat ke sath aage badhti hai.*`
+        ],
+        dialogues: [
+          `"Maine pehle hi kaha tha handsome, is villa mein tum par pehla aur aakhri haq sirf mera hai. In baaqi ladkiyon ke jhanjhat mein mat padna."`,
+          `"Mujhse baat kar rahe ho toh apna dhyan sirf mujh par rakho. Natasha share karna kabhi bardasht nahi karti."`,
+          `"Tumhe dekh kar meri saansein tez ho rahi hain... mere kareeb aao aur dekho Natasha kya cheez hai."`
+        ],
+        leads: [
+          `"Mere sath pool lounge mein chalo, jahan hum akele honge."`,
+          `"Apne haath meri kamar par rakho aur sabko dikhao tum kiske ho."`
+        ]
+      },
+      'Tara': {
+        name: 'Tara',
+        title: 'The Daring Bad Girl',
+        actions: [
+          `*Tara apni daring slit red dress ko theek karti hui aage badhti hai aur seedha tumhari kamar par haath rakh kar smirk karti hai.*`,
+          `*Tara tumhari aankhon mein aankhein daal kar itne kareeb aati hai ki uski garam saansein tumhare honthon ko chhoone lagti hain.*`,
+          `*Tara Natasha ko aankh maarte hue tumhare baalon mein apni ungliyan phansa leti hai.*`
+        ],
+        dialogues: [
+          `"Natasha sirf baatein karti hai handsome... par Tara seedha dil aur jism jeetti hai. Batao, mere sath risk lene ka dum hai?"`,
+          `"Mujhe rules todna pasand hai... aur is villa ka sabse meetha nasha main hoon."`,
+          `"Itna sharmane ki zaroorat nahi hai. Jo ladki sabse daring hai, wahi tumhare sath khadi hai."`
+        ],
+        leads: [
+          `"Himmat hai toh abhi mere sath private pool mein jump lagao."`,
+          `"Aao mere kareeb aur batao meri ye red dress tumpar kitna asar kar rahi hai."`
+        ]
+      },
+      'Aanya': {
+        name: 'Aanya',
+        title: 'The Seductive Heiress',
+        actions: [
+          `*Aanya lounge sofa se uthkar aati hai, uski diamond necklace sunset mein chamakti hai jab wo tumhari kalai narm ungliyon se pakadti hai.*`,
+          `*Aanya ek luxury cocktail glass tumhare aage badhati hai aur madhosh karne wali muskaan deti hai.*`
+        ],
+        dialogues: [
+          `"Inki cheap ladaaiyon se bore nahi hue handsome? Aao, mere private VIP suite mein chalte hain jahan sach mein class aur romance milega."`,
+          `"Aanya jisko chahti hai, use duniya ki har aish-o-ishrat deti hai... aur aaj raat mera dil tum par aa chuka hai."`
+        ],
+        leads: [
+          `"Mera haath pakdo aur is bheed se nikal kar mere room mein aao."`,
+          `"Kaho toh poori villa sirf hum dono ke liye book karva doon?"`
+        ]
+      },
+      'Rhea': {
+        name: 'Rhea',
+        title: 'The Wild Influencer',
+        actions: [
+          `*Rhea apna phone lounge table par flip karke rakh deti hai aur ek mischievous smile ke sath tumhare itne kareeb aati hai ki uske honth tumhare kaan ko chhoote hain.*`,
+          `*Rhea tumhare kandhe par haath rakh kar halka sa jhukti hai, uski perfume ki mehak hawa mein phail jaati hai.*`
+        ],
+        dialogues: [
+          `"Mera live stream band ho chuka hai handsome... ab jo hoga wo purely off-the-record aur 18+ uncensored hoga."`,
+          `"Millions log mujhe dekhte hain... par main yahan sirf tumhe dekh rahi hoon."`
+        ],
+        leads: [
+          `"Chalo mere sath, dekhte hain tumhara stamina kitna hai."`,
+          `"Batao, meri posts zyada hot hain ya main sach mein zyada wild hoon?"`
+        ]
+      },
+      'Meera': {
+        name: 'Meera',
+        title: 'The Dark Mystery Siren',
+        actions: [
+          `*Meera infinity pool ke gehre chhaon wale corner se shanti se nikal kar aati hai, uski mysterious aankhein seedha tumhari aankhon par tikti hain.*`,
+          `*Meera chupchap tumhare bilkul peeche aakar khadi ho jaati hai, uski thandi ungliyan tumhari gardan par gehra asar chhodti hain.*`
+        ],
+        dialogues: [
+          `"Shor machane wali ladkiyan jaldi thak jaati hain handsome... par mera nasha der tak rehta hai. Mere kareeb aao aur mehsoos karo."`,
+          `"Khamoshi mein jo aag hoti hai, wo shor mein nahi milti. Main tumhari aatma tak utar sakti hoon."`
+        ],
+        leads: [
+          `"Aankhein band karo aur mehsoos karo mere sparsh ko."`,
+          `"Kya tum Meera ke raaz janne ke liye tayyar ho?"`
+        ]
+      }
+    },
     resignation: {
       actions: [
         `*Natasha champagne ka sip leti hai jabki Tara tumhara raasta rokte hue laal dress mein tumhare kareeb aati hai.*`,
@@ -694,7 +818,8 @@ export function synthesizeDynamicRoleplayReply({
   userGender,
   userMessage,
   effectiveLang,
-  activeScenario
+  activeScenario,
+  activeSpeaker
 }) {
   const { intents, clean, lower } = classifyUserMessage(userMessage);
 
@@ -702,6 +827,24 @@ export function synthesizeDynamicRoleplayReply({
   const profile = CHARACTER_LORE[characterId] || getUniversalCharacterProfile(characterId, cleanName, charGender, activeScenario);
   const isFemale = charGender === 'female';
   const isUserFemale = userGender === 'female';
+
+  // Multi-Character Sub-profile handling:
+  // If activeSpeaker is provided and profile has dedicated characters (e.g. Love Villa or Roommates)
+  if (profile.characters && activeSpeaker) {
+    const speakerKey = Object.keys(profile.characters).find(k => k.toLowerCase() === activeSpeaker.toLowerCase());
+    if (speakerKey && profile.characters[speakerKey]) {
+      const charSub = profile.characters[speakerKey];
+      const subAction = pickNonRepetitive(characterId, `${speakerKey}_action`, charSub.actions);
+      const subDialogue = pickNonRepetitive(characterId, `${speakerKey}_dialogue`, charSub.dialogues);
+      const subLead = pickNonRepetitive(characterId, `${speakerKey}_lead`, charSub.leads || profile.general.leads);
+      const cleanDialogue = `${subDialogue} ${subLead}`.trim();
+      return {
+        replyText: `${subAction}\n\n"${cleanDialogue}"`,
+        affectionDelta: intents.isIntimacy ? 12 : (intents.isAffection ? 10 : 8),
+        tensionDelta: intents.isDefiance ? 18 : (intents.isIntimacy ? 14 : 9)
+      };
+    }
+  }
 
   // Determine Primary Thematic Track
   let track = 'general';

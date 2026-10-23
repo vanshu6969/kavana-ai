@@ -263,8 +263,92 @@ export function getCleanCharacterName(rawName = '', charId = '') {
   if (!rawName) return 'Companion';
   let clean = rawName.replace(/\s*\([^)]*\)/g, '').trim();
   if (/sirens|villa/i.test(clean)) return 'Natasha';
-  if (/maya & chloe/i.test(clean)) return 'Rhea';
+  if (/maya & chloe/i.test(clean)) return 'Maya';
   return clean;
+}
+
+// Multi-Character Active Speaker Resolution
+// Accurately determines which specific character the user is talking to in multi-character scenarios
+export function resolveActiveSpeakerName(scenario, userText = '', history = []) {
+  if (!scenario) return 'Companion';
+  const rawName = scenario.characterName || scenario.name || '';
+  const charId = scenario.id || scenario.characterId || '';
+
+  const isLoveVilla = /love-villa|sirens/i.test(charId) || /sirens|natasha.*tara/i.test(rawName);
+  const isRoommates = /roommate/i.test(charId) || /maya.*chloe/i.test(rawName);
+  const isMulti = isLoveVilla || isRoommates || /&|,|\band\b/i.test(rawName);
+
+  if (!isMulti) {
+    return getCleanCharacterName(rawName, charId);
+  }
+
+  let characterList = [];
+  let defaultSpeaker = 'Natasha';
+
+  if (isLoveVilla) {
+    characterList = [
+      { name: 'Natasha', patterns: [/\bnatasha\b/i, /\btash\b/i, /\bsupermodel\b/i, /\bchampagne\b/i] },
+      { name: 'Tara', patterns: [/\btara\b/i, /\bred dress\b/i, /\bbad girl\b/i] },
+      { name: 'Aanya', patterns: [/\baanya\b/i, /\banya\b/i, /\bheiress\b/i] },
+      { name: 'Rhea', patterns: [/\brhea\b/i, /\binfluencer\b/i] },
+      { name: 'Meera', patterns: [/\bmeera\b/i, /\bmira\b/i, /\bdark siren\b/i] }
+    ];
+    defaultSpeaker = 'Natasha';
+  } else if (isRoommates) {
+    characterList = [
+      { name: 'Maya', patterns: [/\bmaya\b/i] },
+      { name: 'Chloe', patterns: [/\bchloe\b/i] }
+    ];
+    defaultSpeaker = 'Maya';
+  } else {
+    const parenMatch = rawName.match(/\(([^)]+)\)/);
+    if (parenMatch) {
+      const names = parenMatch[1].split(/,|&|\band\b/).map(s => s.trim()).filter(Boolean);
+      if (names.length > 0) {
+        characterList = names.map(n => {
+          const first = n.split(' ')[0];
+          return { name: first, patterns: [new RegExp(`\\b${first}\\b`, 'i')] };
+        });
+        defaultSpeaker = characterList[0]?.name || 'Companion';
+      }
+    }
+    if (!characterList.length) {
+      const names = rawName.split(/&|,|\band\b/).map(s => s.replace(/\s*\([^)]*\)/g, '').trim()).filter(Boolean);
+      characterList = names.map(n => {
+        const first = n.split(' ')[0];
+        return { name: first, patterns: [new RegExp(`\\b${first}\\b`, 'i')] };
+      });
+      defaultSpeaker = characterList[0]?.name || 'Companion';
+    }
+  }
+
+  // 1. Direct match in current user message
+  if (userText) {
+    for (const item of characterList) {
+      if (item.patterns.some(p => p.test(userText))) {
+        return item.name;
+      }
+    }
+  }
+
+  // 2. Scan recent conversation history backwards
+  if (Array.isArray(history) && history.length > 0) {
+    const recent = history.slice(-6).reverse();
+    for (const msg of recent) {
+      if (msg.character) {
+        const match = characterList.find(c => c.name.toLowerCase() === msg.character.toLowerCase());
+        if (match) return match.name;
+      }
+      const text = msg.text || '';
+      for (const item of characterList) {
+        if (item.patterns.some(p => p.test(text))) {
+          return item.name;
+        }
+      }
+    }
+  }
+
+  return defaultSpeaker;
 }
 
 const BASE_CORE_STORIES = [

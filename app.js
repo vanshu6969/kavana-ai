@@ -2,7 +2,7 @@
  * Kavana AI - 1:1 Official Website & Interactive Platform Controller
  */
 
-import { CHARACTERS, KAVANA_STORIES, detectUserGender, detectCharacterGender } from './engine.js';
+import { CHARACTERS, KAVANA_STORIES, detectUserGender, detectCharacterGender, resolveActiveSpeakerName } from './engine.js';
 import { 
   generateAIChatReply, 
   generateDynamicNovel, 
@@ -444,7 +444,7 @@ function createStoryCardElement(story) {
 
   card.innerHTML = `
     <div class="story-card-poster">
-      <img src="${posterUrl}" alt="${story.title}" loading="lazy" onerror="this.src='assets/poster_love_villa.jpg'">
+      <img src="${posterUrl}" alt="${story.title}" loading="lazy" onerror="if(this.src.indexOf('love_villa.jpg')===-1){this.src='assets/love_villa.jpg';}else{this.onerror=null;}">
       <div class="poster-gradient-fade"></div>
       <div class="poster-top-badges">
         <span class="card-rating-badge">★ ${rating}</span>
@@ -653,7 +653,7 @@ function setupHeroCarousel() {
     const heroRating = document.getElementById('hero-rating-badge');
     const heroPlays = document.getElementById('hero-plays-badge');
 
-    if (heroBanner) heroBanner.style.backgroundImage = `url('${s.cover || s.avatar}')`;
+    if (heroBanner) heroBanner.style.backgroundImage = `url('${s.cover || s.avatar || 'assets/love_villa.jpg'}')`;
     if (heroTitle) heroTitle.textContent = s.title;
     if (heroDesc) heroDesc.textContent = s.summary;
     if (heroRating) heroRating.textContent = `★ ${s.rating || '4.9'} Rating`;
@@ -1435,11 +1435,26 @@ function renderChatView() {
   const avatar = document.getElementById('chat-partner-avatar');
   if (avatar) avatar.src = scenario?.avatar || char.image;
 
+  const activeSpeaker = resolveActiveSpeakerName(scenario, '', history);
+  const isMulti = scenario && (/sirens|villa/i.test(scenario.id || '') || /roommate/i.test(scenario.id || '') || /&|,|\band\b/i.test(scenario.characterName || ''));
+
   const nameEl = document.getElementById('chat-partner-name');
-  if (nameEl) nameEl.textContent = scenario?.characterName || scenario?.name || char.name;
+  if (nameEl) {
+    if (isMulti) {
+      nameEl.innerHTML = `<span style="color: var(--kavana-crimson);">${activeSpeaker}</span> <span style="font-size: 0.85em; opacity: 0.75; font-weight: 500;">(${scenario.title.split('(')[0].trim()})</span>`;
+    } else {
+      nameEl.textContent = scenario?.characterName || scenario?.name || char.name;
+    }
+  }
 
   const archEl = document.getElementById('chat-partner-archetype');
-  if (archEl) archEl.textContent = scenario?.title ? `🎬 ${scenario.title}` : `${char.archetype} • 18+ Uncensored`;
+  if (archEl) {
+    if (isMulti) {
+      archEl.textContent = `Talking directly to ${activeSpeaker} • 18+ Uncensored`;
+    } else {
+      archEl.textContent = scenario?.title ? `🎬 ${scenario.title}` : `${char.archetype} • 18+ Uncensored`;
+    }
+  }
 
   const intTag = document.getElementById('chat-intimacy-tag');
   if (intTag) intTag.textContent = charState.intimacyLevel;
@@ -1502,10 +1517,11 @@ function renderChatView() {
       const timeStr = formatChatTime(msg.time || Date.now());
       const safe = escapeHtml(msg.text || '');
       const formatted = safe.replace(/\*(.*?)\*/g, '<em>*$1*</em>');
+      const senderLabel = isAi ? (msg.character || (isMulti ? activeSpeaker : partnerName)) : 'You';
 
       wrap.innerHTML = `
         <div class="chat-bubble-meta-row">
-          <span class="chat-bubble-sender-name">${isAi ? partnerName : 'You'}</span>
+          <span class="chat-bubble-sender-name">${senderLabel}</span>
           <span class="chat-bubble-timestamp">${timeStr}</span>
         </div>
         <div class="chat-bubble ${isAi ? 'ai' : 'user'}">${formatted}</div>
@@ -1573,20 +1589,20 @@ async function sendChatMessage(text) {
 
   renderChatView();
 
-  const partnerName = state.activeScenario?.characterName || state.activeScenario?.name || CHARACTERS[charId]?.name || 'Companion';
+  const activeSpeaker = resolveActiveSpeakerName(state.activeScenario, text, history);
   const area = document.getElementById('chat-messages-area');
   const typing = document.createElement('div');
   typing.className = 'chat-bubble-wrap ai';
   typing.innerHTML = `
     <div class="chat-bubble-meta-row">
-      <span class="chat-bubble-sender-name">${partnerName}</span>
+      <span class="chat-bubble-sender-name">${activeSpeaker}</span>
       <span class="chat-bubble-timestamp">Just now</span>
     </div>
     <div class="chat-bubble ai thinking-bubble">
       <div class="thinking-dots">
         <span></span><span></span><span></span>
       </div>
-      <em>${partnerName} is thinking...</em>
+      <em>${activeSpeaker} is thinking...</em>
     </div>
   `;
   area?.appendChild(typing);
@@ -1600,7 +1616,8 @@ async function sendChatMessage(text) {
       state.activeLang,
       state.characterState[charId],
       state.activeScenario,
-      state.userGender || 'male'
+      state.userGender || 'male',
+      activeSpeaker
     );
 
     if (typing.parentNode) typing.parentNode.removeChild(typing);
@@ -1609,7 +1626,7 @@ async function sendChatMessage(text) {
     state.characterState[charId].tension = aiResponse.tension;
     state.characterState[charId].intimacyLevel = aiResponse.intimacyLevel;
 
-    const aiMsg = { sender: 'ai', text: aiResponse.replyText, time: Date.now() };
+    const aiMsg = { sender: 'ai', text: aiResponse.replyText, time: Date.now(), character: activeSpeaker };
     history.push(aiMsg);
     saveChatHistory(charId, history);
 
