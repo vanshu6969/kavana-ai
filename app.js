@@ -444,7 +444,7 @@ function createStoryCardElement(story) {
 
   card.innerHTML = `
     <div class="story-card-poster">
-      <img src="${posterUrl}" alt="${story.title}" loading="lazy" onerror="if(this.src.indexOf('love_villa.jpg')===-1){this.src='assets/love_villa.jpg';}else{this.onerror=null;}">
+      <img src="${posterUrl}" alt="${story.title}" loading="lazy" onerror="if(!this.dataset.fb){this.dataset.fb='1';this.src='assets/love_villa.jpg';}else{this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 400 600\\'><defs><linearGradient id=\\'g\\' x1=\\'0\\' y1=\\'0\\' x2=\\'1\\' y2=\\'1\\'><stop offset=\\'0%25\\' stop-color=\\'%230e0e18\\'/><stop offset=\\'100%25\\' stop-color=\\'%231a0a14\\'/></linearGradient></defs><rect width=\\'100%25\\' height=\\'100%25\\' fill=\\'url(%23g)\\'/><circle cx=\\'200\\' cy=\\'260\\' r=\\'80\\' fill=\\'%23d4af37\\' opacity=\\'0.15\\'/><text x=\\'200\\' y=\\'275\\' font-size=\\'48\\' fill=\\'%23d4af37\\' text-anchor=\\'middle\\'>✦</text><text x=\\'200\\' y=\\'360\\' font-size=\\'20\\' font-family=\\'sans-serif\\' font-weight=\\'bold\\' fill=\\'%23ffffff\\' text-anchor=\\'middle\\'>KAVANA STORY</text></svg>';}">
       <div class="poster-gradient-fade"></div>
       <div class="poster-top-badges">
         <span class="card-rating-badge">★ ${rating}</span>
@@ -1197,7 +1197,7 @@ export function renderNewChatDirectory(filterText = '') {
 
   container.innerHTML = filtered.map(item => `
     <div class="new-chat-card" data-companion-id="${item.id}">
-      <img src="${item.avatar}" alt="${item.name}" class="new-chat-avatar" loading="lazy">
+      <img src="${item.avatar}" alt="${item.name}" class="new-chat-avatar" loading="lazy" onerror="this.onerror=null;this.src='assets/love_villa_avatar.jpg';">
       <div class="new-chat-info">
         <h4 class="new-chat-name">${item.name}</h4>
         <div class="new-chat-title">🎬 ${item.title}</div>
@@ -1281,7 +1281,7 @@ export function renderChatRoster(filterText = '') {
 
         item.innerHTML = `
           <div class="roster-avatar-wrap">
-            <img src="${session.avatar}" alt="${session.name}" class="roster-avatar" loading="lazy">
+            <img src="${session.avatar}" alt="${session.name}" class="roster-avatar" loading="lazy" onerror="this.onerror=null;this.src='assets/love_villa_avatar.jpg';">
             <span class="online-status-dot"></span>
           </div>
           <div class="roster-meta">
@@ -1346,7 +1346,7 @@ export function renderChatRoster(filterText = '') {
 
       pill.innerHTML = `
         <span class="m-avatar-ring">
-          <img src="${session.avatar}" alt="${session.name}">
+          <img src="${session.avatar}" alt="${session.name}" onerror="this.onerror=null;this.src='assets/love_villa_avatar.jpg';">
           <span class="m-live-dot"></span>
         </span>
         <span class="m-comp-label">${shortName}</span>
