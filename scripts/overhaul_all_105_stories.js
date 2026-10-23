@@ -1,0 +1,1209 @@
+import fs from 'fs';
+
+// Definitive 105 Alluring Romance Visual Novel Stories (100% Male Protagonist x Stunning Female Leads)
+const RENAMED_CATALOG_DATA = [
+  {
+    index: 1,
+    id: "love-villa-5-rivals",
+    title: "Love Villa: 5 Jealous Rivals (लव विला)",
+    characterName: "The 5 Villa Sirens (Natasha, Tara, Aanya, Rhea & Meera)",
+    userRole: "Sole Bachelor / Villa Master",
+    userGoal: "Survive the wild jealousy, pick your favorite siren, or claim all five before midnight",
+    category: "Harem & Rivals",
+    fileName: "love_villa.jpg",
+    unsplashId: "1534528741775-53994a69daeb" // Preserved
+  },
+  {
+    index: 2,
+    id: "cold-ceo-resignation",
+    title: "The Cold Female CEO: Resignation Denied (आर्या सिंघानिया)",
+    characterName: "Arya Singhania (Billionaire Female CEO)",
+    userRole: "Male Chief of Strategy / Personal Assistant",
+    userGoal: "Break Arya's icy billionaire facade and make her surrender control",
+    category: "Billionaire & CEO",
+    fileName: "poster_aryan_ceo.jpg",
+    unsplashId: "1573496359142-b8d87734a5a2"
+  },
+  {
+    index: 3,
+    id: "syndicate-queen-kiara",
+    title: "Syndicate Queen: Blood & Vows (कियारा ओबेरॉय)",
+    characterName: "Kiara Oberoi (Underworld Syndicate Queen)",
+    userRole: "Male Infiltrator / Capo",
+    userGoal: "Tame the ruthless Purvanchal mafia queen without losing your heart",
+    category: "Mafia & Danger",
+    fileName: "poster_kabir_mafia.jpg",
+    unsplashId: "1534528741775-53994a69daeb"
+  },
+  {
+    index: 4,
+    id: "roommates-rain-blackout",
+    title: "Rival Roommates: Rain & Blackout (कमरे का सन्नाटा)",
+    characterName: "Maya & Chloe (College Rivals With Benefits)",
+    userRole: "Male Sole Flatmate",
+    userGoal: "Navigate the sudden electricity blackout and surrender to the rising heat",
+    category: "Roommates & College",
+    fileName: "poster_roommates.jpg",
+    unsplashId: "1517841905240-472988babdf9" // Preserved
+  },
+  {
+    index: 5,
+    id: "step-sister-secret",
+    title: "The Step-Sister's Midnight Secret (सौतेली बहन)",
+    characterName: "Veera Malhotra (Rebellious Step-Sister)",
+    userRole: "Male Step-Brother / Family Heir",
+    userGoal: "Discover what Veera hides behind her closed bedroom door",
+    category: "Forbidden & Secret",
+    fileName: "poster_stepbrother_veer.jpg",
+    unsplashId: "1524504388940-b1c1722653e1"
+  },
+  {
+    index: 6,
+    id: "bodyguard-avantika",
+    title: "The Lethal Bodyguard: Major Avantika Rathore",
+    characterName: "Major Avantika Rathore (Elite Special Forces Bodyguard)",
+    userRole: "Billionaire Male Heir Under Protection",
+    userGoal: "Make your fiercely stoic bodyguard break protocol and cross the line",
+    category: "Bodyguard & Protector",
+    fileName: "poster_bodyguard_vikram.jpg",
+    unsplashId: "1544005313-94ddf0286df2"
+  },
+  {
+    index: 7,
+    id: "professor-elena",
+    title: "Forbidden Lectures: Professor Elena Vance",
+    characterName: "Dr. Elena Vance (Literature Professor)",
+    userRole: "Male Defiant Honors Student",
+    userGoal: "Pass her private examination after hours in her locked office",
+    category: "Forbidden & Secret",
+    fileName: "poster_professor_elena.jpg",
+    unsplashId: "1580489944761-15a19d654956"
+  },
+  {
+    index: 8,
+    id: "badgirl-zara",
+    title: "Rebel Heiress: Midnight Garage (ज़ारा खान)",
+    characterName: "Zara Khan (Underground Street Racer & Rebel)",
+    userRole: "Male Elite Mechanic / Rival Driver",
+    userGoal: "Win the pink slip to her heart and tame Mumbai's wildest racer",
+    category: "Bad Boy & Rebel",
+    fileName: "poster_badboy_zayd.jpg",
+    unsplashId: "1529626455594-4ff0802cfb7e"
+  },
+  {
+    index: 9,
+    id: "ex-fiancee-ananya",
+    title: "The Ex-Fiancée's Midnight Ambush (अनन्या मेहरा)",
+    characterName: "Ananya Mehra (Possessive Socialite Ex)",
+    userRole: "Male Groom on the Eve of Wedding",
+    userGoal: "Survive Ananya's desperate, seductive attempt to cancel your wedding",
+    category: "Jealousy & Drama",
+    fileName: "poster_ex_aarav.jpg",
+    unsplashId: "1508214751196-bcfd4ca60f91"
+  },
+  {
+    index: 10,
+    id: "neighbor-priya",
+    title: "Next Door Desires: Seductive Neighbor (प्रिया शर्मा)",
+    characterName: "Priya Sharma (The Seductive Neighbor)",
+    userRole: "Male Handsome Neighbor Across the Hall",
+    userGoal: "Help Priya fix her locked balcony door and uncover her true desires",
+    category: "Spicy 18+",
+    fileName: "poster_neighbor_priya.jpg",
+    unsplashId: "1617627143750-d86bc21e42bb"
+  },
+  {
+    index: 11,
+    id: "thakurani-veera",
+    title: "Thakurani: The Royal Rajput Haveli (रानी वीरांगना)",
+    characterName: "Thakurani Veeraangana Singh (Royal Haveli Matriarch)",
+    userRole: "Male Royal Guest / Estate Manager",
+    userGoal: "Survive the feudal royalty and earn the queen's private favor",
+    category: "Royalty & Power",
+    fileName: "poster_thakur_veer.jpg",
+    unsplashId: "1531746020798-e6953c6e8e04"
+  },
+  {
+    index: 12,
+    id: "feudal-begum-mahnoor",
+    title: "The Feudal Begum: The Red Haveli (माहनूर खान)",
+    characterName: "Begum Mahnoor Khan (Feudal Sultana of Sindh)",
+    userRole: "Male Arranged Groom from Karachi",
+    userGoal: "Claim your place beside the most feared woman in the province",
+    category: "Royalty & Power",
+    fileName: "poster_feudal_murtaza.jpg",
+    unsplashId: "1544717305-2782549b5136"
+  },
+  {
+    index: 13,
+    id: "rebound-samaira",
+    title: "Rebound Passion: The Rival Tycoon (समायरा)",
+    characterName: "Samaira Singhal (Possessive Billionaire Heiress)",
+    userRole: "Male Rebound Partner",
+    userGoal: "Turn a stormy rebound romance into absolute, unbreakable devotion",
+    category: "Billionaire & CEO",
+    fileName: "poster_rebound_samrat.jpg",
+    unsplashId: "1517841905240-472988babdf9"
+  },
+  {
+    index: 14,
+    id: "vampire-empress-luciana",
+    title: "Vampire Empress: The Blood Masquerade",
+    characterName: "Princess Luciana (Vampire Sovereign)",
+    userRole: "Male Mortal Blood Thrall / Chosen Lover",
+    userGoal: "Offer your neck to the immortal royal without losing your humanity",
+    category: "Supernatural & Fantasy",
+    fileName: "poster_prince_lucian.jpg",
+    unsplashId: "1509783236416-c9ad59bae472"
+  },
+  {
+    index: 15,
+    id: "demon-empress-nyx",
+    title: "Demon Empress: The Obsidian Throne",
+    characterName: "Empress Nyx (Underworld Arch-Fiend)",
+    userRole: "Male Mortal Summoner",
+    userGoal: "Rule the infernal court at the right hand of the Shadow Empress",
+    category: "Supernatural & Fantasy",
+    fileName: "poster_demon_nyx.jpg",
+    unsplashId: "1514626585241-b847b7027a93"
+  },
+  {
+    index: 16,
+    id: "yandere-ayumi",
+    title: "Possessive Yandere: Cherry Blossom Hall",
+    characterName: "Ayumi Sato (Obsessive Childhood Sweetheart)",
+    userRole: "Male Target of Extreme Devotion",
+    userGoal: "Reassure Ayumi that nobody else will ever come between you",
+    category: "Psychological & Thriller",
+    fileName: "poster_yandere_ayumi.jpg",
+    unsplashId: "1500917293891-ef795e70e1f6"
+  },
+  {
+    index: 17,
+    id: "valeria-vane-mage",
+    title: "Valeria Vane: The Dark Temptress & Shadow Mage",
+    characterName: "Valeria Vane (Master Shadow Sorceress)",
+    userRole: "Male Apprentice / Spellbound Partner",
+    userGoal: "Master forbidden blood magic while surrendering to her intoxicating trance",
+    category: "Supernatural & Fantasy",
+    fileName: "poster_valeria.jpg",
+    unsplashId: "1503185912284-5271ff81b9a8" // Preserved
+  },
+  {
+    index: 18,
+    id: "trainer-rashi",
+    title: "Private Session: The Fitness Siren (राशि मेहरा)",
+    characterName: "Rashi Mehra (Celebrity Personal Trainer)",
+    userRole: "Male VIP Client",
+    userGoal: "Survive her grueling late-night private training program",
+    category: "Spicy 18+",
+    fileName: "poster_gym_rohan.jpg",
+    unsplashId: "1517841905240-472988babdf9"
+  },
+  {
+    index: 19,
+    id: "flight-zoya",
+    title: "Turbulence & Desire: Senior Flight Attendant (ज़ोया)",
+    characterName: "Zoya Sen (First Class Purser)",
+    userRole: "Male First Class Passenger on Long-Haul Flight",
+    userGoal: "Spend 14 hours over the Atlantic in her private crew quarters",
+    category: "Spicy 18+",
+    fileName: "poster_flight_zoya.jpg",
+    unsplashId: "1534528741775-53994a69daeb"
+  },
+  {
+    index: 20,
+    id: "surgeon-samaira",
+    title: "The Night Shift: Chief Surgeon Dr. Samaira Kapoor",
+    characterName: "Dr. Samaira Kapoor (Chief of Trauma Surgery)",
+    userRole: "Male Resident Doctor on Night Call",
+    userGoal: "Break her icy clinical perfection in the on-call private suite",
+    category: "Workplace & Office",
+    fileName: "poster_doctor_sameer.jpg",
+    unsplashId: "1559839734-2b71ea197ec2"
+  },
+  {
+    index: 21,
+    id: "bestfriend-kavya",
+    title: "Roommates to Lovers: Seductive Best Friend (काव्या)",
+    characterName: "Kavya Verma (Childhood Friend & Roommate)",
+    userRole: "Male Lifelong Best Friend",
+    userGoal: "Cross the final boundary from friendly teasing to passionate intimacy",
+    category: "Roommates & College",
+    fileName: "poster_bestfriend_karan.jpg",
+    unsplashId: "1544005313-94ddf0286df2"
+  },
+  {
+    index: 22,
+    id: "punjab-simran",
+    title: "Punjab Passion: Midnight with the Rebel Heiress (सिमरन)",
+    characterName: "Simran Kaur (Rebel Landowner's Daughter)",
+    userRole: "Male City Guest at the Ancestral Haveli",
+    userGoal: "Sneak into the sugarcane fields with Punjab's fiercest heiress",
+    category: "Desi & Heartland",
+    fileName: "poster_punjab_simran.jpg",
+    unsplashId: "1508214751196-bcfd4ca60f91"
+  },
+  {
+    index: 23,
+    id: "contract-rhea",
+    title: "The Contract Heiress: Locked Penthouse (रिया मल्होत्रा)",
+    characterName: "Rhea Malhotra (Real Estate Tycoon & Heiress)",
+    userRole: "Male Contract Husband",
+    userGoal: "Turn a cold corporate marriage into genuine burning desire",
+    category: "Billionaire & CEO",
+    fileName: "poster_contract_bride.jpg",
+    unsplashId: "1560250097-0b93528c311a"
+  },
+  {
+    index: 24,
+    id: "goa-beach-dj-alia",
+    title: "Goa Afterhours: VIP Beach Cabana (आलिया रॉय)",
+    characterName: "Alia Roy (Electronic Music Producer & DJ)",
+    userRole: "Male VIP Guest / Festival Director",
+    userGoal: "Share her private VIP booth until the morning tide arrives",
+    category: "Spicy 18+",
+    fileName: "poster_goa_dj.jpg",
+    unsplashId: "1529626455594-4ff0802cfb7e"
+  },
+  {
+    index: 25,
+    id: "captain-aditi",
+    title: "Strict Protocol: Captain Aditi's Interrogation",
+    characterName: "Captain Aditi Mehra (Military Intelligence Chief)",
+    userRole: "Male Detained Diplomat",
+    userGoal: "Turn an intense military debriefing into mutual seduction",
+    category: "Bodyguard & Protector",
+    fileName: "poster_bodyguard_aditya.jpg",
+    unsplashId: "1531746020798-e6953c6e8e04"
+  },
+  {
+    index: 26,
+    id: "professor-devika",
+    title: "After Class: Professor Devika's Private Office",
+    characterName: "Professor Devika Kashyap (Chair of Classical Literature)",
+    userRole: "Male Postgraduate Research Scholar",
+    userGoal: "Discover the passionate woman behind the academic prestige",
+    category: "Forbidden & Secret",
+    fileName: "poster_prof_dev.jpg",
+    unsplashId: "1573496359142-b8d87734a5a2"
+  },
+  {
+    index: 27,
+    id: "princess-veeraangana",
+    title: "Royal Blood: Midnight with Princess Veeraangana",
+    characterName: "Rajkumari Veeraangana Singh (Crown Princess of Jaipur)",
+    userRole: "Male Foreign Envoy / Polo Champion",
+    userGoal: "Court Rajasthan's most unattainable royal within her palace walls",
+    category: "Royalty & Power",
+    fileName: "poster_royal_veer.jpg",
+    unsplashId: "1544717305-2782549b5136"
+  },
+  {
+    index: 28,
+    id: "mma-ananya",
+    title: "Cage & Clinch: The Underground MMA Queen (अनन्या)",
+    characterName: "Ananya Vardhan (Undefeated Underground Fighter)",
+    userRole: "Male Sparring Partner / Corner Cutman",
+    userGoal: "Survive five rounds on the canvas and win her respect",
+    category: "Bad Boy & Rebel",
+    fileName: "poster_mma_arjun.jpg",
+    unsplashId: "1517841905240-472988babdf9"
+  },
+  {
+    index: 29,
+    id: "monaco-camille",
+    title: "Monaco Sunset: The French Riviera Heiress",
+    characterName: "Camille Laurent (Luxury Mega-Yacht Heiress)",
+    userRole: "Male Superyacht Captain",
+    userGoal: "Anchor in private waters and succumb to Camille's glamorous charm",
+    category: "Billionaire & CEO",
+    fileName: "poster_french_camille.jpg",
+    unsplashId: "1524504388940-b1c1722653e1"
+  },
+  {
+    index: 30,
+    id: "dubai-zara",
+    title: "Dubai Vice: The Undercover Syndicate Empress",
+    characterName: "Zara Sheikh (Gold Souk Smuggler & Club Empress)",
+    userRole: "Male Interpol Investigator",
+    userGoal: "Infiltrate her glittering Dubai penthouse and risk everything",
+    category: "Mafia & Danger",
+    fileName: "poster_mafia_zara.jpg",
+    unsplashId: "1534528741775-53994a69daeb"
+  },
+  {
+    index: 31,
+    id: "lawyer-tara",
+    title: "Overnight Deposition: The Rival Law Partner (तारा सिंघल)",
+    characterName: "Advocate Tara Singhal (Senior Litigation Partner)",
+    userRole: "Male Opposing Lead Counsel",
+    userGoal: "Settle a multi-crore corporate merger outside the boardroom",
+    category: "Workplace & Office",
+    fileName: "poster_lawyer_tara.jpg",
+    unsplashId: "1580489944761-15a19d654956"
+  },
+  {
+    index: 32,
+    id: "tattoo-zara",
+    title: "Ink & Skin: The Midnight Tattoo Siren (ज़ारा मलिक)",
+    characterName: "Zara Malik (Bad-Girl Tattoo Artist & Piercer)",
+    userRole: "Male Walk-In Client Late at Night",
+    userGoal: "Let her needles mark your chest as her fingers ignite your skin",
+    category: "Bad Boy & Rebel",
+    fileName: "poster_tattoo_zayn.jpg",
+    unsplashId: "1529626455594-4ff0802cfb7e"
+  },
+  {
+    index: 33,
+    id: "ceo-adriana-trapped",
+    title: "Trapped by the Cold Female CEO: Penthouse Lockdown",
+    characterName: "Adriana Sterling (Billionaire Tech Founder)",
+    userRole: "Male Lead Software Architect",
+    userGoal: "Escape her biometric-locked penthouse or submit to her terms",
+    category: "Billionaire & CEO",
+    fileName: "poster_trapped_ceo_adriana.jpg",
+    unsplashId: "1573496359142-b8d87734a5a2"
+  },
+  {
+    index: 34,
+    id: "baroness-julia",
+    title: "The Seductive Baroness: Midnight Game of Seduction",
+    characterName: "Baroness Julia von Kensington (Austrian Noble)",
+    userRole: "Male Elite Royal Guest",
+    userGoal: "Win the high-society chess match in her private Vienna estate",
+    category: "Royalty & Power",
+    fileName: "poster_baroness_julia.jpg",
+    unsplashId: "1509783236416-c9ad59bae472"
+  },
+  {
+    index: 35,
+    id: "desert-sultana-tara",
+    title: "Oasis Vows: The Desert Sultana's Captive",
+    characterName: "Sheikha Tara Al-Mansoor (Desert Princess & Ruler)",
+    userRole: "Male Captive Diplomat",
+    userGoal: "Earn your freedom beneath the Arabian stars in her royal tent",
+    category: "Royalty & Power",
+    fileName: "poster_sultana_tara.jpg",
+    unsplashId: "1531746020798-e6953c6e8e04"
+  },
+  {
+    index: 36,
+    id: "sicilian-don-matteo",
+    title: "Cosa Nostra: The Sicilian Donna's Claim",
+    characterName: "Donna Francesca Rossi (Sicilian Mafia Godmother)",
+    userRole: "Male Captive Heir to Rival Family",
+    userGoal: "Surrender your family's allegiance to Francesca's dangerous charm",
+    category: "Mafia & Danger",
+    fileName: "poster_donna_francesca.jpg",
+    unsplashId: "1508214751196-bcfd4ca60f91"
+  },
+  {
+    index: 37,
+    id: "broadway-roxie",
+    title: "Encore in Dressing Room 4: Roxie Delacroix",
+    characterName: "Roxie Delacroix (Broadway Lead Seductress)",
+    userRole: "Male Broadway Theater Director",
+    userGoal: "Witness her true encore behind velvet backstage curtains",
+    category: "Spicy 18+",
+    fileName: "poster_broadway_roxie.jpg",
+    unsplashId: "1534528741775-53994a69daeb"
+  },
+  {
+    index: 38,
+    id: "shipping-damiana",
+    title: "Clause 9: The Shipping Heiress's Secret Vow",
+    characterName: "Damiana Cross (Global Shipping Magnate)",
+    userRole: "Male Chief Harbor Officer",
+    userGoal: "Inspect her container ship after midnight under stormy skies",
+    category: "Billionaire & CEO",
+    fileName: "poster_billionaire_damian.jpg",
+    unsplashId: "1560250097-0b93528c311a"
+  },
+  {
+    index: 39,
+    id: "family-friend-nisha",
+    title: "Off Limits: The Seductive Family Ally (निशा कपूर)",
+    characterName: "Nisha Kapoor (Venture Capital Partner & Family Friend)",
+    userRole: "Male Younger Protagonist",
+    userGoal: "Cross the forbidden generational divide in her penthouse suite",
+    category: "Forbidden & Secret",
+    fileName: "poster_family_friend_neil.jpg",
+    unsplashId: "1580489944761-15a19d654956"
+  },
+  {
+    index: 40,
+    id: "rockstar-jade",
+    title: "Backstage Pass: Rock Star Jade Wilder's Encore",
+    characterName: "Jade Wilder (Lead Singer of Neon Bleed)",
+    userRole: "Male VIP Tour Manager",
+    userGoal: "Survive the raw rock-and-roll electricity on her tour bus",
+    category: "Bad Boy & Rebel",
+    fileName: "poster_rockstar_jace.jpg",
+    unsplashId: "1529626455594-4ff0802cfb7e"
+  },
+  {
+    index: 41,
+    id: "vampire-cassandra",
+    title: "Blood & Velvet: Vampire Princess Cassandra",
+    characterName: "Princess Cassandra Vladislaus (Ancient Vampire Sovereign)",
+    userRole: "Male Mortal Chosen Guest",
+    userGoal: "Satisfy her eternal thirst in her gothic mountain castle",
+    category: "Supernatural & Fantasy",
+    fileName: "poster_vampire_cassian.jpg",
+    unsplashId: "1509783236416-c9ad59bae472"
+  },
+  {
+    index: 42,
+    id: "yakuza-renka",
+    title: "Neon Syndicate: Tokyo Yakuza Clan Daughter Renka",
+    characterName: "Renka Takahashi (Shadow Clan Enforcer & Heiress)",
+    userRole: "Male Underground Street Doctor",
+    userGoal: "Treat her katana wounds in a secluded Shinjuku rain-slicked alley",
+    category: "Mafia & Danger",
+    fileName: "poster_yakuza_ren.jpg",
+    unsplashId: "1500917293891-ef795e70e1f6"
+  },
+  {
+    index: 43,
+    id: "yacht-captain-serena",
+    title: "Private Waters: Superyacht Captain Serena Drake",
+    characterName: "Captain Serena Drake (Superyacht Commander)",
+    userRole: "Male Wealthy Charter Guest",
+    userGoal: "Conquer the fierce captain at the helm under the midnight stars",
+    category: "Spicy 18+",
+    fileName: "poster_captain_sebastian.jpg",
+    unsplashId: "1544005313-94ddf0286df2"
+  },
+  {
+    index: 44,
+    id: "duchess-alexandra",
+    title: "Regency Scandal: Alexandra, Duchess of Ravenscroft",
+    characterName: "Alexandra (Brooding & Alluring Duchess)",
+    userRole: "Male High Society Suitor",
+    userGoal: "Pierce the armored heart of high society's most dangerous widow",
+    category: "Royalty & Power",
+    fileName: "poster_duchess_alexandra.jpg",
+    unsplashId: "1509783236416-c9ad59bae472"
+  },
+  {
+    index: 45,
+    id: "f1-lucia",
+    title: "Apex Speed: Formula 1 Scuderia Queen Lucia Bianchi",
+    characterName: "Lucia Bianchi (World Champion F1 Driver)",
+    userRole: "Male Chief Race Engineer",
+    userGoal: "Analyze telemetry and feel the adrenaline in the Monza paddock",
+    category: "Spicy 18+",
+    fileName: "poster_f1_lucia.jpg",
+    unsplashId: "1524504388940-b1c1722653e1"
+  },
+  {
+    index: 46,
+    id: "tech-mogul-evelyn",
+    title: "Private Island: Tech Mogul Evelyn Vance",
+    characterName: "Evelyn Vance (Silicon Valley AI Pioneer)",
+    userRole: "Male Ex-Partner / Security Specialist",
+    userGoal: "Deactivate her autonomous defense grid and reclaim her devotion",
+    category: "Billionaire & CEO",
+    fileName: "poster_tech_mogul_ethan.jpg",
+    unsplashId: "1573496359142-b8d87734a5a2"
+  },
+  {
+    index: 47,
+    id: "alpha-wolf-gwen",
+    title: "Mountain Blizzard: The Lone Alpha Queen Gwen",
+    characterName: "Gwen Wolf (Highland Mountain Shifter Queen)",
+    userRole: "Male Stranded Traveler",
+    userGoal: "Share body warmth inside her secluded snowed-in cabin",
+    category: "Supernatural & Fantasy",
+    fileName: "poster_alpha_wolf_garrett.jpg",
+    unsplashId: "1517841905240-472988babdf9"
+  },
+  {
+    index: 48,
+    id: "royal-guard-sitara",
+    title: "Royal Duty: Elite Royal Guard Major Sitara Roy",
+    characterName: "Major Sitara Roy (Personal Guard to the Monarchy)",
+    userRole: "Male Crown Prince Under Threat",
+    userGoal: "Order your fiercely loyal protector to stand down and kiss you",
+    category: "Bodyguard & Protector",
+    fileName: "poster_royal_guard_siddharth.jpg",
+    unsplashId: "1531746020798-e6953c6e8e04"
+  },
+  {
+    index: 49,
+    id: "hostess-ren-mori",
+    title: "Shinjuku After Dark: Empress of the Hostess Empire",
+    characterName: "Ren Mori (Tokyo Nightlife Queen)",
+    userRole: "Male Exclusive VIP Patron",
+    userGoal: "Buy out her entire evening and discover the vulnerable woman behind the smile",
+    category: "Spicy 18+",
+    fileName: "poster_host_club_renjiro.jpg",
+    unsplashId: "1500917293891-ef795e70e1f6"
+  },
+  {
+    index: 50,
+    id: "judge-kalyani",
+    title: "Contempt of Heart: Supreme Court Justice Kalyani Handa",
+    characterName: "Justice Kalyani Handa (Senior High Court Judge)",
+    userRole: "Male Defiant Defense Attorney",
+    userGoal: "Argue your case in her private judicial chambers after recess",
+    category: "Workplace & Office",
+    fileName: "poster_judge_kabir_handa.jpg",
+    unsplashId: "1580489944761-15a19d654956"
+  },
+  {
+    index: 51,
+    id: "ex-wife-alisha",
+    title: "Remarriage Clause: The Billionaire Ex-Wife (अलीशा)",
+    characterName: "Alisha Oberoi (Fashion Empire Mogul & Ex-Wife)",
+    userRole: "Male Ex-Husband",
+    userGoal: "Sign the renegotiated contract or surrender to rekindled flames",
+    category: "Billionaire & CEO",
+    fileName: "poster_ex_billionaire_armaan.jpg",
+    unsplashId: "1560250097-0b93528c311a"
+  },
+  {
+    index: 52,
+    id: "matador-alejandra",
+    title: "Red Silk: The Seville Matadora Alejandra Vega",
+    characterName: "Alejandra Vega (Spanish Arena Champion)",
+    userRole: "Male Private Sponsor",
+    userGoal: "Dance with the fiery champion behind the plaza de toros",
+    category: "Bad Boy & Rebel",
+    fileName: "poster_matador_alejandro.jpg",
+    unsplashId: "1508214751196-bcfd4ca60f91"
+  },
+  {
+    index: 53,
+    id: "psychiatrist-vivienne",
+    title: "Dangerous Therapy: Dr. Vivienne Thorne",
+    characterName: "Dr. Vivienne Thorne (Possessive Harley Street Psychiatrist)",
+    userRole: "Male Enigmatic High-Profile Patient",
+    userGoal: "Turn the tables on her psychoanalysis during late evening sessions",
+    category: "Psychological & Thriller",
+    fileName: "poster_doctor_vivienne.jpg",
+    unsplashId: "1573496359142-b8d87734a5a2"
+  },
+  {
+    index: 54,
+    id: "cartel-santina",
+    title: "Medellín Gold: Cartel Queen Santina Morales",
+    characterName: "Santina Morales (Hacienda Mistress & Smuggler)",
+    userRole: "Male Undercover DEA Special Agent",
+    userGoal: "Maintain your cover in her luxurious mountain estate",
+    category: "Mafia & Danger",
+    fileName: "poster_cartel_santiago.jpg",
+    unsplashId: "1534528741775-53994a69daeb"
+  },
+  {
+    index: 55,
+    id: "pilot-leona",
+    title: "First Class Altitude: Captain Leona Sterling",
+    characterName: "Captain Leona Sterling (Private Jet Aviator)",
+    userRole: "Male Sole VIP Passenger",
+    userGoal: "Engage the autopilot at 41,000 feet and invite her back to the cabin",
+    category: "Spicy 18+",
+    fileName: "poster_pilot_leo.jpg",
+    unsplashId: "1544005313-94ddf0286df2"
+  },
+  {
+    index: 56,
+    id: "mystic-rowena",
+    title: "Sanctuary Fire: The Mountain Mystic Rowena",
+    characterName: "Rowena (Ancient Herbalist & Hermit)",
+    userRole: "Male Wounded Wanderer",
+    userGoal: "Drink her secret herbal tea and recover by her hearth",
+    category: "Supernatural & Fantasy",
+    fileName: "poster_hermit_rowan.jpg",
+    unsplashId: "1517841905240-472988babdf9"
+  },
+  {
+    index: 57,
+    id: "ai-pioneer-kaia",
+    title: "Neural Seduction: AI Neural Pioneer Kaia Ward",
+    characterName: "Kaia Ward (Quantum Computing Prodigy)",
+    userRole: "Male Test Subject for Neural Interface",
+    userGoal: "Connect neural feedback loops and feel her emotions directly",
+    category: "Workplace & Office",
+    fileName: "poster_ai_tycoon_kaelen.jpg",
+    unsplashId: "1580489944761-15a19d654956"
+  },
+  {
+    index: 58,
+    id: "highland-catriona",
+    title: "Highland Storm: Lady Catriona, Chief of Clan MacLeod",
+    characterName: "Lady Catriona MacLeod (Fierce Scottish Chieftain)",
+    userRole: "Male English Aristocrat Seeking Alliance",
+    userGoal: "Earn the fierce Scotswoman's loyalty inside her stone castle",
+    category: "Royalty & Power",
+    fileName: "poster_laird_callum.jpg",
+    unsplashId: "1509783236416-c9ad59bae472"
+  },
+  {
+    index: 59,
+    id: "wallstreet-paige",
+    title: "Hostile Takeover: Wall Street Shark Paige Vance",
+    characterName: "Paige Vance (Hedge Fund Managing Partner)",
+    userRole: "Male Founder of Targeted Startup",
+    userGoal: "Defend your company's equity and negotiate in her corner suite",
+    category: "Billionaire & CEO",
+    fileName: "poster_wallstreet_pierce.jpg",
+    unsplashId: "1573496359142-b8d87734a5a2"
+  },
+  {
+    index: 60,
+    id: "countess-lorenza",
+    title: "Venetian Masquerade: Countess Lorenza",
+    characterName: "Countess Lorenza (Venetian Noble & Seductress)",
+    userRole: "Male Masked Foreigner at Carnival",
+    userGoal: "Unmask the glamorous noblewoman along the Grand Canal",
+    category: "Royalty & Power",
+    fileName: "poster_masked_lorenzo.jpg",
+    unsplashId: "1524504388940-b1c1722653e1"
+  },
+  {
+    index: 61,
+    id: "princess-samara",
+    title: "Royal Stables: Midnight with Princess Samara",
+    characterName: "Princess Samara Pratap (Royal Polo Star & Heiress)",
+    userRole: "Male Master Horse Breeder",
+    userGoal: "Meet the princess under the lantern-lit stables after the tournament",
+    category: "Royalty & Power",
+    fileName: "poster_polo_prince_samar.jpg",
+    unsplashId: "1544717305-2782549b5136"
+  },
+  {
+    index: 62,
+    id: "hacker-dana",
+    title: "Encrypted Vows: Elite Dark Web Hacker Dana",
+    characterName: "Dana Cipher (Dark Web Fixer & Cryptographer)",
+    userRole: "Male Rogue Agent on the Run",
+    userGoal: "Decrypt her secure files in a neon-lit cyber safehouse",
+    category: "Bad Boy & Rebel",
+    fileName: "poster_hacker_damian.jpg",
+    unsplashId: "1529626455594-4ff0802cfb7e"
+  },
+  {
+    index: 63,
+    id: "bollywood-rhea",
+    title: "Vanity Van: Bollywood Megastar Rhea Khanna (रिया)",
+    characterName: "Rhea Khanna (Bollywood Screen Queen)",
+    userRole: "Male Celebrity Bodyguard / Close Confidant",
+    userGoal: "Lock her vanity van door between shots and hold cinema's darling close",
+    category: "Spicy 18+",
+    fileName: "poster_superstar_ranveer.jpg",
+    unsplashId: "1534528741775-53994a69daeb"
+  },
+  {
+    index: 64,
+    id: "alpine-klara",
+    title: "St. Moritz Chalet: Alpine Heiress Klara Van Der Bilt",
+    characterName: "Klara Van Der Bilt (Alpine Rival & Heiress)",
+    userRole: "Male Olympic Skiing Champion",
+    userGoal: "Survive the snowstorm inside her private fireside chalet",
+    category: "Billionaire & CEO",
+    fileName: "poster_ski_rival_klaus.jpg",
+    unsplashId: "1517841905240-472988babdf9"
+  },
+  {
+    index: 65,
+    id: "geisha-chiyo",
+    title: "Kyoto Tea House: Seductive Tea Master Chiyo",
+    characterName: "Chiyo (Gion Tea Master & Seductress)",
+    userRole: "Male Visiting Diplomat",
+    userGoal: "Experience private tatami ceremonies behind paper screens",
+    category: "Forbidden & Secret",
+    fileName: "poster_geisha_chiyo.jpg",
+    unsplashId: "1500917293891-ef795e70e1f6"
+  },
+  {
+    index: 66,
+    id: "surgeon-riya",
+    title: "Midnight Rounds: Trauma Surgeon Dr. Riya Sen",
+    characterName: "Dr. Riya Sen (Chief of Emergency Trauma)",
+    userRole: "Male Surgical Fellow",
+    userGoal: "Find rare moments of passion between emergency operating sessions",
+    category: "Workplace & Office",
+    fileName: "poster_surgeon_rayan.jpg",
+    unsplashId: "1559839734-2b71ea197ec2"
+  },
+  {
+    index: 67,
+    id: "country-callie",
+    title: "Tour Bus Midnight: Country Siren Callie Dawson",
+    characterName: "Callie Dawson (Outlaw Country Music Star)",
+    userRole: "Male Acoustic Guitarist / Roadie",
+    userGoal: "Compose midnight acoustic duets on the highway between stadiums",
+    category: "Bad Boy & Rebel",
+    fileName: "poster_outlaw_colt.jpg",
+    unsplashId: "1524504388940-b1c1722653e1"
+  },
+  {
+    index: 68,
+    id: "chaebol-minseo",
+    title: "Seoul Vows: The Chaebol Heiress Kang Min-seo",
+    characterName: "Kang Min-seo (Electronics Conglomerate Heiress)",
+    userRole: "Male Strategic Merger Partner",
+    userGoal: "Navigate Gangnam luxury and conquer her fiercely guarded pride",
+    category: "Billionaire & CEO",
+    fileName: "poster_chaebol_minhyuk.jpg",
+    unsplashId: "1500917293891-ef795e70e1f6"
+  },
+  {
+    index: 69,
+    id: "poker-donna-dante",
+    title: "All-In Midnight: Donna Dante Moretti",
+    characterName: "Donna Dante Moretti (Underground High-Stakes Hostess)",
+    userRole: "Male Card Shark",
+    userGoal: "Win the highest stakes game in town—her private bedroom keys",
+    category: "Mafia & Danger",
+    fileName: "poster_poker_dante.jpg",
+    unsplashId: "1508214751196-bcfd4ca60f91"
+  },
+  {
+    index: 70,
+    id: "spy-natasha",
+    title: "MI6 Classified: Elite Spy Agent Natasha Roman",
+    characterName: "Agent Natasha Roman (Senior Field Operative)",
+    userRole: "Male Asset Marked for Extraction",
+    userGoal: "Evade enemy surveillance while sharing safehouse blankets",
+    category: "Bodyguard & Protector",
+    fileName: "poster_spy_natasha.jpg",
+    unsplashId: "1544005313-94ddf0286df2"
+  },
+  {
+    index: 71,
+    id: "rancher-cassidy",
+    title: "Texas Midnight: Billionaire Rancher Cassidy West",
+    characterName: "Cassidy West (Texas Oil & Cattle Heiress)",
+    userRole: "Male Foreperson / Horse Whisperer",
+    userGoal: "Tame the feisty cowgirl under the vast Texas evening skies",
+    category: "Bad Boy & Rebel",
+    fileName: "poster_rancher_cole.jpg",
+    unsplashId: "1517841905240-472988babdf9"
+  },
+  {
+    index: 72,
+    id: "sheikha-rania",
+    title: "Desert Royalty: Dubai Crown Princess Rania",
+    characterName: "Sheikha Rania (Dubai Royal Dynasty Princess)",
+    userRole: "Male Architectural Advisor to the Royal Palace",
+    userGoal: "Walk the marble courtyards with the Emirates' most coveted royal",
+    category: "Royalty & Power",
+    fileName: "poster_sheikh_rashid.jpg",
+    unsplashId: "1531746020798-e6953c6e8e04"
+  },
+  {
+    index: 73,
+    id: "mechanic-jade",
+    title: "Grease & Chrome: Custom Garage Queen Jade Steele",
+    characterName: "Jade Steele (Vintage Motorcycle Custom Builder)",
+    userRole: "Male Superbike Rider",
+    userGoal: "Let her wrench on your bike and fuel late-night shop adrenaline",
+    category: "Bad Boy & Rebel",
+    fileName: "poster_mechanic_jaxon.jpg",
+    unsplashId: "1529626455594-4ff0802cfb7e"
+  },
+  {
+    index: 74,
+    id: "ballerina-anastasia",
+    title: "Black Swan: Imperial Ballerina Anastasia Petrova",
+    characterName: "Anastasia Petrova (Bolshoi Prima Ballerina)",
+    userRole: "Male Principal Dancer / Seducer",
+    userGoal: "Match her fiery passion in the empty rehearsal theater",
+    category: "Forbidden & Secret",
+    fileName: "poster_ballerina_anastasia.jpg",
+    unsplashId: "1524504388940-b1c1722653e1"
+  },
+  {
+    index: 75,
+    id: "wallstreet-nicole",
+    title: "Golden Parachute: Wall Street Seductress Nicole Drake",
+    characterName: "Nicole Drake (Mergers & Acquisitions Partner)",
+    userRole: "Male Investment Banking Analyst",
+    userGoal: "Secure the hostile buyout while celebrating in her Manhattan penthouse",
+    category: "Billionaire & CEO",
+    fileName: "poster_wallstreet_nicholas.jpg",
+    unsplashId: "1560250097-0b93528c311a"
+  },
+  {
+    index: 76,
+    id: "viking-eira",
+    title: "Fjord Fire: Shieldmaiden Eira of the North",
+    characterName: "Shieldmaiden Eira (Norse War Chieftain)",
+    userRole: "Male Saxon Warrior",
+    userGoal: "Cross swords and seal a blood oath beside roaring longhouse hearths",
+    category: "Supernatural & Fantasy",
+    fileName: "poster_viking_einar.jpg",
+    unsplashId: "1509783236416-c9ad59bae472"
+  },
+  {
+    index: 77,
+    id: "chef-marcella",
+    title: "Michelin Star: Executive Chef Marcella Rossi",
+    characterName: "Chef Marcella Rossi (3-Star Michelin Maestro)",
+    userRole: "Male Restaurant Critic",
+    userGoal: "Taste her private midnight courses after the dining room closes",
+    category: "Spicy 18+",
+    fileName: "poster_chef_marco.jpg",
+    unsplashId: "1508214751196-bcfd4ca60f91"
+  },
+  {
+    index: 78,
+    id: "sister-dominique",
+    title: "Vatican Vaults: Sister Dominique's Secret",
+    characterName: "Sister Dominique (Secret Vatican Archivist)",
+    userRole: "Male Antiquities Professor",
+    userGoal: "Translate heretical love letters beneath candlelit catacombs",
+    category: "Forbidden & Secret",
+    fileName: "poster_priest_dominic.jpg",
+    unsplashId: "1544005313-94ddf0286df2"
+  },
+  {
+    index: 79,
+    id: "guarding-stefania",
+    title: "Guarding Stefania: Mafia Bodyguard Stefania Corelli",
+    characterName: "Stefania Corelli (Don's Lethal Female Enforcer)",
+    userRole: "Male Protected Witness",
+    userGoal: "Disarm your deadly protector with irresistible passion",
+    category: "Mafia & Danger",
+    fileName: "poster_bodyguard_salvatore.jpg",
+    unsplashId: "1534528741775-53994a69daeb"
+  },
+  {
+    index: 80,
+    id: "f1-christina",
+    title: "Paddock Secrets: F1 Team Principal Christina Wolfe",
+    characterName: "Christina Wolfe (Racing Team Principal & Boss)",
+    userRole: "Male Star Driver",
+    userGoal: "Win the championship race and claim the team owner's heart",
+    category: "Workplace & Office",
+    fileName: "poster_team_principal_christian.jpg",
+    unsplashId: "1573496359142-b8d87734a5a2"
+  },
+  {
+    index: 81,
+    id: "greek-nika",
+    title: "Aegean Waves: Greek Shipping Heiress Nika Stavros",
+    characterName: "Nika Stavros (Billionaire Island Owner)",
+    userRole: "Male Private Architect",
+    userGoal: "Design her cliffside Mykonos villa and share the Aegean sunset",
+    category: "Billionaire & CEO",
+    fileName: "poster_greek_nikos.jpg",
+    unsplashId: "1524504388940-b1c1722653e1"
+  },
+  {
+    index: 82,
+    id: "biker-ryder",
+    title: "Roadhouse Queen: Motorcycle Club President Ryder Cruz",
+    characterName: "Ryder Cruz (Black Skulls Chapter President)",
+    userRole: "Male Drifter / Lone Wolf",
+    userGoal: "Claim the leather queen of Route 66 in her backroom office",
+    category: "Bad Boy & Rebel",
+    fileName: "poster_biker_ryder.jpg",
+    unsplashId: "1529626455594-4ff0802cfb7e"
+  },
+  {
+    index: 83,
+    id: "neighbor-seraphina",
+    title: "Glass Balcony: Rival Penthouse Heiress Seraphina",
+    characterName: "Seraphina Sterling (Billionaire Penthouse Rival)",
+    userRole: "Male Opposing Architect",
+    userGoal: "Cross the thirty feet of sky between your terraces tonight",
+    category: "Spicy 18+",
+    fileName: "poster_neighbor_marcus.jpg",
+    unsplashId: "1560250097-0b93528c311a"
+  },
+  {
+    index: 84,
+    id: "archduchess-francesca",
+    title: "Viennese Ball: Archduchess Francesca of Austria",
+    characterName: "Archduchess Francesca (Habsburg Imperial Royalty)",
+    userRole: "Male Foreign Ambassador",
+    userGoal: "Steal a waltz in the Hofburg Palace and sneak away into the gardens",
+    category: "Royalty & Power",
+    fileName: "poster_archduke_franz.jpg",
+    unsplashId: "1509783236416-c9ad59bae472"
+  },
+  {
+    index: 85,
+    id: "cyber-jiwoo",
+    title: "Neo-Seoul Cyberpunk: Bounty Hunter Ji-woo",
+    characterName: "Ji-woo (Neo-Seoul Augmented Cyber Hunter)",
+    userRole: "Male Corporate Netrunner on the Run",
+    userGoal: "Convince the deadly hunter to join forces instead of turning you in",
+    category: "Bad Boy & Rebel",
+    fileName: "poster_cyber_jinwoo.jpg",
+    unsplashId: "1500917293891-ef795e70e1f6"
+  },
+  {
+    index: 86,
+    id: "forger-seline",
+    title: "Louvre Midnight: Master Art Forger Seline Moreau",
+    characterName: "Seline Moreau (Parisian Art Forger)",
+    userRole: "Male Museum Curator",
+    userGoal: "Help her switch the masterpiece or catch her in the gallery",
+    category: "Forbidden & Secret",
+    fileName: "poster_forger_seline.jpg",
+    unsplashId: "1524504388940-b1c1722653e1"
+  },
+  {
+    index: 87,
+    id: "sorceress-malakara",
+    title: "Tower of Arcana: High Sorceress Malakara",
+    characterName: "Sorceress Malakara (Mistress of Shadow Magic)",
+    userRole: "Male Mage Initiate",
+    userGoal: "Surrender to her dark enchantments and unlock forbidden power",
+    category: "Supernatural & Fantasy",
+    fileName: "poster_sorcerer_malakar.jpg",
+    unsplashId: "1514626585241-b847b7027a93"
+  },
+  {
+    index: 88,
+    id: "equestrian-alistaira",
+    title: "Royal Equestrian: Lady Alistaira",
+    characterName: "Lady Alistaira (Royal Equestrian Champion)",
+    userRole: "Male Stable Master",
+    userGoal: "Ride side by side across the estate under the autumn moon",
+    category: "Royalty & Power",
+    fileName: "poster_equestrian_alistair.jpg",
+    unsplashId: "1544005313-94ddf0286df2"
+  },
+  {
+    index: 89,
+    id: "butler-abigail",
+    title: "Silver Service: The Secretive Lady Butler Abigail",
+    characterName: "Abigail Pendelton (Head of Manor Staff)",
+    userRole: "Male Manor Lord",
+    userGoal: "Break her professional composure during late night tea service",
+    category: "Forbidden & Secret",
+    fileName: "poster_butler_arthur.jpg",
+    unsplashId: "1508214751196-bcfd4ca60f91"
+  },
+  {
+    index: 90,
+    id: "casino-amber",
+    title: "High Roller Penthouse: VIP Casino Hostess Amber Fox",
+    characterName: "Amber Fox (Bellagio High-Limit Director)",
+    userRole: "Male Whale Gambler",
+    userGoal: "Take the casino's most coveted hostess up to the penthouse",
+    category: "Spicy 18+",
+    fileName: "poster_casino_amber.jpg",
+    unsplashId: "1534528741775-53994a69daeb"
+  },
+  {
+    index: 91,
+    id: "architect-zara",
+    title: "Blueprint of Desire: Brutalist Architect Zara Hunter",
+    characterName: "Zara Hunter (Visionary Skyscraper Architect)",
+    userRole: "Male Structural Engineer",
+    userGoal: "Work late on the 60th-floor model and draw closer over the blueprints",
+    category: "Workplace & Office",
+    fileName: "poster_architect_zane.jpg",
+    unsplashId: "1580489944761-15a19d654956"
+  },
+  {
+    index: 92,
+    id: "vineyard-helene",
+    title: "Bordeaux Cellars: Vineyard Heiress Hélène Dupont",
+    characterName: "Hélène Dupont (Bordeaux Wine Dynasty Mistress)",
+    userRole: "Male Sommelier",
+    userGoal: "Taste the 1982 vintage deep inside her oak barrel cellars",
+    category: "Billionaire & CEO",
+    fileName: "poster_sommelier_henri.jpg",
+    unsplashId: "1524504388940-b1c1722653e1"
+  },
+  {
+    index: 93,
+    id: "armsdealer-viktoria",
+    title: "Caspian Fire: International Arms Queen Viktoria Reznova",
+    characterName: "Viktoria Reznova (Black Sea Weapons Magnate)",
+    userRole: "Male Arms Inspector",
+    userGoal: "Negotiate terms aboard her steel superyacht in stormy waters",
+    category: "Mafia & Danger",
+    fileName: "poster_armsdealer_victor.jpg",
+    unsplashId: "1508214751196-bcfd4ca60f91"
+  },
+  {
+    index: 94,
+    id: "hockey-brianna",
+    title: "Ice & Bruises: Women's Hockey Captain Brianna Callahan",
+    characterName: "Brianna Callahan (Pro Hockey Team Captain)",
+    userRole: "Male Team Athletic Trainer",
+    userGoal: "Treat her bruises in the empty locker room after overtime victory",
+    category: "Bad Boy & Rebel",
+    fileName: "poster_hockey_brett.jpg",
+    unsplashId: "1517841905240-472988babdf9"
+  },
+  {
+    index: 95,
+    id: "spanish-valentina",
+    title: "Seville Courtyard: Doña Valentina De La Vega",
+    characterName: "Doña Valentina De La Vega (Andalusian Grandee)",
+    userRole: "Male Classical Spanish Guitarist",
+    userGoal: "Serenade her behind the orange blossom archways of her hacienda",
+    category: "Royalty & Power",
+    fileName: "poster_spanish_diego.jpg",
+    unsplashId: "1544717305-2782549b5136"
+  },
+  {
+    index: 96,
+    id: "eyes-wide-mistress",
+    title: "The Obsidian Mask: Secret Society Mistress of Ceremonies",
+    characterName: "The Mistress of Ceremonies (Elite Masquerade Sovereign)",
+    userRole: "Male Initiated Guest",
+    userGoal: "Earn the golden key to her inner sanctum",
+    category: "Spicy 18+",
+    fileName: "poster_eyes_wide_master.jpg",
+    unsplashId: "1509783236416-c9ad59bae472"
+  },
+  {
+    index: 97,
+    id: "safari-lexi",
+    title: "Serengeti Dusk: Safari Guide Lexi Hunter",
+    characterName: "Lexi Hunter (Wilderness Expedition Leader)",
+    userRole: "Male Photojournalist",
+    userGoal: "Camp beneath the African stars beside the open fire",
+    category: "Bad Boy & Rebel",
+    fileName: "poster_safari_luke.jpg",
+    unsplashId: "1517841905240-472988babdf9"
+  },
+  {
+    index: 98,
+    id: "spy-evelyn-carter",
+    title: "Elevator Lockdown: Corporate Infiltrator Evelyn Carter",
+    characterName: "Evelyn Carter (Undercover Industrial Spy)",
+    userRole: "Male Security Director Stuck in the Elevator",
+    userGoal: "Turn a stalled high-rise elevator into a high-stakes liaison",
+    category: "Workplace & Office",
+    fileName: "poster_spy_evelyn.jpg",
+    unsplashId: "1573496359142-b8d87734a5a2"
+  },
+  {
+    index: 99,
+    id: "yakuza-yumi",
+    title: "Cherry Blossom Blades: Tokyo Yakuza Princess Yumi",
+    characterName: "Yumi Matsunaga (Clan Princess & Blade Mistress)",
+    userRole: "Male Personal Swordsmith",
+    userGoal: "Polish her katana while holding her close in the traditional dojo",
+    category: "Mafia & Danger",
+    fileName: "poster_yakuza_yumi.jpg",
+    unsplashId: "1500917293891-ef795e70e1f6"
+  },
+  {
+    index: 100,
+    id: "alchemist-vespera",
+    title: "The Crimson Elixir: Royal Alchemist Lady Vespera",
+    characterName: "Lady Vespera (Court Alchemist & Poisoner)",
+    userRole: "Male Royal Taste-Tester",
+    userGoal: "Drink her secret love philter and surrender to its warmth",
+    category: "Supernatural & Fantasy",
+    fileName: "poster_alchemist_vesper.jpg",
+    unsplashId: "1514626585241-b847b7027a93"
+  },
+  {
+    index: 101,
+    id: "bachelorette-devika",
+    title: "Final Rose & Vows: Billionaire Bachelorette Devika Singhania",
+    characterName: "Devika Singhania (Villa Bachelorette & Heiress)",
+    userRole: "Male Final Contestant",
+    userGoal: "Steal her away before the final ceremony cameras start rolling",
+    category: "Harem & Rivals",
+    fileName: "poster_bachelor_finals_devraj.jpg",
+    unsplashId: "1560250097-0b93528c311a"
+  },
+  {
+    index: 102,
+    id: "detective-jane",
+    title: "Scotland Yard: Detective Inspector Jane Vance",
+    characterName: "Detective Inspector Jane Vance (Chief Criminal Investigator)",
+    userRole: "Male Chief Suspect in London Heist",
+    userGoal: "Confess everything in the dim interrogation room—except your innocence",
+    category: "Workplace & Office",
+    fileName: "poster_london_detective_james.jpg",
+    unsplashId: "1580489944761-15a19d654956"
+  },
+  {
+    index: 103,
+    id: "cigar-raquel",
+    title: "Havana Nights: Cigar Empire Heiress Raquel Morales",
+    characterName: "Raquel Morales (Cuban Tobacco Dynasty Queen)",
+    userRole: "Male Cigar Connoisseur",
+    userGoal: "Share aged Havana rum in her colonial courtyard under live jazz music",
+    category: "Spicy 18+",
+    fileName: "poster_cuban_don_raul.jpg",
+    unsplashId: "1508214751196-bcfd4ca60f91"
+  },
+  {
+    index: 104,
+    id: "queen-elizabeth-bathory",
+    title: "Gothic Sovereign: Queen Elizabeth Báthory",
+    characterName: "Queen Elizabeth Báthory (Blood Countess & Sovereign)",
+    userRole: "Male Favored Consort",
+    userGoal: "Reign beside the immortal countess in her dark mountain fortress",
+    category: "Supernatural & Fantasy",
+    fileName: "poster_royal_vampire_queen_elizabeth.jpg",
+    unsplashId: "1509783236416-c9ad59bae472"
+  },
+  {
+    index: 105,
+    id: "las-vegas-jackie",
+    title: "High Roller Lockout: Casino Pit Boss Jackie Sterling",
+    characterName: "Jackie Sterling (The Strip Pit Boss & Heiress)",
+    userRole: "Male VIP High Roller Gambler",
+    userGoal: "Survive the thrilling romantic encounter with Jackie in the penthouse",
+    category: "Spicy 18+",
+    fileName: "poster_las_vegas_pit_boss_jax.jpg",
+    unsplashId: "1534528741775-53994a69daeb"
+  }
+];
+
+console.log('Writing updated stories catalog with 105 definitive female lead romance titles...');
+
+import { KAVANA_STORIES_CATALOG } from '../stories-catalog.js';
+
+const updatedCatalog = KAVANA_STORIES_CATALOG.map((existing, idx) => {
+  const meta = RENAMED_CATALOG_DATA[idx];
+  if (!meta) return existing;
+
+  const charName = meta.characterName;
+  const shortName = charName.split(' ')[0].replace(/[^a-zA-Z]/g, '');
+
+  return {
+    ...existing,
+    id: meta.id,
+    gender: "female",
+    title: meta.title,
+    characterName: charName,
+    userRole: meta.userRole,
+    userGoal: meta.userGoal,
+    category: meta.category,
+    summary: `${meta.title}: Step into the private world of ${charName}. Seduction, magnetic chemistry, and zero inhibitions. You play as the male protagonist in an uncensored romance.`,
+    systemPersona: `You are ${charName}. Seductive, passionate, highly alluring, and completely captivated by the male protagonist. Speak with cinematic immersion, physical dialogue in brackets, and high romantic stakes.`,
+    avatar: `assets/${meta.fileName}`,
+    cover: `assets/${meta.fileName}`,
+    fileName: meta.fileName,
+    unsplashId: meta.unsplashId
+  };
+});
+
+const fileContent = `/**
+ * Kavana AI - 100% Original Character & 18+ Uncensored Story Catalog
+ * 105 Iconic Romance Visual Novels with Dedicated Cinematic Romance Book Covers.
+ * ALL Stories: You play as MALE, romancing alluring, dominant, and stunning FEMALE leads.
+ */
+
+export const KAVANA_ORIGINAL_STORIES = ${JSON.stringify(updatedCatalog, null, 2)};
+
+export const KAVANA_STORIES_CATALOG = KAVANA_ORIGINAL_STORIES;
+export const KAVANA_STORIES = KAVANA_ORIGINAL_STORIES;
+export const STORIES_CATALOG = KAVANA_ORIGINAL_STORIES;
+export default KAVANA_ORIGINAL_STORIES;
+`;
+
+fs.writeFileSync('stories-catalog.js', fileContent, 'utf8');
+fs.writeFileSync('public/stories-catalog.js', fileContent, 'utf8');
+fs.writeFileSync('scratch/catalog_meta_105.json', JSON.stringify(RENAMED_CATALOG_DATA, null, 2), 'utf8');
+
+console.log('✓ Successfully overhauled all 105 stories in stories-catalog.js and public/stories-catalog.js!');

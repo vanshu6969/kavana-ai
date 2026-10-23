@@ -1,0 +1,632 @@
+[
+  {
+    "fileName": "love_villa.jpg",
+    "title": "Love Villa: 5 Jealous Rivals (लव विला)",
+    "character": "The 5 Villa Sirens",
+    "category": "Harem & Rivals"
+  },
+  {
+    "fileName": "poster_aryan_ceo.jpg",
+    "title": "The CEO's Obsession: Resignation Denied",
+    "character": "Aryan Singhania",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_kabir_mafia.jpg",
+    "title": "Kabir Oberoi: The Ruthless Desi Don (दिल दा मामला)",
+    "character": "Kabir Oberoi",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_roommates.jpg",
+    "title": "Rival Roommates: Rain & Blackout (कमरे का सन्नाटा)",
+    "character": "Maya & Chloe",
+    "category": "College & Roommates"
+  },
+  {
+    "fileName": "poster_stepbrother_veer.jpg",
+    "title": "The Step-Brother's Midnight Secret (सौतेला भाई)",
+    "character": "Veer Malhotra",
+    "category": "Forbidden Desires"
+  },
+  {
+    "fileName": "poster_bodyguard_vikram.jpg",
+    "title": "The Bodyguard's Vow: Major Vikram",
+    "character": "Major Vikram Rathore",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_professor_elena.jpg",
+    "title": "Forbidden Lectures: Professor Elena",
+    "character": "Dr. Elena Vance",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_badboy_zayd.jpg",
+    "title": "The Bad Boy's Bet: Midnight Garage",
+    "character": "Zayd Khan",
+    "category": "College & Roommates"
+  },
+  {
+    "fileName": "poster_ex_aarav.jpg",
+    "title": "The Ex-Fiancé's Ambush: Wedding Night",
+    "character": "Aarav Mehra",
+    "category": "Forbidden Desires"
+  },
+  {
+    "fileName": "poster_neighbor_priya.jpg",
+    "title": "Next Door Desires: Seductive Neighbor",
+    "character": "Priya Sharma",
+    "category": "Desi Romance"
+  },
+  {
+    "fileName": "poster_thakur_veer.jpg",
+    "title": "Thakur Veer: Royal Rajput Haveli",
+    "character": "Veer Pratap Singh",
+    "category": "Desi Romance"
+  },
+  {
+    "fileName": "poster_feudal_murtaza.jpg",
+    "title": "Arranged to the Feudal Lord: The Red Haveli (तेरे बिन)",
+    "character": "Murtaza Khan",
+    "category": "Desi Romance"
+  },
+  {
+    "fileName": "poster_rebound_samrat.jpg",
+    "title": "The Rebound: Rain & Slow-Burn",
+    "character": "Samrat",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_prince_lucian.jpg",
+    "title": "Prince Lucian: Vampire Lord Masquerade",
+    "character": "Prince Lucian",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_demon_nyx.jpg",
+    "title": "Nyx: The Obsidian Demon Empress",
+    "character": "Empress Nyx",
+    "category": "Dark Fantasy"
+  },
+  {
+    "fileName": "poster_yandere_ayumi.jpg",
+    "title": "The Jealous Yandere: Cherry Blossom Hall",
+    "character": "Ayumi Sato",
+    "category": "Dark Fantasy"
+  },
+  {
+    "fileName": "poster_valeria.jpg",
+    "title": "Valeria Vane: The Dark Enchantress",
+    "character": "Valeria Vane",
+    "category": "Dark Fantasy"
+  },
+  {
+    "fileName": "poster_gym_rohan.jpg",
+    "title": "Private Session: The Gym Trainer",
+    "character": "Rohan Mehra",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_flight_zoya.jpg",
+    "title": "First Class Secrets: The Flight Attendant",
+    "character": "Zoya Sen",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_doctor_sameer.jpg",
+    "title": "The Night Shift: Possessive Chief Surgeon",
+    "character": "Dr. Sameer Kapoor",
+    "category": "Forbidden Desires"
+  },
+  {
+    "fileName": "poster_bestfriend_karan.jpg",
+    "title": "Roommates to Lovers: Childhood Best Friend",
+    "character": "Karan Verma",
+    "category": "College & Roommates"
+  },
+  {
+    "fileName": "poster_punjab_simran.jpg",
+    "title": "Punjab Passion: Midnight at the Haveli",
+    "character": "Simran Kaur",
+    "category": "Desi Romance"
+  },
+  {
+    "fileName": "poster_contract_bride.jpg",
+    "title": "The Contract Bride: Locked Penthouse",
+    "character": "Reyansh Malhotra",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_goa_dj.jpg",
+    "title": "Goa Afterhours: The VIP Beach Cabana",
+    "character": "Alia Roy",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_bodyguard_aditya.jpg",
+    "title": "Strict Protocol: Captain Aditya Mehra",
+    "character": "Captain Aditya Mehra",
+    "category": "Forbidden Desires"
+  },
+  {
+    "fileName": "poster_prof_dev.jpg",
+    "title": "After Class: The Professor's Secret Office",
+    "character": "Professor Dev Kashyap",
+    "category": "Forbidden Desires"
+  },
+  {
+    "fileName": "poster_royal_veer.jpg",
+    "title": "Royal Blood: Midnight in Jaipur Palace",
+    "character": "Yuvraj Veer Pratap Singh",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_mma_arjun.jpg",
+    "title": "Cage & Clinch: The Underground MMA Trainer",
+    "character": "Arjun Vardhan",
+    "category": "College & Roommates"
+  },
+  {
+    "fileName": "poster_french_camille.jpg",
+    "title": "Monaco Sunset: The French Riviera Heiress",
+    "character": "Camille Laurent",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_mafia_zara.jpg",
+    "title": "Dubai Vice: The Undercover Syndicate Queen",
+    "character": "Zara Sheikh",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_lawyer_tara.jpg",
+    "title": "Overnight Deposition: The Rival Law Partner",
+    "character": "Advocate Tara Singhal",
+    "category": "Forbidden Desires"
+  },
+  {
+    "fileName": "poster_tattoo_zayn.jpg",
+    "title": "Ink & Skin: The Midnight Tattoo Parlor",
+    "character": "Zayn Malik",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_trapped_ceo.jpg",
+    "title": "Trapped by the Cold CEO: Penthouse Lockdown",
+    "character": "Adrian Sterling",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_playboy_baron.jpg",
+    "title": "The Playboy Baron: Game of Seduction",
+    "character": "Baron Julian von Kensington",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_desert_sheikh.jpg",
+    "title": "Oasis Vows: The Desert Sheikh's Captive",
+    "character": "Sheikh Tariq Al-Mansoor",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_sicilian_don.jpg",
+    "title": "Cosa Nostra: The Sicilian Don's Bride",
+    "character": "Don Matteo Rossi",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_broadway_roxie.jpg",
+    "title": "Encore in Dressing Room 4: Roxie",
+    "character": "Roxie Delacroix",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_billionaire_damian.jpg",
+    "title": "Clause 9: The Billionaire's Secret Vow",
+    "character": "Damian Cross",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_stepfathers_friend.jpg",
+    "title": "Off Limits: The Family's Best Friend",
+    "character": "Neil Kapoor",
+    "category": "Forbidden Desires"
+  },
+  {
+    "fileName": "poster_rockstar_jace.jpg",
+    "title": "Backstage Pass: His Midnight Encore",
+    "character": "Jace Wilder",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_vampire_cassian.jpg",
+    "title": "Blood & Velvet: The Immortal Prince",
+    "character": "Prince Cassian Vladislaus",
+    "category": "Dark Fantasy & Magic"
+  },
+  {
+    "fileName": "poster_yakuza_ren.jpg",
+    "title": "Neon Syndicate: Tokyo Yakuza Enforcer",
+    "character": "Ren Takahashi",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_captain_sebastian.jpg",
+    "title": "Private Waters: The Yacht Captain's Terms",
+    "character": "Captain Sebastian Drake",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_duke_alexander.jpg",
+    "title": "Regency Scandal: The Brooding Duke",
+    "character": "Alexander, Duke of Ravenscroft",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_f1_lucas.jpg",
+    "title": "Apex Speed: The Formula 1 Rival",
+    "character": "Lucas Bianchi",
+    "category": "College & Roommates"
+  },
+  {
+    "fileName": "poster_tech_mogul_ethan.jpg",
+    "title": "Private Island: The Tech Mogul",
+    "character": "Ethan Vance",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_alpha_wolf_garrett.jpg",
+    "title": "Mountain Blizzard: The Lone Alpha",
+    "character": "Garrett Wolf",
+    "category": "Forbidden Desires"
+  },
+  {
+    "fileName": "poster_royal_guard_siddharth.jpg",
+    "title": "Royal Duty: The Princess's Protector",
+    "character": "Major Siddharth Roy",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_host_club_renjiro.jpg",
+    "title": "Shinjuku Midnight: The Host King",
+    "character": "Renjiro Mori",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_judge_kabir_handa.jpg",
+    "title": "Contempt of Heart: The High Judge",
+    "character": "Justice Kabir Handa",
+    "category": "Forbidden Desires"
+  },
+  {
+    "fileName": "poster_ex_billionaire_armaan.jpg",
+    "title": "Remarriage Clause: The Ex-Husband",
+    "character": "Armaan Oberoi",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_matador_alejandro.jpg",
+    "title": "Red Silk: The Seville Matador",
+    "character": "Alejandro Vega",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_doctor_vivienne.jpg",
+    "title": "Obsessive Analysis: Dr. Vivienne",
+    "character": "Dr. Vivienne Thorne",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_cartel_santiago.jpg",
+    "title": "Medellín Gold: The Syndicate Don",
+    "character": "Santiago Morales",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_pilot_leo.jpg",
+    "title": "First Class Altitude: Captain Leo",
+    "character": "Captain Leo Sterling",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_hermit_rowan.jpg",
+    "title": "Sanctuary Fire: The Mountain Mystic",
+    "character": "Rowan",
+    "category": "Forbidden Desires"
+  },
+  {
+    "fileName": "poster_ai_tycoon_kaelen.jpg",
+    "title": "Neural Seduction: Kaelen Ward",
+    "character": "Kaelen Ward",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_laird_callum.jpg",
+    "title": "Highland Storm: The Scottish Laird",
+    "character": "Laird Callum MacLeod",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_wallstreet_pierce.jpg",
+    "title": "Hostile Takeover: Pierce Vance",
+    "character": "Pierce Vance",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_masked_lorenzo.jpg",
+    "title": "Carnival Masquerade: The Masked Count",
+    "character": "Count Lorenzo",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_polo_prince_samar.jpg",
+    "title": "Royal Stables: Midnight with Samar",
+    "character": "Prince Samar Pratap",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_hacker_damian.jpg",
+    "title": "Encrypted Vows: The Elite Hacker",
+    "character": "Damian Cipher",
+    "category": "College & Roommates"
+  },
+  {
+    "fileName": "poster_superstar_ranveer.jpg",
+    "title": "Vanity Van: The Bollywood Superstar",
+    "character": "Ranveer Khanna",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_ski_rival_klaus.jpg",
+    "title": "St. Moritz Lockout: Alpine Rivalry",
+    "character": "Klaus Van Der Bilt",
+    "category": "College & Roommates"
+  },
+  {
+    "fileName": "poster_geisha_chiyo.jpg",
+    "title": "Silk & Cherry Blossoms: Lady Chiyo",
+    "character": "Chiyo",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_surgeon_rayan.jpg",
+    "title": "Midnight Rounds: The Chief Surgeon",
+    "character": "Dr. Rayan Sen",
+    "category": "Forbidden Desires"
+  },
+  {
+    "fileName": "poster_outlaw_colt.jpg",
+    "title": "Midnight Tour Bus: Colt Dawson",
+    "character": "Colt Dawson",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_chaebol_minhyuk.jpg",
+    "title": "Seoul Vows: The Chaebol Contract",
+    "character": "Kang Min-hyuk",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_poker_dante.jpg",
+    "title": "All-In Midnight: Dante Moretti",
+    "character": "Dante Moretti",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_spy_natasha.jpg",
+    "title": "Embassy Shadows: Agent Natasha",
+    "character": "Agent Natasha Roman",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_rancher_cole.jpg",
+    "title": "Texas Midnight: Rancher Cole West",
+    "character": "Cole West",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_sheikh_rashid.jpg",
+    "title": "Golden Falcon: The Dubai Prince",
+    "character": "Sheikh Rashid",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_mechanic_jaxon.jpg",
+    "title": "Grease & Chrome: Jaxon Steele",
+    "character": "Jaxon Steele",
+    "category": "College & Roommates"
+  },
+  {
+    "fileName": "poster_ballerina_anastasia.jpg",
+    "title": "Black Swan: Anastasia Petrova",
+    "character": "Anastasia Petrova",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_wallstreet_nicholas.jpg",
+    "title": "Golden Parachute: Nicholas Drake",
+    "character": "Nicholas Drake",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_viking_einar.jpg",
+    "title": "Fjord Fire: The Viking Chieftain",
+    "character": "Jarl Einar",
+    "category": "Dark Fantasy & Magic"
+  },
+  {
+    "fileName": "poster_chef_marco.jpg",
+    "title": "Midnight Truffles: Chef Marco Rossi",
+    "character": "Chef Marco Rossi",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_priest_dominic.jpg",
+    "title": "Sacred Whispers: Father Dominic",
+    "character": "Father Dominic",
+    "category": "Forbidden Desires"
+  },
+  {
+    "fileName": "poster_bodyguard_salvatore.jpg",
+    "title": "Mafia Vows: Guarding Salvatore",
+    "character": "Salvatore Corelli",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_team_principal_christian.jpg",
+    "title": "Telemetry & Desire: Christian Wolfe",
+    "character": "Christian Wolfe",
+    "category": "College & Roommates"
+  },
+  {
+    "fileName": "poster_greek_nikos.jpg",
+    "title": "Aegean Waves: Nikos Stavros",
+    "character": "Nikos Stavros",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_biker_ryder.jpg",
+    "title": "Iron & Leather: Ryder Cruz",
+    "character": "Ryder Cruz",
+    "category": "College & Roommates"
+  },
+  {
+    "fileName": "poster_neighbor_marcus.jpg",
+    "title": "Glass Balcony: The Neighbor Tycoon",
+    "character": "Marcus Sterling",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_archduke_franz.jpg",
+    "title": "Viennese Waltz: Archduke Franz",
+    "character": "Archduke Franz",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_cyber_jinwoo.jpg",
+    "title": "Chrome Shadows: Jin-woo",
+    "character": "Jin-woo",
+    "category": "Dark Fantasy & Magic"
+  },
+  {
+    "fileName": "poster_forger_seline.jpg",
+    "title": "Louvre Midnight: Seline Moreau",
+    "character": "Seline Moreau",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_sorcerer_malakar.jpg",
+    "title": "Tower of Spells: Lord Malakar",
+    "character": "Lord Malakar",
+    "category": "Dark Fantasy & Magic"
+  },
+  {
+    "fileName": "poster_equestrian_alistair.jpg",
+    "title": "Royal Stride: Lord Alistair",
+    "character": "Lord Alistair",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_butler_arthur.jpg",
+    "title": "Silver Service: Arthur Pendelton",
+    "character": "Arthur Pendelton",
+    "category": "Forbidden Desires"
+  },
+  {
+    "fileName": "poster_casino_amber.jpg",
+    "title": "Sin City Suite: Amber Fox",
+    "character": "Amber Fox",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_architect_zane.jpg",
+    "title": "Blueprint of Desire: Zane Hunter",
+    "character": "Zane Hunter",
+    "category": "College & Roommates"
+  },
+  {
+    "fileName": "poster_sommelier_henri.jpg",
+    "title": "Bordeaux Cellar: Henri Dupont",
+    "character": "Henri Dupont",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_armsdealer_victor.jpg",
+    "title": "Caspian Fire: Victor Reznov",
+    "character": "Victor Reznov",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_hockey_brett.jpg",
+    "title": "Ice & Bruises: Brett Callahan",
+    "character": "Brett Callahan",
+    "category": "College & Roommates"
+  },
+  {
+    "fileName": "poster_spanish_diego.jpg",
+    "title": "Seville Courtyard: Don Diego",
+    "character": "Don Diego De La Vega",
+    "category": "Bad Boys & Royalty"
+  },
+  {
+    "fileName": "poster_eyes_wide_master.jpg",
+    "title": "The Obsidian Mask: Midnight Society",
+    "character": "The Master of Ceremonies",
+    "category": "Forbidden Desires"
+  },
+  {
+    "fileName": "poster_safari_luke.jpg",
+    "title": "Serengeti Dusk: Luke Hunter",
+    "character": "Luke Hunter",
+    "category": "College & Roommates"
+  },
+  {
+    "fileName": "poster_spy_evelyn.jpg",
+    "title": "Elevator Lockdown: Evelyn Carter",
+    "character": "Evelyn Carter",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_yakuza_yumi.jpg",
+    "title": "Cherry Blossom Blades: Yumi",
+    "character": "Yumi Matsunaga",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_alchemist_vesper.jpg",
+    "title": "The Crimson Elixir: Lord Vesper",
+    "character": "Lord Vesper",
+    "category": "Dark Fantasy & Magic"
+  },
+  {
+    "fileName": "poster_bachelor_finals_devraj.jpg",
+    "title": "Final Rose & Vows: Devraj Singhania",
+    "character": "Devraj Singhania",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_london_detective_james.jpg",
+    "title": "Scotland Yard: The Inspector's Interrogation",
+    "character": "Detective Inspector James Vance",
+    "category": "Spicy 18+"
+  },
+  {
+    "fileName": "poster_cuban_don_raul.jpg",
+    "title": "Havana Nights: Raúl Morales",
+    "character": "Raúl Morales",
+    "category": "Mafia & Billionaires"
+  },
+  {
+    "fileName": "poster_royal_vampire_queen_elizabeth.jpg",
+    "title": "Gothic Eternity: Queen Elizabeth",
+    "character": "Queen Elizabeth Báthory",
+    "category": "Dark Fantasy & Magic"
+  },
+  {
+    "fileName": "poster_las_vegas_pit_boss_jax.jpg",
+    "title": "High Roller Lockout: Jax Sterling",
+    "character": "Jax Sterling",
+    "category": "Spicy 18+"
+  }
+]

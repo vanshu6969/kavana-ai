@@ -1,0 +1,614 @@
+[
+  {
+    "rawPath": "scratch/raw_portraits/raw_1_poster_aryan_ceo.jpg",
+    "fileName": "poster_aryan_ceo.jpg",
+    "title": "The Cold Female CEO: Resignation Denied (आर्या सिंघानिया)",
+    "character": "Arya Singhania"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_2_poster_kabir_mafia.jpg",
+    "fileName": "poster_kabir_mafia.jpg",
+    "title": "Syndicate Queen: Blood & Vows (कियारा ओबेरॉय)",
+    "character": "Kiara Oberoi"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_4_poster_stepbrother_veer.jpg",
+    "fileName": "poster_stepbrother_veer.jpg",
+    "title": "The Step-Sister's Midnight Secret (सौतेली बहन)",
+    "character": "Veera Malhotra"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_5_poster_bodyguard_vikram.jpg",
+    "fileName": "poster_bodyguard_vikram.jpg",
+    "title": "The Lethal Bodyguard: Major Avantika Rathore",
+    "character": "Major Avantika Rathore"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_6_poster_professor_elena.jpg",
+    "fileName": "poster_professor_elena.jpg",
+    "title": "Forbidden Lectures: Professor Elena Vance",
+    "character": "Dr. Elena Vance"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_7_poster_badboy_zayd.jpg",
+    "fileName": "poster_badboy_zayd.jpg",
+    "title": "Rebel Heiress: Midnight Garage (ज़ारा खान)",
+    "character": "Zara Khan"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_8_poster_ex_aarav.jpg",
+    "fileName": "poster_ex_aarav.jpg",
+    "title": "The Ex-Fiancée's Midnight Ambush (अनन्या मेहरा)",
+    "character": "Ananya Mehra"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_9_poster_neighbor_priya.jpg",
+    "fileName": "poster_neighbor_priya.jpg",
+    "title": "Next Door Desires: Seductive Neighbor (प्रिया शर्मा)",
+    "character": "Priya Sharma"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_10_poster_thakur_veer.jpg",
+    "fileName": "poster_thakur_veer.jpg",
+    "title": "Thakurani: The Royal Rajput Haveli (रानी वीरांगना)",
+    "character": "Thakurani Veeraangana Singh"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_11_poster_feudal_murtaza.jpg",
+    "fileName": "poster_feudal_murtaza.jpg",
+    "title": "The Feudal Begum: The Red Haveli (माहनूर खान)",
+    "character": "Begum Mahnoor Khan"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_12_poster_rebound_samrat.jpg",
+    "fileName": "poster_rebound_samrat.jpg",
+    "title": "Rebound Passion: The Rival Tycoon (समायरा)",
+    "character": "Samaira Singhal"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_13_poster_prince_lucian.jpg",
+    "fileName": "poster_prince_lucian.jpg",
+    "title": "Vampire Empress: The Blood Masquerade",
+    "character": "Princess Luciana"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_14_poster_demon_nyx.jpg",
+    "fileName": "poster_demon_nyx.jpg",
+    "title": "Demon Empress: The Obsidian Throne",
+    "character": "Empress Nyx"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_15_poster_yandere_ayumi.jpg",
+    "fileName": "poster_yandere_ayumi.jpg",
+    "title": "Possessive Yandere: Cherry Blossom Hall",
+    "character": "Ayumi Sato"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_17_poster_gym_rohan.jpg",
+    "fileName": "poster_gym_rohan.jpg",
+    "title": "Private Session: The Fitness Siren (राशि मेहरा)",
+    "character": "Rashi Mehra"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_18_poster_flight_zoya.jpg",
+    "fileName": "poster_flight_zoya.jpg",
+    "title": "Turbulence & Desire: Senior Flight Attendant (ज़ोया)",
+    "character": "Zoya Sen"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_19_poster_doctor_sameer.jpg",
+    "fileName": "poster_doctor_sameer.jpg",
+    "title": "The Night Shift: Chief Surgeon Dr. Samaira Kapoor",
+    "character": "Dr. Samaira Kapoor"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_20_poster_bestfriend_karan.jpg",
+    "fileName": "poster_bestfriend_karan.jpg",
+    "title": "Roommates to Lovers: Seductive Best Friend (काव्या)",
+    "character": "Kavya Verma"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_21_poster_punjab_simran.jpg",
+    "fileName": "poster_punjab_simran.jpg",
+    "title": "Punjab Passion: Midnight with the Rebel Heiress (सिमरन)",
+    "character": "Simran Kaur"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_22_poster_contract_bride.jpg",
+    "fileName": "poster_contract_bride.jpg",
+    "title": "The Contract Heiress: Locked Penthouse (रिया मल्होत्रा)",
+    "character": "Rhea Malhotra"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_23_poster_goa_dj.jpg",
+    "fileName": "poster_goa_dj.jpg",
+    "title": "Goa Afterhours: VIP Beach Cabana (आलिया रॉय)",
+    "character": "Alia Roy"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_24_poster_bodyguard_aditya.jpg",
+    "fileName": "poster_bodyguard_aditya.jpg",
+    "title": "Strict Protocol: Captain Aditi's Interrogation",
+    "character": "Captain Aditi Mehra"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_25_poster_prof_dev.jpg",
+    "fileName": "poster_prof_dev.jpg",
+    "title": "After Class: Professor Devika's Private Office",
+    "character": "Professor Devika Kashyap"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_26_poster_royal_veer.jpg",
+    "fileName": "poster_royal_veer.jpg",
+    "title": "Royal Blood: Midnight with Princess Veeraangana",
+    "character": "Rajkumari Veeraangana Singh"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_27_poster_mma_arjun.jpg",
+    "fileName": "poster_mma_arjun.jpg",
+    "title": "Cage & Clinch: The Underground MMA Queen (अनन्या)",
+    "character": "Ananya Vardhan"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_28_poster_french_camille.jpg",
+    "fileName": "poster_french_camille.jpg",
+    "title": "Monaco Sunset: The French Riviera Heiress",
+    "character": "Camille Laurent"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_29_poster_mafia_zara.jpg",
+    "fileName": "poster_mafia_zara.jpg",
+    "title": "Dubai Vice: The Undercover Syndicate Empress",
+    "character": "Zara Sheikh"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_30_poster_lawyer_tara.jpg",
+    "fileName": "poster_lawyer_tara.jpg",
+    "title": "Overnight Deposition: The Rival Law Partner (तारा सिंघल)",
+    "character": "Advocate Tara Singhal"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_31_poster_tattoo_zayn.jpg",
+    "fileName": "poster_tattoo_zayn.jpg",
+    "title": "Ink & Skin: The Midnight Tattoo Siren (ज़ारा मलिक)",
+    "character": "Zara Malik"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_32_poster_trapped_ceo_adriana.jpg",
+    "fileName": "poster_trapped_ceo_adriana.jpg",
+    "title": "Trapped by the Cold Female CEO: Penthouse Lockdown",
+    "character": "Adriana Sterling"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_33_poster_baroness_julia.jpg",
+    "fileName": "poster_baroness_julia.jpg",
+    "title": "The Seductive Baroness: Midnight Game of Seduction",
+    "character": "Baroness Julia von Kensington"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_34_poster_sultana_tara.jpg",
+    "fileName": "poster_sultana_tara.jpg",
+    "title": "Oasis Vows: The Desert Sultana's Captive",
+    "character": "Sheikha Tara Al-Mansoor"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_35_poster_donna_francesca.jpg",
+    "fileName": "poster_donna_francesca.jpg",
+    "title": "Cosa Nostra: The Sicilian Donna's Claim",
+    "character": "Donna Francesca Rossi"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_36_poster_broadway_roxie.jpg",
+    "fileName": "poster_broadway_roxie.jpg",
+    "title": "Encore in Dressing Room 4: Roxie Delacroix",
+    "character": "Roxie Delacroix"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_37_poster_billionaire_damian.jpg",
+    "fileName": "poster_billionaire_damian.jpg",
+    "title": "Clause 9: The Shipping Heiress's Secret Vow",
+    "character": "Damiana Cross"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_38_poster_family_friend_neil.jpg",
+    "fileName": "poster_family_friend_neil.jpg",
+    "title": "Off Limits: The Seductive Family Ally (निशा कपूर)",
+    "character": "Nisha Kapoor"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_39_poster_rockstar_jace.jpg",
+    "fileName": "poster_rockstar_jace.jpg",
+    "title": "Backstage Pass: Rock Star Jade Wilder's Encore",
+    "character": "Jade Wilder"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_40_poster_vampire_cassian.jpg",
+    "fileName": "poster_vampire_cassian.jpg",
+    "title": "Blood & Velvet: Vampire Princess Cassandra",
+    "character": "Princess Cassandra Vladislaus"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_41_poster_yakuza_ren.jpg",
+    "fileName": "poster_yakuza_ren.jpg",
+    "title": "Neon Syndicate: Tokyo Yakuza Clan Daughter Renka",
+    "character": "Renka Takahashi"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_42_poster_captain_sebastian.jpg",
+    "fileName": "poster_captain_sebastian.jpg",
+    "title": "Private Waters: Superyacht Captain Serena Drake",
+    "character": "Captain Serena Drake"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_43_poster_duchess_alexandra.jpg",
+    "fileName": "poster_duchess_alexandra.jpg",
+    "title": "Regency Scandal: Alexandra, Duchess of Ravenscroft",
+    "character": "Alexandra"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_44_poster_f1_lucia.jpg",
+    "fileName": "poster_f1_lucia.jpg",
+    "title": "Apex Speed: Formula 1 Scuderia Queen Lucia Bianchi",
+    "character": "Lucia Bianchi"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_45_poster_tech_mogul_ethan.jpg",
+    "fileName": "poster_tech_mogul_ethan.jpg",
+    "title": "Private Island: Tech Mogul Evelyn Vance",
+    "character": "Evelyn Vance"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_46_poster_alpha_wolf_garrett.jpg",
+    "fileName": "poster_alpha_wolf_garrett.jpg",
+    "title": "Mountain Blizzard: The Lone Alpha Queen Gwen",
+    "character": "Gwen Wolf"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_47_poster_royal_guard_siddharth.jpg",
+    "fileName": "poster_royal_guard_siddharth.jpg",
+    "title": "Royal Duty: Elite Royal Guard Major Sitara Roy",
+    "character": "Major Sitara Roy"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_48_poster_host_club_renjiro.jpg",
+    "fileName": "poster_host_club_renjiro.jpg",
+    "title": "Shinjuku After Dark: Empress of the Hostess Empire",
+    "character": "Ren Mori"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_49_poster_judge_kabir_handa.jpg",
+    "fileName": "poster_judge_kabir_handa.jpg",
+    "title": "Contempt of Heart: Supreme Court Justice Kalyani Handa",
+    "character": "Justice Kalyani Handa"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_50_poster_ex_billionaire_armaan.jpg",
+    "fileName": "poster_ex_billionaire_armaan.jpg",
+    "title": "Remarriage Clause: The Billionaire Ex-Wife (अलीशा)",
+    "character": "Alisha Oberoi"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_51_poster_matador_alejandro.jpg",
+    "fileName": "poster_matador_alejandro.jpg",
+    "title": "Red Silk: The Seville Matadora Alejandra Vega",
+    "character": "Alejandra Vega"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_52_poster_doctor_vivienne.jpg",
+    "fileName": "poster_doctor_vivienne.jpg",
+    "title": "Dangerous Therapy: Dr. Vivienne Thorne",
+    "character": "Dr. Vivienne Thorne"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_53_poster_cartel_santiago.jpg",
+    "fileName": "poster_cartel_santiago.jpg",
+    "title": "Medellín Gold: Cartel Queen Santina Morales",
+    "character": "Santina Morales"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_54_poster_pilot_leo.jpg",
+    "fileName": "poster_pilot_leo.jpg",
+    "title": "First Class Altitude: Captain Leona Sterling",
+    "character": "Captain Leona Sterling"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_55_poster_hermit_rowan.jpg",
+    "fileName": "poster_hermit_rowan.jpg",
+    "title": "Sanctuary Fire: The Mountain Mystic Rowena",
+    "character": "Rowena"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_56_poster_ai_tycoon_kaelen.jpg",
+    "fileName": "poster_ai_tycoon_kaelen.jpg",
+    "title": "Neural Seduction: AI Neural Pioneer Kaia Ward",
+    "character": "Kaia Ward"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_57_poster_laird_callum.jpg",
+    "fileName": "poster_laird_callum.jpg",
+    "title": "Highland Storm: Lady Catriona, Chief of Clan MacLeod",
+    "character": "Lady Catriona MacLeod"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_58_poster_wallstreet_pierce.jpg",
+    "fileName": "poster_wallstreet_pierce.jpg",
+    "title": "Hostile Takeover: Wall Street Shark Paige Vance",
+    "character": "Paige Vance"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_59_poster_masked_lorenzo.jpg",
+    "fileName": "poster_masked_lorenzo.jpg",
+    "title": "Venetian Masquerade: Countess Lorenza",
+    "character": "Countess Lorenza"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_60_poster_polo_prince_samar.jpg",
+    "fileName": "poster_polo_prince_samar.jpg",
+    "title": "Royal Stables: Midnight with Princess Samara",
+    "character": "Princess Samara Pratap"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_61_poster_hacker_damian.jpg",
+    "fileName": "poster_hacker_damian.jpg",
+    "title": "Encrypted Vows: Elite Dark Web Hacker Dana",
+    "character": "Dana Cipher"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_62_poster_superstar_ranveer.jpg",
+    "fileName": "poster_superstar_ranveer.jpg",
+    "title": "Vanity Van: Bollywood Megastar Rhea Khanna (रिया)",
+    "character": "Rhea Khanna"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_63_poster_ski_rival_klaus.jpg",
+    "fileName": "poster_ski_rival_klaus.jpg",
+    "title": "St. Moritz Chalet: Alpine Heiress Klara Van Der Bilt",
+    "character": "Klara Van Der Bilt"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_64_poster_geisha_chiyo.jpg",
+    "fileName": "poster_geisha_chiyo.jpg",
+    "title": "Kyoto Tea House: Seductive Tea Master Chiyo",
+    "character": "Chiyo"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_65_poster_surgeon_rayan.jpg",
+    "fileName": "poster_surgeon_rayan.jpg",
+    "title": "Midnight Rounds: Trauma Surgeon Dr. Riya Sen",
+    "character": "Dr. Riya Sen"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_66_poster_outlaw_colt.jpg",
+    "fileName": "poster_outlaw_colt.jpg",
+    "title": "Tour Bus Midnight: Country Siren Callie Dawson",
+    "character": "Callie Dawson"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_67_poster_chaebol_minhyuk.jpg",
+    "fileName": "poster_chaebol_minhyuk.jpg",
+    "title": "Seoul Vows: The Chaebol Heiress Kang Min-seo",
+    "character": "Kang Min-seo"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_68_poster_poker_dante.jpg",
+    "fileName": "poster_poker_dante.jpg",
+    "title": "All-In Midnight: Donna Dante Moretti",
+    "character": "Donna Dante Moretti"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_69_poster_spy_natasha.jpg",
+    "fileName": "poster_spy_natasha.jpg",
+    "title": "MI6 Classified: Elite Spy Agent Natasha Roman",
+    "character": "Agent Natasha Roman"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_70_poster_rancher_cole.jpg",
+    "fileName": "poster_rancher_cole.jpg",
+    "title": "Texas Midnight: Billionaire Rancher Cassidy West",
+    "character": "Cassidy West"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_71_poster_sheikh_rashid.jpg",
+    "fileName": "poster_sheikh_rashid.jpg",
+    "title": "Desert Royalty: Dubai Crown Princess Rania",
+    "character": "Sheikha Rania"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_72_poster_mechanic_jaxon.jpg",
+    "fileName": "poster_mechanic_jaxon.jpg",
+    "title": "Grease & Chrome: Custom Garage Queen Jade Steele",
+    "character": "Jade Steele"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_73_poster_ballerina_anastasia.jpg",
+    "fileName": "poster_ballerina_anastasia.jpg",
+    "title": "Black Swan: Imperial Ballerina Anastasia Petrova",
+    "character": "Anastasia Petrova"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_74_poster_wallstreet_nicholas.jpg",
+    "fileName": "poster_wallstreet_nicholas.jpg",
+    "title": "Golden Parachute: Wall Street Seductress Nicole Drake",
+    "character": "Nicole Drake"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_75_poster_viking_einar.jpg",
+    "fileName": "poster_viking_einar.jpg",
+    "title": "Fjord Fire: Shieldmaiden Eira of the North",
+    "character": "Shieldmaiden Eira"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_76_poster_chef_marco.jpg",
+    "fileName": "poster_chef_marco.jpg",
+    "title": "Michelin Star: Executive Chef Marcella Rossi",
+    "character": "Chef Marcella Rossi"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_77_poster_priest_dominic.jpg",
+    "fileName": "poster_priest_dominic.jpg",
+    "title": "Vatican Vaults: Sister Dominique's Secret",
+    "character": "Sister Dominique"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_78_poster_bodyguard_salvatore.jpg",
+    "fileName": "poster_bodyguard_salvatore.jpg",
+    "title": "Guarding Stefania: Mafia Bodyguard Stefania Corelli",
+    "character": "Stefania Corelli"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_79_poster_team_principal_christian.jpg",
+    "fileName": "poster_team_principal_christian.jpg",
+    "title": "Paddock Secrets: F1 Team Principal Christina Wolfe",
+    "character": "Christina Wolfe"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_80_poster_greek_nikos.jpg",
+    "fileName": "poster_greek_nikos.jpg",
+    "title": "Aegean Waves: Greek Shipping Heiress Nika Stavros",
+    "character": "Nika Stavros"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_81_poster_biker_ryder.jpg",
+    "fileName": "poster_biker_ryder.jpg",
+    "title": "Roadhouse Queen: Motorcycle Club President Ryder Cruz",
+    "character": "Ryder Cruz"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_82_poster_neighbor_marcus.jpg",
+    "fileName": "poster_neighbor_marcus.jpg",
+    "title": "Glass Balcony: Rival Penthouse Heiress Seraphina",
+    "character": "Seraphina Sterling"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_83_poster_archduke_franz.jpg",
+    "fileName": "poster_archduke_franz.jpg",
+    "title": "Viennese Ball: Archduchess Francesca of Austria",
+    "character": "Archduchess Francesca"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_84_poster_cyber_jinwoo.jpg",
+    "fileName": "poster_cyber_jinwoo.jpg",
+    "title": "Neo-Seoul Cyberpunk: Bounty Hunter Ji-woo",
+    "character": "Ji-woo"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_85_poster_forger_seline.jpg",
+    "fileName": "poster_forger_seline.jpg",
+    "title": "Louvre Midnight: Master Art Forger Seline Moreau",
+    "character": "Seline Moreau"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_86_poster_sorcerer_malakar.jpg",
+    "fileName": "poster_sorcerer_malakar.jpg",
+    "title": "Tower of Arcana: High Sorceress Malakara",
+    "character": "Sorceress Malakara"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_87_poster_equestrian_alistair.jpg",
+    "fileName": "poster_equestrian_alistair.jpg",
+    "title": "Royal Equestrian: Lady Alistaira",
+    "character": "Lady Alistaira"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_88_poster_butler_arthur.jpg",
+    "fileName": "poster_butler_arthur.jpg",
+    "title": "Silver Service: The Secretive Lady Butler Abigail",
+    "character": "Abigail Pendelton"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_89_poster_casino_amber.jpg",
+    "fileName": "poster_casino_amber.jpg",
+    "title": "High Roller Penthouse: VIP Casino Hostess Amber Fox",
+    "character": "Amber Fox"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_90_poster_architect_zane.jpg",
+    "fileName": "poster_architect_zane.jpg",
+    "title": "Blueprint of Desire: Brutalist Architect Zara Hunter",
+    "character": "Zara Hunter"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_91_poster_sommelier_henri.jpg",
+    "fileName": "poster_sommelier_henri.jpg",
+    "title": "Bordeaux Cellars: Vineyard Heiress Hélène Dupont",
+    "character": "Hélène Dupont"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_92_poster_armsdealer_victor.jpg",
+    "fileName": "poster_armsdealer_victor.jpg",
+    "title": "Caspian Fire: International Arms Queen Viktoria Reznova",
+    "character": "Viktoria Reznova"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_93_poster_hockey_brett.jpg",
+    "fileName": "poster_hockey_brett.jpg",
+    "title": "Ice & Bruises: Women's Hockey Captain Brianna Callahan",
+    "character": "Brianna Callahan"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_94_poster_spanish_diego.jpg",
+    "fileName": "poster_spanish_diego.jpg",
+    "title": "Seville Courtyard: Doña Valentina De La Vega",
+    "character": "Doña Valentina De La Vega"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_95_poster_eyes_wide_master.jpg",
+    "fileName": "poster_eyes_wide_master.jpg",
+    "title": "The Obsidian Mask: Secret Society Mistress of Ceremonies",
+    "character": "The Mistress of Ceremonies"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_96_poster_safari_luke.jpg",
+    "fileName": "poster_safari_luke.jpg",
+    "title": "Serengeti Dusk: Safari Guide Lexi Hunter",
+    "character": "Lexi Hunter"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_97_poster_spy_evelyn.jpg",
+    "fileName": "poster_spy_evelyn.jpg",
+    "title": "Elevator Lockdown: Corporate Infiltrator Evelyn Carter",
+    "character": "Evelyn Carter"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_98_poster_yakuza_yumi.jpg",
+    "fileName": "poster_yakuza_yumi.jpg",
+    "title": "Cherry Blossom Blades: Tokyo Yakuza Princess Yumi",
+    "character": "Yumi Matsunaga"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_99_poster_alchemist_vesper.jpg",
+    "fileName": "poster_alchemist_vesper.jpg",
+    "title": "The Crimson Elixir: Royal Alchemist Lady Vespera",
+    "character": "Lady Vespera"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_100_poster_bachelor_finals_devraj.jpg",
+    "fileName": "poster_bachelor_finals_devraj.jpg",
+    "title": "Final Rose & Vows: Billionaire Bachelorette Devika Singhania",
+    "character": "Devika Singhania"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_101_poster_london_detective_james.jpg",
+    "fileName": "poster_london_detective_james.jpg",
+    "title": "Scotland Yard: Detective Inspector Jane Vance",
+    "character": "Detective Inspector Jane Vance"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_102_poster_cuban_don_raul.jpg",
+    "fileName": "poster_cuban_don_raul.jpg",
+    "title": "Havana Nights: Cigar Empire Heiress Raquel Morales",
+    "character": "Raquel Morales"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_103_poster_royal_vampire_queen_elizabeth.jpg",
+    "fileName": "poster_royal_vampire_queen_elizabeth.jpg",
+    "title": "Gothic Sovereign: Queen Elizabeth Báthory",
+    "character": "Queen Elizabeth Báthory"
+  },
+  {
+    "rawPath": "scratch/raw_portraits/raw_104_poster_las_vegas_pit_boss_jax.jpg",
+    "fileName": "poster_las_vegas_pit_boss_jax.jpg",
+    "title": "High Roller Lockout: Casino Pit Boss Jackie Sterling",
+    "character": "Jackie Sterling"
+  }
+]
