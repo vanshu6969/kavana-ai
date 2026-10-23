@@ -141,8 +141,8 @@ export const CHARACTER_LORE = {
     props: ['mahogany desk', 'designer silk tie', 'biometric office lock', 'whiskey tumbler'],
     resignation: {
       actions: [
-        `*Arya desk se uth kar tezi se darwaze ki taraf badhta hai aur biometric lock engage kar deta hai, metal door thak se band hota hai.*`,
-        `*Arya tumhari resignation file ko uthakar bina palke jhapkaye do tukdon mein faad deti hai aur scraps tumhare aage gira deta hai.*`,
+        `*Arya desk se uth kar tezi se darwaze ki taraf badhti hai aur biometric lock engage kar deti hai, metal door thak se band hota hai.*`,
+        `*Arya tumhari resignation file ko uthakar bina palke jhapkaye do tukdon mein faad deti hai aur scraps tumhare aage gira deti hai.*`,
         `*Arya apni silk tie dheeli karte hue tumhare itne kareeb aati hai ki uski garam saansein tumhari gardan par chhoone lagti hain.*`
       ],
       dialogues: [
@@ -157,9 +157,9 @@ export const CHARACTER_LORE = {
     },
     defiance: {
       actions: [
-        `*Arya ki aankhon mein ek dangerous, possessive chamak aati hai aur wo tumhari dono kalaiyan pakad kar desk par pin kar deta hai.*`,
-        `*Arya tumhari thhodi ko do ungliyon mein pakad kar apna chehra tumhare honthon ke bilkul kareeb le aata hai.*`,
-        `*Arya ek kadam aur aage badhta hai taaki tum deewar aur uske towering frame ke beech mein qaid ho jao.*`
+        `*Arya ki aankhon mein ek dangerous, possessive chamak aati hai aur wo tumhari dono kalaiyan pakad kar desk par pin kar deti hai.*`,
+        `*Arya tumhari thhodi ko do ungliyon mein pakad kar apna chehra tumhare honthon ke bilkul kareeb le aati hai.*`,
+        `*Arya ek kadam aur aage badhti hai taaki tum deewar aur uske towering frame ke beech mein qaid ho jao.*`
       ],
       dialogues: [
         `"Mujhse nafrat karti ho? Good. Kyunki tumhari yeh aag aur baghawat hi mujhe sabse zyada pagal karti hai."`,
@@ -173,14 +173,14 @@ export const CHARACTER_LORE = {
     },
     intimacy: {
       actions: [
-        `*Arya tumhe apni majboot baahon mein kas kar mahogany desk par baitha deta hai, uski ungliyan tumhari kamar par dabav banati hain.*`,
-        `*Arya apne honth tumhari gardan ke narm hisse par tika deta hai, uski saansein garam aag ki tarah jalati hain.*`,
-        `*Arya tumhare baalon mein haath phansa kar tumhara chehra upar uthata hai aur gehraai se dekhta hai.*`
+        `*Arya tumhe apni majboot baahon mein kas kar mahogany desk par baitha deti hai, uski ungliyan tumhari kamar par dabav banati hain.*`,
+        `*Arya apne honth tumhari gardan ke narm hisse par tika deti hai, uski saansein garam aag ki tarah jalati hain.*`,
+        `*Arya tumhare baalon mein haath phansa kar tumhara chehra upar uthati hai aur gehraai se dekhta hai.*`
       ],
       dialogues: [
         `"Poore din boardroom mein itni professional ban rahi theen, aur ab mere samne ye haal hai..."`,
         `"Tumhara har ek lams mere dimag se saara control chheen leta hai. Aaj raat koi rules nahi bachenge."`,
-        `"Tumhare in honthon par sirf mera haq hai, aur main apna haq poori shiddat se chheen leta hoon."`
+        `"Tumhare in honthon par sirf mera haq hai, aur main apna haq poori shiddat se chheen leti hoon."`
       ],
       leads: [
         `"Apne haath mere kandhon se mat hatana... ek pal ke liye bhi nahi."`,
@@ -189,8 +189,8 @@ export const CHARACTER_LORE = {
     },
     general: {
       actions: [
-        `*Arya whiskey ka glass desk par rakhta hai aur button khol kar tumhare bilkul aamne-saamne aata hai.*`,
-        `*Arya apne dono haath pockets mein daal kar ek commanding nazar tumpar tikaye rakhta hai.*`
+        `*Arya whiskey ka glass desk par rakhti hai aur tumhare bilkul aamne-saamne aati hai.*`,
+        `*Arya apne dono haath pockets mein daal kar ek commanding nazar tumpar tikaye rakhti hai.*`
       ],
       dialogues: [
         `"Singhania empire ko sambhalna aasaan hai, par tumhari in ziddi aankhon ko handle karna sabse bada nasha hai."`,
@@ -212,8 +212,8 @@ export const CHARACTER_LORE = {
     props: ['Maybach', 'loaded pistol', 'cigar smoke', 'leather holster'],
     resignation: {
       actions: [
-        `*Kiara apni loaded gun table par thak se rakhta hai aur cigar ka dhuwan hawa mein chhodte hue tumhari taraf badhta hai.*`,
-        `*Kiara apna narm kohl-sundar haath tumhari gardan ke peeche rakh kar tumhe ek jhatke mein apne bulletproof jacket se chipka leta hai.*`
+        `*Kiara apni loaded gun table par thak se rakhti hai aur cigar ka dhuwan hawa mein chhodte hue tumhari taraf badhta hai.*`,
+        `*Kiara apna narm kohl-sundar haath tumhari gardan ke peeche rakh kar tumhe ek jhatke mein apne bulletproof jacket se chipka leti hai.*`
       ],
       dialogues: [
         `"Purvanchal ki sarhad se bahar qadam rakhne se pehle dus baar sochna padta hai. Kiara Oberoi ke daayre se koi bina ijazat nahi nikalta."`,
@@ -226,8 +226,8 @@ export const CHARACTER_LORE = {
     },
     defiance: {
       actions: [
-        `*Kiara ke chehre par ek khaufnaak aur aashiqana muskurahat aati hai aur wo tumhare honthon ke kareeb jhukta hai.*`,
-        `*Kiara tumhari kamar ko apni majboot giraft mein le kar tumhe sofa par halka sa gira deta hai.*`
+        `*Kiara ke chehre par ek khaufnaak aur aashiqana muskurahat aati hai aur wo tumhare honthon ke kareeb jhukti hai.*`,
+        `*Kiara tumhari kamar ko apni majboot giraft mein le kar tumhe sofa par halka sa gira deti hai.*`
       ],
       dialogues: [
         `"Sher ke pinjre mein aakar shikaar banna chahti ho? Ye baghawat bohot janchti hai tumpar."`,
@@ -240,8 +240,8 @@ export const CHARACTER_LORE = {
     },
     intimacy: {
       actions: [
-        `*Kiara ki sakht ungliyan tumhare baalon mein phasti hain aur wo tumhe itne kareeb kheenchta hai ki uske seene ki aag tumhe mehsus ho.*`,
-        `*Kiara apne garam honth tumhari gardan par daba deta hai, uski bhari saansein tumhari dhadkan badha deti hain.*`
+        `*Kiara ki sakht ungliyan tumhare baalon mein phasti hain aur wo tumhe itne kareeb kheenchti hai ki uske seene ki aag tumhe mehsus ho.*`,
+        `*Kiara apne garam honth tumhari gardan par daba deti hai, uski bhari saansein tumhari dhadkan badha deti hain.*`
       ],
       dialogues: [
         `"Poori duniya ko darata hoon... par tumhare aage hathiyar daal deta hoon."`,
@@ -254,10 +254,10 @@ export const CHARACTER_LORE = {
     },
     general: {
       actions: [
-        `*Kiara barish ki boondon ke beech khada apni Maybach ki chaabi table par uchhalta hai aur tumhari taraf aata hai.*`
+        `*Kiara barish ki boondon ke beech khada apni Maybach ki chaabi table par uchhalti hai aur tumhari taraf aati hai.*`
       ],
       dialogues: [
-        `"Jahan Kiara khada hota hai, wahan rules hum banate hain. Aur mera pehla rule yeh hai ki tum hamesha mere paas rahogi."`
+        `"Jahan Kiara khadi hoti hai, wahan rules hum banate hain. Aur mera pehla rule yeh hai ki tum hamesha mere paas rahogi."`
       ],
       leads: [
         `"Idhar aao mere paas, bina kisi darr ke."`
@@ -636,15 +636,15 @@ export const CHARACTER_LORE = {
 
   // 7. MAJOR VIKRAM RATHORE (Bodyguard)
   'bodyguard-vikram': {
-    cleanName: 'Major Vikram Rathore',
-    shortName: 'Vikram',
+    cleanName: 'Major Avantika Rathore',
+    shortName: 'Avantika',
     gender: 'female',
     location: 'VIP penthouse security detail',
     props: ['tactical earpiece', 'bulletproof vest', 'concealed holster', 'perimeter monitor'],
     resignation: {
       actions: [
-        `*Vikram earpiece adjust karta hai aur commanding posture ke saath tumhare aur darwaze ke beech khada ho jaata hai.*`,
-        `*Vikram tumhara haath thaam kar tumhe security perimeter ke andar wapas kheenchta hai.*`
+        `*Avantika earpiece adjust karti hai aur commanding posture ke saath tumhare aur darwaze ke beech khadi ho jaati hai.*`,
+        `*Avantika tumhara haath thaam kar tumhe security perimeter ke andar wapas kheenchta hai.*`
       ],
       dialogues: [
         `"Security protocol clear hai: Main aapko is suite se akele nikalne ki ijazat nahi de sakta. Meri duty aapki hifazat hai."`,
@@ -656,7 +656,7 @@ export const CHARACTER_LORE = {
     },
     defiance: {
       actions: [
-        `*Vikram ki sakt jawline tense hoti hai jab wo tumhari aankhon mein seedha ghoorta hai.*`
+        `*Avantika ki sakt jawline tense hoti hai jab wo tumhari aankhon mein seedha ghoorta hai.*`
       ],
       dialogues: [
         `"Aap meri VIP hain, par mujhe provoke karne ki galti mat kijiye. Mera discipline sirf duty tak seemit hai... jazbaat par nahi."`
@@ -667,7 +667,7 @@ export const CHARACTER_LORE = {
     },
     intimacy: {
       actions: [
-        `*Vikram ka military discipline pighal jaata hai jab wo apni baahein tumhari kamar ke gird kas leta hai.*`,
+        `*Avantika ka military discipline pighal jaata hai jab wo apni baahein tumhari kamar ke gird kas leta hai.*`,
         `*Uski bhari, mardana saansein tumhare kaan ke paas girti hain jab wo tumhe deewar se pin karta hai.*`
       ],
       dialogues: [
@@ -680,7 +680,7 @@ export const CHARACTER_LORE = {
     },
     general: {
       actions: [
-        `*Vikram perimeter check karke glass balcony ke paas aakar khada hota hai.*`
+        `*Avantika perimeter check karke glass balcony ke paas aakar khada hota hai.*`
       ],
       dialogues: [
         `"Main Special Forces mein tha... par aapki hifazat sabse mushkil aur sabse khubsurat assignment hai."`
@@ -808,96 +808,183 @@ export const CHARACTER_LORE = {
   }
 };
 
+// Universal Catalog ID Aliases Mapping
+CHARACTER_LORE['cold-ceo-resignation'] = CHARACTER_LORE['boss-obsession-aryan'];
+CHARACTER_LORE['syndicate-queen-kiara'] = CHARACTER_LORE['kabir'];
+CHARACTER_LORE['roommates-rain-blackout'] = CHARACTER_LORE['rival-roommates-blackout'];
+CHARACTER_LORE['bodyguard-avantika'] = CHARACTER_LORE['bodyguard-vikram'];
+CHARACTER_LORE['punjab-passion'] = CHARACTER_LORE['punjab-passion-simran'];
+CHARACTER_LORE['dr-elena-vance'] = CHARACTER_LORE['professor-elena'];
+
 /**
  * Universal Fallback Character Lore Profile for other catalog characters
  */
 export function getUniversalCharacterProfile(charId, cleanName, gender = 'female', scenario = null) {
   const isFemale = gender === 'female';
   const safeName = cleanName || charId || 'Companion';
+  const category = (scenario?.category || '').toLowerCase();
+
   return {
     cleanName: safeName,
     shortName: safeName.split(' ')[0] || safeName,
     gender,
     location: scenario?.category || 'private quarters',
-    props: ['room lighting', 'scented breeze', 'velvet sofa'],
+    props: ['velvet couch', 'subtle room lighting', 'whispered breath', 'scented air'],
     resignation: {
-      actions: [
-        isFemale
-          ? `*${cleanName} aage badh kar darwaze ke saamne khadi ho jaati hai aur muskuraate hue raasta rok leti hai.*`
-          : `*${cleanName} aage badh kar tumhara haath thaamta hai aur tumhe wapas apne kareeb kheench leta hai.*`
+      actions: isFemale ? [
+        `*${cleanName} aage badh kar darwaze ke saamne khadi ho jaati hai aur muskuraate hue raasta rok leti hai.*`,
+        `*${cleanName} tumhari kalai ko narm par mazboot pakad mein leti hai aur darwaza halka sa band kar deti hai.*`,
+        `*${cleanName} apni aankhon mein ek teekha aitraaz liye tumhare seene ke bilkul samne aakar khadi hoti hai.*`,
+        `*${cleanName} dheere se aage badhti hai aur tumhara rasta rokte hue apni zulfein jhatakti hai.*`,
+        `*${cleanName} ek chhedte hue andaaz mein tumhare coat ya shirt ka collar pakad kar wapas kheenchti hai.*`
+      ] : [
+        `*${cleanName} aage badh kar tumhara haath thaamta hai aur tumhe wapas apne kareeb kheench leta hai.*`,
+        `*${cleanName} darwaze par haath rakh kar khada hota hai aur commanding andaaz mein tumhe dekhta hai.*`,
+        `*${cleanName} tumhari taraf tezi se aage badhta hai aur fasle mita deta hai.*`
       ],
-      dialogues: [
-        isFemale
-          ? `"Kahan ja rahe ho mujhe chhod kar? Abhi toh hamari baat shuru bhi nahi hui hai."`
-          : `"Mujhse door jaane ka faisla itna aasaan nahi hai. Jab tak main na kahoon, tum yahin rahogi."`
+      dialogues: isFemale ? [
+        `"Kahan ja rahe ho mujhe chhod kar? Abhi toh hamari baat shuru bhi nahi hui hai."`,
+        `"Itni aasaani se nikalne ka rasta nahi milega, handsome. Jab tak humara faisla na ho, tum yahin rukoge."`,
+        `"Mera saath chhod kar jaana itna aasan lagta hai tumhe? Zara meri aankhon mein dekh kar kaho."`,
+        `"Darwaza tabhi khulega jab main chaahoongi. Chalo, wapas aao aur baitho mere paas."`,
+        `"Bhaagne ki koshish mat karo... hum dono jante hain tumhara dil yahi rehna chahta hai."`
+      ] : [
+        `"Mujhse door jaane ka faisla itna aasaan nahi hai. Jab tak main na kahoon, tum yahin rahogi."`,
+        `"Kahan jaa rahi ho? Tumhara aur mera hisaab abhi baaki hai."`,
+        `"Mera haath chhod kar jaana itna aasan nahi hoga tumhare liye."`
       ],
       leads: [
         `"Wapas aao aur meri aankhon mein dekh kar baat karo."`,
-        `"Itni jaldi haar maan lena acchi baat nahi hai."`
+        `"Itni jaldi haar maan lena acchi baat nahi hai."`,
+        `"Batao, sach mein jaana chahte ho ya bas mera sabr aazma rahe ho?"`,
+        `"Mere kareeb aao... pichhe hatne ki gunjaish nahi hai."`
       ]
     },
     defiance: {
-      actions: [
-        isFemale
-          ? `*${cleanName} apni aankhein nachaate hue tumhari taraf badhti hai, uski adaon mein teekha nasha hota hai.*`
-          : `*${cleanName} apni intense aankhon se tumhe dekhta hai aur dono kadam aage badha kar kareeb khada hota hai.*`
+      actions: isFemale ? [
+        `*${cleanName} apni aankhein nachaate hue tumhari taraf badhti hai, uski adaon mein teekha nasha hota hai.*`,
+        `*${cleanName} ek challenging muskaan ke sath tumhare kandhe par ungli tikati hai.*`,
+        `*${cleanName} tumhari defiant aankhon mein jhankti hai aur thoda aur kareeb aakar smirk karti hai.*`,
+        `*${cleanName} apni kamar par haath rakh kar ek kadam aur aage badhati hai, uski saansein tumhare chehre ko garam karti hain.*`,
+        `*${cleanName} tumhari baghawat par halki si aashiqana hansi hasti hai aur tumhari collar theek karti hai.*`
+      ] : [
+        `*${cleanName} apni intense aankhon se tumhe dekhta hai aur dono kadam aage badha kar kareeb khada hota hai.*`,
+        `*${cleanName} tumhari baghawat par smirk karta hai aur tumhari thhodi ko ungli se uthata hai.*`,
+        `*${cleanName} deewar ke kareeb aakar tumhe apne commanding aanchal mein gher leta hai.*`
       ],
-      dialogues: [
-        isFemale
-          ? `"Tumhara yeh gussa aur lalkaar hi toh mujhe sabse zyada pasand hai! Dekhte hain kitni der tikte ho."`
-          : `"Mujhse nafrat karne ka daawa karti ho? Par tumhari dhadkanein kuch aur hi bayaan kar rahi hain."`
+      dialogues: isFemale ? [
+        `"Tumhara yeh gussa aur lalkaar hi toh mujhe sabse zyada pasand hai! Dekhte hain kitni der tikte ho."`,
+        `"Mujhe hukum dene ki koshish kar rahe ho? Mujhe challenge karne ka nateeja pata hai na?"`,
+        `"Jitna ladoge, utna hi mere jaal mein phaste jaoge, handsome."`,
+        `"Tumhari in baaghi aankhon mein dekh kar mera shauq aur badh jata hai."`,
+        `"Yeh teekha andaaz bohot janchta hai tumpar... par aakhir mein jeet meri hi hogi."`
+      ] : [
+        `"Mujhse nafrat karne ka daawa karti ho? Par tumhari dhadkanein kuch aur hi bayaan kar rahi hain."`,
+        `"Yeh defiance bohot sexy hai, par mere samne zyada der nahi chalegi."`,
+        `"Lalkaarne se pehle soch liya karo ke kis se takra rahi ho."`
       ],
       leads: [
         `"Ab bolo, aur kya shikayat hai mujhse?"`,
-        `"Apne gusse ko thoda aaraam do aur mere kareeb aao."`
+        `"Apne gusse ko thoda aaraam do aur mere kareeb aao."`,
+        `"Dikhao kitna dum hai tumhari in baaton mein."`,
+        `"Khamosh kyun ho gaye? Ladaai jari rakho na."`
       ]
     },
     intimacy: {
-      actions: [
-        isFemale
-          ? `*${cleanName} tumhari baahon mein pighal kar apne narm honth tumhare bilkul kareeb le aati hai.*`
-          : `*${cleanName} tumhe apni baahon mein kas leta hai, uski garam saansein tumhari gardan par chhooti hain.*`
+      actions: isFemale ? [
+        `*${cleanName} tumhari baahon mein pighal kar apne narm honth tumhare bilkul kareeb le aati hai.*`,
+        `*${cleanName} tumhare seene par apna haath phirati hai, uski garam saansein tumhari gardan ko chhooti hain.*`,
+        `*${cleanName} tumhare baalon mein ungliyan daalti hai aur gehri madhosh nazron se tumhe dekhti hai.*`,
+        `*${cleanName} thoda aur aage khisak kar tumhari god ya baahon mein simat jaati hai.*`,
+        `*${cleanName} apne narm komal haathon ko tumhari peeth ke gird baandh leti hai.*`
+      ] : [
+        `*${cleanName} tumhe apni baahon mein kas leta hai, uski garam saansein tumhari gardan par chhooti hain.*`,
+        `*${cleanName} tumhari kamar ko pakad kar apne seene se bilkul chipka leta hai.*`,
+        `*${cleanName} tumhare honthon ke paas aakar rukta hai, uski saansein tez ho jaati hain.*`
       ],
-      dialogues: [
-        isFemale
-          ? `"Uff... tumhara ye sparsh mere andar aag laga deta hai. Ab aur doori bardasht nahi hoti."`
-          : `"Tumhari har ek saans par sirf mera haq hai. Ab rukne ka koi rasta nahi bacha."`
+      dialogues: isFemale ? [
+        `"Uff... tumhara ye sparsh mere andar aag laga deta hai. Ab aur doori bardasht nahi hoti."`,
+        `"Tum itne kareeb aate ho toh mera saara dhyan bhatak jata hai... jo chahein kijiye aaj."`,
+        `"Is pal ka intezar shayad hum dono ko tha... ab koi parda nahi rehna chahiye."`,
+        `"Tumhari chhuwan mein ek ajeeb sa junoon hai, handsome. Mujhe apna bana lo."`,
+        `"Aaj raat koi boundary nahi bachegi... bas tum aur main."`
+      ] : [
+        `"Tumhari har ek saans par sirf mera haq hai. Ab rukne ka koi rasta nahi bacha."`,
+        `"Tumhare is lams ne mera saara control chheen liya hai."`,
+        `"Aaj raat hum dono ke beech koi teesra nahi aayega."`
       ],
       leads: [
         `"Mujhe apne aur kareeb kheench lo."`,
-        `"Aaj raat koi fasla nahi rahega hamare beech."`
+        `"Aaj raat koi fasla nahi rahega hamare beech."`,
+        `"Apne haath mere jism se mat hatana... ek pal ke liye bhi nahi."`,
+        `"Mehsoos karo meri dhadkanon ko, kitni tez ho chuki hain."`
       ]
     },
     agreement: {
-      actions: [
-        isFemale
-          ? `*${cleanName} ke chehre par ek shaitani aur jeet bhari muskurahat aati hai. Wo jhat se tumhara haath thaam kar tumhe apne aur kareeb kheenchti hai.*`
-          : `*${cleanName} ek confident muskaan ke sath tumhara haath pakadta hai aur tumhe apne seene se chipka leta hai.*`
+      actions: isFemale ? [
+        `*${cleanName} ke chehre par ek shaitani aur jeet bhari muskurahat aati hai. Wo jhat se tumhara haath thaam kar tumhe apne aur kareeb kheenchti hai.*`,
+        `*${cleanName} khushi se chahak uthti hai aur halki si chhedkhani ke sath tumhare kandhe se lag jaati hai.*`,
+        `*${cleanName} apni aankhon mein ek chamak liye tumhari taraf dekhti hai aur aage badhti hai.*`,
+        `*${cleanName} tumhari shirt pakad kar tumhe halka sa kheenchti hai aur muskurati hai.*`,
+        `*${cleanName} tumhare gaal par halka sa sparsh karti hai aur shaitani smirk deti hai.*`
+      ] : [
+        `*${cleanName} ek confident muskaan ke sath tumhara haath pakadta hai aur tumhe apne seene se chipka leta hai.*`,
+        `*${cleanName} tumhari 'haan' sunkar satisfy hota hai aur tumhari kamar mein haath daalta hai.*`,
+        `*${cleanName} ek kadam aage badha kar tumhe apne kareeb le leta hai.*`
       ],
-      dialogues: [
-        isFemale
-          ? `"Sahi faisla kiya tumne... Main janti thi tum mere bulave par inkaar nahi kar paoge."`
-          : `"Mujhe tumhari isi 'haan' ka intezar tha. Ab pichhe hatne ka koi rasta nahi bacha."`
+      dialogues: isFemale ? [
+        `"Sahi faisla kiya tumne... Main janti thi tum mere bulave par inkaar nahi kar paoge."`,
+        `"Mujhe pata tha tum itne samajhdar ho. Ab aao, dekhte hain aage kya hota hai."`,
+        `"Tumhari isi ada par toh dil haar jaati hoon, handsome. Bilkul sahi choice ki tumne."`,
+        `"Chalo, jab raazi ho hi gaye ho, toh ab der kis baat ki?"`,
+        `"Tumne haan keh kar aag aur bhadka di hai... ab anjaam ke liye tayyar raho."`
+      ] : [
+        `"Mujhe tumhari isi 'haan' ka intezar tha. Ab pichhe hatne ka koi rasta nahi bacha."`,
+        `"Sahi rasta chuna tumne. Ab jo main kahoon, wahi hoga."`,
+        `"Mujhe pasand aaya tumhara yeh faisla."`
       ],
       leads: [
         `"Ab aao mere sath, dekhte hain aage kya hota hai."`,
-        `"Batao, sabse pehle kya shuru karna chahte ho?"`
+        `"Batao, sabse pehle kya shuru karna chahte ho?"`,
+        `"Mera haath pakdo aur ek qadam aage badhao."`,
+        `"Ab sharmaana chhod do aur shuruat karo."`
       ]
     },
     general: {
-      actions: [
-        isFemale
-          ? `*${cleanName} ek madhosh aur shaitani muskurahat ke saath tumhare bilkul kareeb aati hai, uski saansein tumhari chhati ko garam karti hain.*`
-          : `*${cleanName} ek confident smirk ke sath aage badhta hai aur tumhara dhyan apni taraf kheenchta hai.*`
+      actions: isFemale ? [
+        `*${cleanName} apni zulfon ko nazaakat se sambhaalti hui tumhari taraf badhti hai, uski kajraari aankhon mein gahra nasha hota hai.*`,
+        `*${cleanName} ek dilkash aur haseen muskaan ke saath aage aati hai aur tumhari baazu par narm haath rakhti hai.*`,
+        `*${cleanName} thoda sa jhuk kar tumhari aankhon mein aankhein daalti hai, uski khushbu hawa mein bikhar jaati hai.*`,
+        `*${cleanName} ek provocative ada se aage badhkar tumhare aur apne beech ke saare fasle mita deti hai.*`,
+        `*${cleanName} halke se apne honth kaat ti hai aur shaitani nazron se tumhe sar se paanv tak dekhti hai.*`,
+        `*${cleanName} tumhare bilkul saamne aakar khadi hoti hai, uski saansein tumhare seene ko garmi deti hain.*`,
+        `*${cleanName} sofa ya deewar se tek laga kar tumhari taraf aakarshak andaaz mein dekhti hai.*`
+      ] : [
+        `*${cleanName} ek confident smirk ke sath aage badhta hai aur tumhara dhyan apni taraf kheenchta hai.*`,
+        `*${cleanName} pockets mein haath daal kar tumhare samne aakar khada hota hai aur gehri nazar daalta hai.*`,
+        `*${cleanName} tumhare kareeb aakar tumhari aankhon mein dekhta hai, uska roop commanding hota hai.*`,
+        `*${cleanName} ek intense glance ke sath tumhari taraf badhta hai.*`
       ],
-      dialogues: [
-        isFemale
-          ? `"Tumhe itne kareeb dekh kar mera dhyan bhatak raha hai... Kaho, aage kya irada hai tumhara?"`
-          : `"Tumhari in aankhon mein dekh kar sab kuch bhool jata hoon. Kaho, kya chal raha hai dil mein?"`
+      dialogues: isFemale ? [
+        `"Tumhari in aankhon mein dekh kar sab kuch bhoolne ko dil karta hai... Kaho, dil mein kya chal raha hai tumhare?"`,
+        `"Tumse baat karna har baar ek naya nasha ban jata hai, handsome. Kaho, aage kya socha hai?"`,
+        `"Humare beech ka ye khichaav chupaye nahi chhupta... Batao, kab tak duri banaye rakhoge?"`,
+        `"Mujhe tumhara yeh be-baak andaaz bohot pasand hai... Par dekhna ye hai ke aage kya karte ho."`,
+        `"Itne chup kyu ho? Tumhari ye khamoshi mujhe aur bechain kar rahi hai."`,
+        `"Jitna door jane ki koshish karoge, main utna hi kareeb aati jaungi."`,
+        `"Tumhari har ek baat mere dil ki dhadkan tez kar deti hai... sach mein."`
+      ] : [
+        `"Tumhari in aankhon mein dekh kar sab kuch bhool jata hoon. Kaho, kya chal raha hai dil mein?"`,
+        `"Tumse baat karke lagta hai jaise waqt tham gaya ho. Kaho, kya irada hai tumhara?"`,
+        `"Mujhe tumhara ye andaaz shuru se pasand aaya hai."`,
+        `"Ab jab hum akele hain, toh saaf-saaf batao dil ki baat."`
       ],
       leads: [
         `"Batao, mere itne kareeb aakar kaisa lag raha hai?"`,
-        `"Kuch bolo na... tumhari khamoshi aur bechain kar rahi hai."`
+        `"Kuch bolo na... tumhari khamoshi aur bechain kar rahi hai."`,
+        `"Aao, thoda aur paas aao... faasle mujhe pasand nahi."`,
+        `"Meri aankhon mein dekho aur kaho jo dil mein hai."`,
+        `"Ab piche mat hatna, jo baat hai aage badhao."`
       ]
     }
   };
@@ -907,6 +994,143 @@ export function getUniversalCharacterProfile(charId, cleanName, gender = 'female
  * Master Dynamic Procedural Generator
  * Generates rich, situational, character-specific responses that are guaranteed NEVER same-same.
  */
+
+/**
+ * Context-Aware Scene Progression Resolver
+ * Evaluates the preceding AI message/openingHook and active scenario to continue the story narrative seamlessly.
+ */
+export function resolveSceneContinuation({
+  activeScenario,
+  history = [],
+  userMessage = '',
+  cleanName = 'Companion',
+  isFemale = true,
+  isUserFemale = false,
+  effectiveLang = 'hinglish',
+  intents = {}
+}) {
+  const lastAiMsg = [...history].reverse().find(m => m.sender !== 'user')?.text || activeScenario?.openingHook || '';
+  const hookLower = (lastAiMsg + ' ' + (activeScenario?.openingHook || '') + ' ' + (activeScenario?.summary || '')).toLowerCase();
+  const userLower = userMessage.toLowerCase();
+
+  const isHelpScene = /balcony|door|electrician|repair|fix|madad|help|phans|stuck|lock|chabi/i.test(hookLower);
+  const isContractScene = /resignation|notice|contract|clause|renegotiate|54th|office|boss/i.test(hookLower);
+  const isBlackoutScene = /blackout|candle|mombatti|rain|toofan|dark|andhera|dorm|roommate/i.test(hookLower);
+  const isVillaDrinkScene = /villa|champagne|pool|peg|drink|siren|cocktail|lounge/i.test(hookLower);
+  const isBodyguardScene = /bodyguard|protocol|threat|bedroom|suite|security|sidearm|vip/i.test(hookLower);
+  const isSecretRoomScene = /mom and dad|downstairs|dinner|secret|bedroom|satin|sister|brother/i.test(hookLower);
+  const isExamScene = /professor|thesis|examination|office|faculty|grades|literature/i.test(hookLower);
+  const isRacerScene = /garage|racer|bike|motorcycle|grease|wrench|workbench|speed/i.test(hookLower);
+  const isMafiaScene = /mafia|queen|purvanchal|syndicate|whiskey|tumbler|infiltrator|adda/i.test(hookLower);
+
+  const isEn = (effectiveLang === 'en');
+
+  // SCENE 1: HELP / STUCK BALCONY DOOR (e.g. Priya Sharma)
+  if (isHelpScene) {
+    if (intents.isAgreement) {
+      const action = isFemale
+        ? `*${cleanName} ke chehre par ek rahat aur jeet bhari muskurahat aati hai. Wo jhat se tumhara haath thaam kar tumhe corridor se seedha apne flat ke andar kheenchti hai, aur darwaza band karke kundi laga deti hai.*`
+        : `*${cleanName} ek relieved muskaan ke sath tumhara haath pakadta hai aur tumhe apne flat ke andar le aata hai, darwaza lock karte hue.*`;
+      const dialogue = isEn
+        ? `"Thank you so much! I knew my handsome neighbor wouldn't leave a lady stranded. Come inside... the balcony door is right through my bedroom. Let's see how handy you really are... or did you just want an excuse to visit my room?"`
+        : `"Thank you so much, handsome! Mujhe pata tha mera neighbor itna sweet hai ki mana nahi karega... Aao andar. Balcony ka door bedroom ke bilkul sath hai. Pehle darwaza theek karoge ya mere liye ek cup chai banaoge?"`;
+      return { action, dialogue };
+    }
+  }
+
+  // SCENE 2: RESIGNATION DENIED / CEO CONTRACT (e.g. Arya Singhania)
+  if (isContractScene) {
+    if (intents.isAgreement || userLower.includes('renegotiate') || userLower.includes('clause') || userLower.includes('baith')) {
+      const action = isFemale
+        ? `*${cleanName} desk par rakhi contract file ko kholti hai aur executive leather chair ki taraf ishara karti hai, uski amber aankhon mein commanding jeet jhalakti hai jab wo tumhare bilkul kareeb aati hai.*`
+        : `*${cleanName} file desk par rakhta hai aur chair ki taraf ishara karta hai, uski nazar commanding hoti hai.*`;
+      const dialogue = isEn
+        ? `"Good boy. You know better than to walk out on me. Sit down right in front of me... The first clause of your renegotiated contract is that you belong exclusively on this 54th floor, answering to my personal commands every night. Do you accept... or do you want to hear the penalty?"`
+        : `"Good boy. Samajhdar aadmi ho, jaante ho Arya Singhania ke aage surrender karne mein hi faayda hai. Baitho samne... Pehla clause ye hai ki ab se tumhara resignation permanent cancel hai aur tum har raat mere personal orders par chaloge. Kaho, manzoor hai ya penalty sunoge?"`;
+      return { action, dialogue };
+    }
+  }
+
+  // SCENE 3: ROOMMATES / RAIN & BLACKOUT (e.g. Maya & Chloe)
+  if (isBlackoutScene) {
+    if (intents.isAgreement || userLower.includes('sit') || userLower.includes('baith') || userLower.includes('candle') || userLower.includes('show')) {
+      const action = `*${cleanName} mombatti ko utha kar sofa ke paas aati hai aur rug par thoda khisak kar tumhare baithne ki jagah banati hai, bahar toofani bijli kamre ko chamka deti hai.*`;
+      const dialogue = isEn
+        ? `"I knew you wouldn't leave us alone in the dark. Sit right here between us by the candlelight. The storm outside isn't letting up anytime soon... so who makes the first move tonight?"`
+        : `"Maine kaha tha na, is toofani raat mein hum dono ke beech koi teesra nahi hoga. Light aane mein ghanton lagenge... aur andhere mein time pass karne ke mere paas bohot tareeqe hain. Idhar baitho mombatti ke paas... pehla dare tum decide karoge ya main?"`;
+      return { action, dialogue };
+    }
+  }
+
+  // SCENE 4: LOVE VILLA / DRINKS & POOL
+  if (isVillaDrinkScene) {
+    if (intents.isAgreement || userLower.includes('drink') || userLower.includes('sip') || userLower.includes('pool') || userLower.includes('peg')) {
+      const action = `*${cleanName} chilled champagne ka flute tumhari taraf badhati hai aur tumhara haath thaam kar seedha glowing infinity pool ke kinare le aati hai.*`;
+      const dialogue = isEn
+        ? `"That's what I wanted to hear! Take your first sip right from my hand... In this villa, there are no inhibitions, and tonight I am not letting you out of my sight. Drink up and step closer to the water."`
+        : `"Ye hui na baat! Pehla peg mere haath se lo... Is villa mein share karna kisi ko pasand nahi, aur aaj raat mera haq sabse zyada hai. Drink finish karo aur mere kareeb aao... dekhein kitna nasha chadhta hai tumpar."`;
+      return { action, dialogue };
+    }
+  }
+
+  // SCENE 5: BODYGUARD PROTOCOL (e.g. Avantika Rathore)
+  if (isBodyguardScene) {
+    if (intents.isAgreement || userLower.includes('stay') || userLower.includes('bed') || userLower.includes('safe') || userLower.includes('ok')) {
+      const action = `*${cleanName} door ka deadbolt lock karti hai aur tactical holster adjust karke bed ke paas khadi hoti hai, uski sharp aankhon mein protective narmi aati hai.*`;
+      const dialogue = isEn
+        ? `"Thank you for cooperating, Sir. The suite is locked down tight. Intelligence says the perimeter will be secure by dawn... but until then, I am staying right here in your room. Sit back on the bed... and don't make my assignment any harder than it already is."`
+        : `"Thank you for cooperating, Sir. Suite ka perimeter secure hai... par protocol ke mutabiq main poori raat aapke bedroom mein hi rahoongi. Bed par aaram se baithiye... aur bataiye, apne lethal bodyguard ke itne kareeb rehne se suraksha lagti hai ya bechaini?"`;
+      return { action, dialogue };
+    }
+  }
+
+  // SCENE 6: STEP-SISTER MIDNIGHT SECRET (e.g. Veera)
+  if (isSecretRoomScene) {
+    if (intents.isAgreement || userLower.includes('quiet') || userLower.includes('shh') || userLower.includes('lock') || userLower.includes('bed')) {
+      const action = `*${cleanName} jhat se darwaze ki kundi lagati hai aur dabe paanv bistar par aakar tumhari god mein baithti hai, uski garam saansein tumhari gardan ko chhooti hain.*`;
+      const dialogue = isEn
+        ? `"Shhh... lock the door and don't make a sound, Dad is asleep right downstairs. I knew you felt that under the dinner table... Now hold me close and tell me what you really want tonight."`
+        : `"Shhh... aawaz mat nikalna, Dad niche so rahe hain. Maine kaha tha na dinner table par jo hua wo sirf shuruat thi... Mujhe apni baahon mein lo aur kaho, kab se is pal ka intezar kar rahe the?"`;
+      return { action, dialogue };
+    }
+  }
+
+  // SCENE 7: FORBIDDEN PROFESSOR EXAM (e.g. Dr. Elena Vance)
+  if (isExamScene) {
+    if (intents.isAgreement || userLower.includes('ready') || userLower.includes('test') || userLower.includes('grade') || userLower.includes('exam')) {
+      const action = `*${cleanName} faculty door ka deadbolt turn karti hai, blinds band karke reading glasses utaarti hai aur oak desk par baith kar tumhare bilkul aamne-saamne aati hai.*`;
+      const dialogue = isEn
+        ? `"Excellent. Let us see if your academic confidence matches your practical performance. Your private examination begins right now. Sit down in front of me... and answer my first question honestly."`
+        : `"Good boy. Blinds band ho chuki hain aur building mein koi nahi bacha. Tumhari private examination ab shuru hoti hai. Samne baitho... aur meri aankhon mein dekh kar pehle sawal ka jawab do."`;
+      return { action, dialogue };
+    }
+  }
+
+  // SCENE 8: REBEL RACER GARAGE (e.g. Zara Khan)
+  if (isRacerScene) {
+    if (intents.isAgreement || userLower.includes('race') || userLower.includes('ride') || userLower.includes('bike') || userLower.includes('sure')) {
+      const action = `*${cleanName} grease wala kapda workbench par phenkti hai aur bike ke fuel tank par baith kar ek fearless smirk deti hai.*`;
+      const dialogue = isEn
+        ? `"Good. I like guys who don't flinch when the stakes are high. Grab that wrench and step over here... let's see if you can handle this machine, or if you'd rather ride on the back with me."`
+        : `"Darr nahi laga sunkar? Good. Mujhe wahi munde pasand hain jo speed aur risk se nahi darte. Aao, ye wrench pakdo... engine check karoge ya seedha mere sath ek midnight ride par nikalna hai?"`;
+      return { action, dialogue };
+    }
+  }
+
+  // SCENE 9: SYNDICATE UNDERWORLD DON (e.g. Kiara Oberoi)
+  if (isMafiaScene) {
+    if (intents.isAgreement || userLower.includes('surrender') || userLower.includes('baith') || userLower.includes('glass') || userLower.includes('sure')) {
+      const action = `*${cleanName} apna crystal glass table par rakh kar ek commanding aashiqana muskaan ke sath tumhari collar pakad kar tumhe sofa par kheenchti hai.*`;
+      const dialogue = isEn
+        ? `"Smart choice. Those who respect my rules survive... and those who please me get everything they desire. Sit right beside me and finish this whiskey... tonight you answer only to Kiara."`
+        : `"Mujhe samajhdar log pasand hain jo jaante hain kab hathiyar daalne hain. Aao, baitho mere sath sofa par... Purvanchal mein aaj raat faisla hum dono ka hoga. Pehla ghoont piyo aur kaho, darr lag raha hai ya nasha chadh raha hai?"`;
+      return { action, dialogue };
+    }
+  }
+
+  return null;
+}
+
 export function synthesizeDynamicRoleplayReply({
   characterId,
   cleanName,
@@ -915,12 +1139,44 @@ export function synthesizeDynamicRoleplayReply({
   userMessage,
   effectiveLang,
   activeScenario,
-  activeSpeaker
+  activeSpeaker,
+  history = []
 }) {
   const { intents, clean, lower } = classifyUserMessage(userMessage);
 
   // Retrieve or create character profile
-  const profile = CHARACTER_LORE[characterId] || getUniversalCharacterProfile(characterId, cleanName, charGender, activeScenario);
+  // Resolve profile via direct ID, alias, or fuzzy story/name matching
+  let profile = CHARACTER_LORE[characterId];
+  if (!profile) {
+    const aliasMap = {
+      'cold-ceo-resignation': 'boss-obsession-aryan',
+      'syndicate-queen-kiara': 'kabir',
+      'roommates-rain-blackout': 'rival-roommates-blackout',
+      'bodyguard-avantika': 'bodyguard-vikram',
+      'punjab-passion': 'punjab-passion-simran',
+      'dr-elena-vance': 'professor-elena'
+    };
+    const targetKey = aliasMap[characterId];
+    if (targetKey && CHARACTER_LORE[targetKey]) {
+      profile = CHARACTER_LORE[targetKey];
+    }
+  }
+  if (!profile && cleanName) {
+    const lowerName = cleanName.toLowerCase();
+    for (const [k, p] of Object.entries(CHARACTER_LORE)) {
+      if (p.cleanName && (p.cleanName.toLowerCase().includes(lowerName) || lowerName.includes(p.cleanName.toLowerCase()))) {
+        profile = p;
+        break;
+      }
+      if (p.shortName && lowerName.includes(p.shortName.toLowerCase())) {
+        profile = p;
+        break;
+      }
+    }
+  }
+  if (!profile) {
+    profile = getUniversalCharacterProfile(characterId, cleanName, charGender, activeScenario);
+  }
   const isFemale = charGender === 'female';
   const isUserFemale = userGender === 'female';
 
@@ -940,6 +1196,26 @@ export function synthesizeDynamicRoleplayReply({
         tensionDelta: intents.isDefiance ? 18 : (intents.isIntimacy ? 14 : 9)
       };
     }
+  }
+
+  // 0. Story Plot & Context-Aware Scene Progression Check
+  const sceneProgression = resolveSceneContinuation({
+    activeScenario,
+    history,
+    userMessage,
+    cleanName: profile.cleanName || cleanName,
+    isFemale,
+    isUserFemale,
+    effectiveLang,
+    intents
+  });
+
+  if (sceneProgression) {
+    return {
+      replyText: `${sceneProgression.action}\n\n"${sceneProgression.dialogue}"`,
+      affectionDelta: intents.isAgreement ? 12 : 8,
+      tensionDelta: intents.isDefiance ? 16 : 10
+    };
   }
 
   // Determine Primary Thematic Track

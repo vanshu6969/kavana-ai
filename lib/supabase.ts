@@ -24,6 +24,9 @@ export interface ContextState {
   empireControl: string;
   activeNpc: string;
   mood: string;
+  affinity?: number;
+  trust?: number;
+  longTermSummary?: string;
 }
 
 export interface UserSession {
@@ -104,7 +107,7 @@ export function sanitizeStoredMessage(text: string, characterName: string = 'Cha
     /nd\s+ko\s+tumhari|spono|gamajh|unglle|gudda\s+ungliyan/i.test(t);
 
   if (hasCorruptLoops) {
-    return `*${characterName} aapke bilkul qareeb aakar madhosh nigahon se dekhti hain.* "Aapke paas aakar mera saara sabr toot jaata hai... jo chahein kijiye."`;
+    return text.replace(/(.{6,100}?)(?:[\s*.,?!"'\\-]*\1)+/gi, '$1').trim();
   }
 
   return text;

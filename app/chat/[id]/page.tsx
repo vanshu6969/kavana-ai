@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useApp } from '@/lib/context/AppContext';
 import ChatMessage from '@/components/ChatMessage';
+import SceneContextBar from '@/components/SceneContextBar';
 import {
   ArrowLeft,
   Send,
@@ -76,7 +77,9 @@ export default function ChatScreen() {
       location: story?.sceneContext?.location || 'Private Suite',
       empireControl: story?.sceneContext?.empireControl || '100%',
       activeNpc: story?.sceneContext?.activeNpc || story?.characterName || 'Companion',
-      mood: story?.sceneContext?.mood || 'Intense',
+      mood: story?.sceneContext?.mood || 'Intense & Magnetic',
+      affinity: 65,
+      trust: 70,
     };
   });
 
@@ -181,8 +184,18 @@ export default function ChatScreen() {
 
     appendMessageToSession(story.id, userMsg);
 
+    const aiMessageId = `ai-${Date.now()}`;
+    const initialAiMsg: MessageItem = {
+      id: aiMessageId,
+      sender: 'ai',
+      text: '',
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
+
+    setMessages((prev) => [...prev, initialAiMsg]);
+
     try {
-      const res = await fetch('/api/chat', {
+      const streamRes = await fetch('/api/chat/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -201,26 +214,105 @@ export default function ChatScreen() {
         }),
       });
 
-      const data = await res.json();
+      if (streamRes.ok && streamRes.body) {
+        const reader = streamRes.body.getReader();
+        const decoder = new TextDecoder();
+        let accumulated = '';
+        let metaData: any = null;
 
-      if (data.text) {
-        const aiMsg: MessageItem = {
-          id: `ai-${Date.now()}`,
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed || trimmed === 'data: [DONE]') continue;
+
+            if (trimmed.startsWith('data: ')) {
+              try {
+                const parsed = JSON.parse(trimmed.slice(6));
+                if (parsed.token) {
+                  accumulated += parsed.token;
+                  setMessages((prev) =>
+                    prev.map((m) => (m.id === aiMessageId ? { ...m, text: accumulated } : m))
+                  );
+                } else if (parsed.affinity !== undefined) {
+                  metaData = parsed;
+                }
+              } catch (e) {
+                // Ignore parse errors on partial chunks
+              }
+            }
+          }
+        }
+
+        const finalAiMsg: MessageItem = {
+          id: aiMessageId,
           sender: 'ai',
-          text: data.text,
-          timestamp: data.timestamp || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          smartReplies: data.smartReplies || [],
+          text: accumulated || '*Smiles warmly at you.*',
+          timestamp: metaData?.timestamp || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          smartReplies: metaData?.smartReplies || [],
         };
 
-        setMessages((prev) => [...prev, aiMsg]);
-        if (data.contextState) {
-          setContextState(data.contextState);
-        }
-        if (data.smartReplies && data.smartReplies.length > 0) {
-          setSmartReplies(data.smartReplies);
+        setMessages((prev) =>
+          prev.map((m) => (m.id === aiMessageId ? finalAiMsg : m))
+        );
+
+        const updatedContext = {
+          ...contextState,
+          affinity: metaData?.affinity ?? contextState.affinity ?? 65,
+          trust: metaData?.trust ?? contextState.trust ?? 70,
+          mood: metaData?.mood || contextState.mood,
+          longTermSummary: metaData?.longTermSummary || contextState.longTermSummary,
+        };
+
+        setContextState(updatedContext);
+
+        if (metaData?.smartReplies && metaData.smartReplies.length > 0) {
+          setSmartReplies(metaData.smartReplies);
         }
 
-        appendMessageToSession(story.id, aiMsg, data.contextState);
+        appendMessageToSession(story.id, finalAiMsg, updatedContext);
+      } else {
+        // Fallback to non-streaming POST /api/chat
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            storyId: story.id,
+            storyTitle: story.title,
+            storySynopsis: story.summary,
+            initialHook: story.openingHook,
+            characterName: story.characterName,
+            systemPersona: story.systemPersona,
+            userRole: story.userRole,
+            userGoal: story.userGoal,
+            category: story.category,
+            messages: newHistory.map((m) => ({ sender: m.sender, text: m.text })),
+            contextState,
+            language: 'hinglish',
+          }),
+        });
+
+        const data = await res.json();
+        if (data.text) {
+          const finalAiMsg: MessageItem = {
+            id: aiMessageId,
+            sender: 'ai',
+            text: data.text,
+            timestamp: data.timestamp || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            smartReplies: data.smartReplies || [],
+          };
+          setMessages((prev) =>
+            prev.map((m) => (m.id === aiMessageId ? finalAiMsg : m))
+          );
+          if (data.contextState) setContextState(data.contextState);
+          if (data.smartReplies) setSmartReplies(data.smartReplies);
+          appendMessageToSession(story.id, finalAiMsg, data.contextState);
+        }
       }
     } catch (err) {
       console.error('Chat error:', err);
@@ -475,6 +567,16 @@ export default function ChatScreen() {
             </div>
           </div>
         </header>
+
+        {/* Dynamic Story Immersion HUD */}
+        <SceneContextBar
+          location={contextState.location}
+          empireControl={contextState.empireControl}
+          activeNpc={contextState.activeNpc || story.characterName}
+          mood={contextState.mood}
+          affinity={contextState.affinity ?? 65}
+          trust={contextState.trust ?? 70}
+        />
 
         {/* CHAT MESSAGES SCROLL AREA */}
         <div className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-12 py-4 space-y-1 w-full max-w-3xl mx-auto">

@@ -1062,38 +1062,33 @@ ${isAnimeManga ? `
       else if (userLower.includes('lounge') || userLower.includes('club')) updatedLocation = 'VIP Sky Lounge';
     }
 
-    // Dynamic fallback if offline or API blocked
+    // 3. ZERO MOCK FALLBACK: External Live LLM Generation via Pollinations if previous providers failed
     if (!aiReplyText) {
-      const cleanUser = (lastUserMessage || 'kuch nahi').replace(/[\*\"\'\']/g, '').trim();
-      const snippet = cleanUser.length > 40 ? cleanUser.slice(0, 40) + '...' : cleanUser;
-      
-      const isExplicitIntimacy =
-        isExplicitAdult ||
-        /ghodi|underwear|kapde|nanga|jism|bed|bistar|chhoo|kiss|lips|utaro|kholo|nikal|nikalo|chhuo|paas|chhod|ungli|lund|lauda|loda|gaand|gand|choot|chut|daaldia|daaldi|daal|ghusa|ghusao|ghusadia|pel|pelo|peldia|thok|thoko|thokdia|ragad|chod|chudai|blowjob|oral|boobs|chuchi/i.test(
-          lastUserMessage + ' ' + messages.slice(-2).map((m) => m.text).join(' ')
-        );
+      try {
+        const pollRes = await fetch('https://text.pollinations.ai/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [
+              { role: 'system', content: systemPrompt },
+              ...messages.slice(-8).map((m) => ({
+                role: m.sender === 'user' ? 'user' : 'assistant',
+                content: m.text,
+              })),
+            ],
+            model: 'openai',
+            seed: Math.floor(Math.random() * 100000),
+          }),
+        });
 
-      if (isExplicitIntimacy) {
-        const intimateFallbacks = [
-          `*${characterName} ki saans behad tez aur garm ho jaati hai, unke naakhun aapke jism ko jakadte hain aur madhosh aah nikalti hai.* "Aaah... aapka yeh junoon mera saara hosh cheen leta hai... jo chahein kijiye, aaj main poori tarah aapki hoon."`,
-          `*Aapke har ek jhatke aur har chhuwan par ${characterName} ki aawaz madhoshi se thartharati hai.* "Ufff... itni be-panah shiddat... aapke aage mera koi zor nahi chalta, bas aise hi mere saath rahiye..."`,
-          `*${characterName} sharm aur aag mein jalti hui nigaahon se aapko dekhti hain, unka garam jism aapke saath lapat jaata hai.* "Aapka yeh andaz meri har khwahish ko aag laga deta hai... jo karna hai kijiye, main khud ko aapke hawale karti hoon."`,
-          `*Gehri aur be-ikhtiyar madhosh aahon ke darmiyan ${characterName} aapko aur qareeb kheench leti hain.* "Aaahh... aapke bina ek pal bhi chain nahi milta... aur kareeb aaiye, aaj saari hadein mita dijiye."`,
-          `*Shiddat-e-ehsaas se ${characterName} ki aankhein band ho jaati hain, unke honthon se be-ikhtiyar ahein nikalne lagti hain.* "Aaah... itni bedardi se... aapne toh mera saara sabr hi cheen liya, jaan nikal rahi hai meri..."`,
-          `*${characterName} madhoshi mein aahista se aapke jism se lapat jaati hain, unki garam saansein aapko chuhti hain.* "Aapko inkaar karne ki taaqat nahi hai mujh mein... jaisa aap kahein, waisa hi hoga."`
-        ];
-        const seed = (cleanUser.length + messages.length) % intimateFallbacks.length;
-        aiReplyText = intimateFallbacks[seed];
-      } else {
-        const dynamicFallbacks = [
-          `*${characterName} aahista se aapke bilkul qareeb aati hain, unki saanson ki garmi aapke chehre par mehsoos hoti hai.* "Khan Sahab... jab aap '${snippet}' kehte hain, toh dil ki dhadkan ruk si jaati hai. Aaj raat aap jo chahenge, wahi hoga."`,
-          `*${characterName} aapki aankhon mein dekhte hue aapka haath thaam leti hain, ungliyan aapas mein jakadte hue.* "Mujhe dekh kar lagta hai aap meri khamoshi ka matlab samajhte hain? Agar itni himmat hai, toh faasla khatam karke dikhaiye."`,
-          `*${characterName} ke chehre par ek madhosh kar dene wali muskurahat aati hai, dupatte ko thoda sa saraktne dete hue.* "Aapki har ada mere sabr ka imtihan leti hai. Bataiye, agar main khud ko aapke hawale kar doon, toh kya sambhal sakenge?"`,
-          `*${characterName} bina palak jhapkaye aapki taraf ek qadam aur badhati hain, aawaz behad madham aur naram.* "Aapka yeh andaz mujhe apna aapa bhula deta hai... kareeb aaiye, lafzon ki zaroorat nahi."`
-        ];
-        
-        const seed = (cleanUser.length + messages.length) % dynamicFallbacks.length;
-        aiReplyText = dynamicFallbacks[seed];
+        if (pollRes.ok) {
+          const rawText = await pollRes.text();
+          if (rawText && rawText.trim().length > 10 && !isAiRefusal(rawText) && !isDegradedOutput(rawText)) {
+            aiReplyText = rawText.trim();
+          }
+        }
+      } catch (pollErr) {
+        console.warn('Live fallback endpoint error:', pollErr);
       }
     }
 

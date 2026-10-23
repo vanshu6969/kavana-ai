@@ -69,22 +69,7 @@ export default function ChatMessage({
       /nd\s+ko\s+tumhari|spono|gamajh|unglle|gudda\s+ungliyan/i.test(textToRender);
 
     if (isRawDegraded) {
-      textToRender = `*${characterName} aapke bilkul qareeb aakar madhosh nigahon se dekhti hain.* "Aapke paas aakar mera saara sabr toot jaata hai... jo chahein kijiye."`;
-      const parts = textToRender.split(/(\*?\[.*?\]\*?|\*.*?\*)/g);
-      return (
-        <div className="text-slate-100 text-[14px] sm:text-[15px] leading-relaxed font-sans space-y-2">
-          <p>
-            {parts.map((part, index) => {
-              if (!part) return null;
-              const isAction = (part.startsWith('*') && part.endsWith('*'));
-              if (isAction) {
-                return <span key={index} className="text-rose-300 italic font-medium tracking-wide mx-0.5">*{part.slice(1, -1).trim()}*</span>;
-              }
-              return <span key={index} className="text-slate-100">{part}</span>;
-            })}
-          </p>
-        </div>
-      );
+      textToRender = textToRender.replace(/(.{6,100}?)(?:[\s*.,?!"'\\-]*\1)+/gi, '$1').trim();
     }
 
     // 1. Separate fused punctuation
@@ -114,10 +99,7 @@ export default function ChatMessage({
 
     textToRender = textToRender.replace(/(Mehrunnisa\s*Begum)+/gi, 'Mehrunnisa Begum');
     textToRender = textToRender.replace(/\s{2,}/g, ' ').replace(/\s+([,.?!])/g, '$1').trim();
-
-    if (textToRender.length < 15 && !textToRender.includes('"')) {
-      textToRender = `*${characterName} aapke bilkul qareeb aakar madhosh nigahon se dekhti hain.* "Aapke paas aakar mera saara sabr toot jaata hai... jo chahein kijiye."`;
-    }
+    // Do not inject mock text if text is short; render clean string
 
     const parts = textToRender.split(/(\*?\[.*?\]\*?|\*.*?\*)/g);
 
@@ -193,8 +175,16 @@ export default function ChatMessage({
         </span>
 
         {/* Message Bubble */}
-        <div className="rounded-2xl rounded-tl-xs bg-[#0D0E15]/95 border border-white/[0.08] px-4 py-3 shadow-md backdrop-blur-md">
-          {renderFormattedAiText(message.text)}
+        <div className="rounded-2xl rounded-tl-xs bg-[#0D0E15]/95 border border-white/[0.08] px-4 py-3 shadow-md backdrop-blur-md min-w-[70px]">
+          {message.text ? (
+            renderFormattedAiText(message.text)
+          ) : (
+            <div className="flex items-center gap-1.5 text-slate-400 py-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+            </div>
+          )}
         </div>
       </div>
     </div>

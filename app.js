@@ -124,7 +124,8 @@ const state = {
   activeChatPartnerId: initialSavedSessions.length > 0 ? (localStorage.getItem('kavana_last_chat_id') || initialSavedSessions[0]?.id) : null,
   credits: parseInt(localStorage.getItem('kavana_coins') || '500', 10),
   activeCategory: 'all',
-  mobileChatView: 'list', // 'list' shows all conversations roster on mobile, 'conversation' shows active chat
+  chatViewMode: 'list', // 'list' shows all conversations directory, 'conversation' shows active chat
+  mobileChatView: 'list', // sync with chatViewMode
   userGender: localStorage.getItem('kavana_user_gender') || 'male',
   
   characterState: {},
@@ -329,8 +330,8 @@ function switchView(viewName) {
     }
   });
 
-  // Mobile conversation full screen mode
-  if (viewName === 'chat' && state.mobileChatView === 'conversation') {
+  // Conversation full screen mode
+  if (viewName === 'chat' && (state.chatViewMode === 'conversation' || state.mobileChatView === 'conversation')) {
     document.body.classList.add('in-conversation');
   } else {
     document.body.classList.remove('in-conversation');
@@ -426,10 +427,14 @@ export function launchScenarioChat(story) {
     };
   }
 
+  state.chatViewMode = 'conversation';
   state.mobileChatView = 'conversation';
   document.body.classList.add('in-conversation');
   const workspace = document.querySelector('.chat-workspace');
-  if (workspace) workspace.dataset.mobileView = 'conversation';
+  if (workspace) {
+    workspace.dataset.chatView = 'conversation';
+    workspace.dataset.mobileView = 'conversation';
+  }
   switchView('character-chat');
   renderChatView();
 }
@@ -1119,10 +1124,14 @@ function renderStoryReader() {
 
 export function switchChatSession(sessionId) {
   if (!sessionId) return;
+  state.chatViewMode = 'conversation';
   state.mobileChatView = 'conversation';
   document.body.classList.add('in-conversation');
   const workspace = document.querySelector('.chat-workspace');
-  if (workspace) workspace.dataset.mobileView = 'conversation';
+  if (workspace) {
+    workspace.dataset.chatView = 'conversation';
+    workspace.dataset.mobileView = 'conversation';
+  }
   const sessions = getChatSessions();
   const session = sessions.find(s => s.id === sessionId);
   const matchedStory = KAVANA_STORIES.find(s => s.id === sessionId);
@@ -1167,7 +1176,7 @@ export function deleteChatSession(sessionId, e) {
   sessions = sessions.filter(s => s.id !== sessionId);
   saveChatSessions(sessions);
 
-  // If deleted session was active, switch to next available or clean empty
+  // If deleted session was active, switch to next available or clean reset to list mode
   if (state.activeChatPartnerId === sessionId) {
     if (sessions.length > 0) {
       switchChatSession(sessions[0].id);
@@ -1175,8 +1184,15 @@ export function deleteChatSession(sessionId, e) {
       state.activeChatPartnerId = null;
       state.activeScenario = null;
       try { localStorage.removeItem('kavana_last_chat_id'); } catch(e){}
+      state.chatViewMode = 'list';
+      state.mobileChatView = 'list';
+      document.body.classList.remove('in-conversation');
+      const workspace = document.querySelector('.chat-workspace');
+      if (workspace) {
+        workspace.dataset.chatView = 'list';
+        workspace.dataset.mobileView = 'list';
+      }
       renderChatView();
-      renderChatRoster();
     }
   } else {
     renderChatRoster();

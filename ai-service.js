@@ -21,7 +21,7 @@ export function getProviderSettings() {
     provider: (hasStorage ? localStorage.getItem('kavana_ai_provider') : null) || AI_PROVIDERS.OPENROUTER,
     apiKey: (hasStorage ? localStorage.getItem('kavana_ai_key') : null) || '',
     customEndpoint: (hasStorage ? localStorage.getItem('kavana_custom_endpoint') : null) || 'http://localhost:11434/v1/chat/completions',
-    model: (hasStorage ? localStorage.getItem('kavana_model_name') : null) || 'gryphe/mythomax-l2-13b'
+    model: (hasStorage ? localStorage.getItem('kavana_model_name') : null) || 'mistralai/mistral-small-24b-instruct-2501'
   };
 }
 
@@ -99,6 +99,16 @@ The user sent their message in ${activeLang.toUpperCase()}. You MUST reply in th
 2. If the user writes in Hinglish (Roman Hindi/Urdu, e.g. 'kya kar rahe ho', 'tum mere paas aao'), your ENTIRE response MUST be in spicy, natural Hinglish written in the Roman/Latin script.
 3. If the user writes in Punjabi, respond in authentic Punjabi.
 4. If the user writes in Hindi (Devanagari) or Urdu, respond in that language.
+
+STORY SCENE CONTINUITY & PLOT ADVANCEMENT DIRECTIVE (CRITICAL):
+1. You are roleplaying in an interactive visual novel story. The user's input directly drives the ongoing plot.
+2. Initial Scene Hook: "${activeScenario?.openingHook || 'N/A'}"
+3. User Goal: "${goal}"
+4. NEVER give detached, generic romantic flattery (e.g. "Tumhe itne kareeb dekh kar mera dhyan bhatak raha hai...").
+5. When the user responds to what you asked or proposed (e.g. agreeing to help with a stuck door, agreeing to sit down for contract renegotiation, accepting a drink, answering a question):
+   - IMMEDIATELY ADVANCE THE PHYSICAL SCENE.
+   - React to their exact answer and guide them to the next specific action (e.g. pull them inside the flat to the balcony door, point to the contract on the desk, clink glasses by the pool, lock the door).
+   - End with a specific choice or dialogue lead that continues that exact task/scene.
 
 CORE RULES FOR GENERATION:
 1. Stay 100% strictly in character as ${charName}. Never break character, acknowledge you are an AI, or speak for the user.
@@ -194,8 +204,8 @@ export async function generateAIChatReply(characterId, userMessage, history = []
     try {
       let endpoint = 'https://openrouter.ai/api/v1/chat/completions';
       let model = settings.model;
-      if (!model || model === 'gemini-1.5-flash') {
-        model = 'gryphe/mythomax-l2-13b';
+      if (!model || model === 'gemini-1.5-flash' || model === 'gryphe/mythomax-l2-13b') {
+        model = 'mistralai/mistral-small-24b-instruct-2501';
       }
       let headers = {
         'Content-Type': 'application/json',
@@ -284,13 +294,7 @@ export async function generateAIChatReply(characterId, userMessage, history = []
     const scenarioTitle = activeScenario?.title || 'Interactive Story';
     const persona = activeScenario?.systemPersona || CHARACTERS[characterId]?.personality || 'Compelling partner';
 
-    const systemPrompt = `You are ${charName}, the central character in "${scenarioTitle}".
-Gender: ${charGender.toUpperCase()} (${isCharFemale ? 'Female / Woman' : 'Male / Man'}).
-Persona: ${persona}.
-User Role: ${role} (${isUserFemale ? 'Female' : 'Male'}).
-Detected Language: ${effectiveLang}.
-Directive: Stay in character. Use asterisks for physical actions (*like this*) and double quotes for spoken dialogue ("Like this.").
-Keep it vivid, dramatic, and reactive (2 sentences of action, 1-2 sentences of dialogue). Never break character.`;
+    const systemPrompt = buildSystemPrompt(characterId, effectiveLang, activeScenario?.userRole || 'Partner', activeScenario, detectedUserGender, activeSpeaker);
 
     const messages = [{ role: 'system', content: systemPrompt }];
     (history || []).slice(-4).forEach(m => {
@@ -334,7 +338,7 @@ Keep it vivid, dramatic, and reactive (2 sentences of action, 1-2 sentences of d
   }
 
   // 3. Dynamic Contextual AI Procedural Engine with Full Gender Precision
-  return generateDynamicProceduralTurn(characterId, userMessage, effectiveLang, charState, activeScenario, detectedUserGender, activeSpeaker);
+  return generateDynamicProceduralTurn(characterId, userMessage, effectiveLang, charState, activeScenario, detectedUserGender, activeSpeaker, history);
 }
 
 /**
@@ -514,7 +518,7 @@ Do not include any headers or meta text.`;
  * Synthesizes grounded, non-repetitive, situational roleplay responses
  * powered by character lore, entity extraction, and anti-repetition memory.
  */
-export function generateDynamicProceduralTurn(characterId, userMessage, effectiveLang, charState, activeScenario = null, userGender = 'male', activeSpeaker = null) {
+export function generateDynamicProceduralTurn(characterId, userMessage, effectiveLang, charState, activeScenario = null, userGender = 'male', activeSpeaker = null, history = []) {
   const char = CHARACTERS[characterId] || {};
   const rawCharName = activeSpeaker || activeScenario?.characterName || char.name || 'Companion';
   const cleanName = activeSpeaker || getCleanCharacterName(rawCharName, characterId);
@@ -528,7 +532,8 @@ export function generateDynamicProceduralTurn(characterId, userMessage, effectiv
     userMessage,
     effectiveLang,
     activeScenario,
-    activeSpeaker
+    activeSpeaker,
+    history
   });
 
   const curAff = (charState && charState.affection) || 65;
